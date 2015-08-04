@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.8)
 
 # define a macro that helps defining an option
 
@@ -12,7 +12,7 @@ set(VERSION_MINOR 1)
 set(VERSION_PATCH 0)
 
 include(cmake/macro.cmake)
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules;${CMAKE_SOURCE_DIR}")
+
 
 
 # add the  header path
@@ -36,19 +36,34 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(LIB_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
-#set(SFML_STATIC_LIBRARIES TRUE)
-find_package(SFML 2 COMPONENTS system graphics window)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules;${CMAKE_SOURCE_DIR}")
 
-if(NOT SFML_FOUND)
-	message(FATAL_ERROR "SFML Modules not find. Please set the SFML_ROOT variable to your SFML root installation directory and retry")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	set_option(SFML_ROOT ${CMAKE_INSTALL_PREFIX}/../SFML PATH "The SFML root installation")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	set_option(SFML_ROOT ${CMAKE_INSTALL_PREFIX}/SFML PATH "The SFML root installation")
+else()
+	set_option(SFML_ROOT ${CMAKE_INSTALL_PREFIX}/SFML PATH "The SFML root installation")
 endif()
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules;${CMAKE_SOURCE_DIR}")
+
+find_package(SFML 2 COMPONENTS system graphics window REQUIRED)
+if(NOT SFML_FOUND)
+	message(FATAL_ERROR "SFML Modules not found. Please set the SFML_ROOT variable to your SFML root installation directory and retry")
+endif()
+
+
 include_directories(${SFML_INCLUDE_DIR})
-set(LIBS ${SFML_LIBRARIES})
+list(APPEND LIBS
+	${LIBS}
+	${SFML_LIBRARIES}
+	${SFML_DEPENDENCIES}
+)
 
 find_package(DMUtils)
 if(NOT DMUTILS_FOUND)
-	message(FATAL_ERROR "DMutils not find. Please set the DMUTILS_ROOT variable to your DMUtils root installation directory and retry")
+	message(FATAL_ERROR "DMutils not found. Please set the DMUTILS_ROOT variable to your DMUtils root installation directory and retry")
 endif()
 
 include_directories(${DMUTILS_INCLUDE_DIR})
