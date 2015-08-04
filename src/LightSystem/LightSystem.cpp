@@ -2,7 +2,7 @@
 
 #include <SFML/OpenGL.hpp>
 
-#include "LightSystem.hpp"
+#include <LightSystem/LightSystem.hpp>
 
 ///See if you can do somethiing with viewports instead of moving everything by hand
 

@@ -6,7 +6,7 @@
 #include <DMUtils/maths.hpp>
 #include <DMUtils/sfml.hpp>
 
-#include "SpotLight.hpp"
+#include <Lightsystem/SpotLight.hpp>
 
 
 namespace DMGDVT {
