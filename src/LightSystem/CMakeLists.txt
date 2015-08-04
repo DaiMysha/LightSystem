@@ -18,3 +18,5 @@ build_library(${PROJECT_NAME}
 	TYPE SHARED
 	EXTERNAL_LIBS ${LIBS}
 )
+
+#deploy(ROOT ${INCROOT}DESTINATION include)
