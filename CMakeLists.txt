@@ -56,7 +56,7 @@ include_directories(${DMUTILS_INCLUDE_DIR})
 # add the subdirectories
 add_subdirectory(src)
 if(UTILS_BUILD_EXAMPLES)
-    #add_subdirectory(example)
+    add_subdirectory(example)
 endif()
 #build doc
 if(UTILS_BUILD_DOC)

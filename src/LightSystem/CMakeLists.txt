@@ -1,7 +1,6 @@
 set(INCROOT ${INCROOT}/${PROJECT_NAME})
 set(SRCROOT ${SRCROOT}/${PROJECT_NAME})
 
-
 set(FILES_HEADER
 	${INCROOT}/LightSystem.hpp
 	${INCROOT}/Light.hpp
