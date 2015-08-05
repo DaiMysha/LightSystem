@@ -44,32 +44,6 @@ namespace LS {
             window.draw(shape);
 
             sf::Vector2f s(screen.x-_center.x, screen.y-_center.y), c(s);
-
-
-            glBegin(GL_QUADS);
-            glColor4f(r,g,b,_color.a);
-            glVertex2f(_aabb.x-s.x, _aabb.y-s.y);
-            glVertex2f(_aabb.x+_aabb.w-s.x, _aabb.y-s.y);
-            glVertex2f(_aabb.x+_aabb.w-s.x, _aabb.y+_aabb.h-s.y);
-            glVertex2f(_aabb.x-s.x, _aabb.y+_aabb.h-s.y);
-            glEnd();
-
-            /*glBegin(GL_TRIANGLE_FAN);
-
-            glColor4f(r,g,b,_color.a);
-            glVertex2f(c.x, c.y);
-
-            // Set the edge color for rest of shape
-            int numSubdivisions = static_cast<int>(_spreadAngle / 20.0f);
-            float startAngle = _directionAngle - _spreadAngle / 2.0f;
-
-            for(int currentSubDivision = 0; currentSubDivision <= numSubdivisions; currentSubDivision++)
-            {
-                float angle = startAngle + currentSubDivision * 20.0f;
-                glVertex2f(_radius * cosf(angle) + c.x, _radius * sinf(angle) + c.y);
-            }
-
-            glEnd();*/
         } else {
             sf::ConvexShape shape;
             shape.setPointCount(4);

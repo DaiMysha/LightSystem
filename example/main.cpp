@@ -2,38 +2,25 @@
 #include <sstream>
 
 #include <SFML/Graphics.hpp>
+#include <GL/gl.h>
 
 #include <DMUtils/maths.hpp>
-
-#include "Player.hpp"
-#include "LightSystem/LightSystem.hpp"
-#include "LightSystem/SpotLight.hpp"
+#include <LightSystem/LightSystem.hpp>
+#include <LightSystem/SpotLight.hpp>
 
 #define WIDTH   640
 #define HEIGHT  480
 
-/***************** TODO LIST ********************
-* move the sfUtils to an appropriate project
-* same for math
-* see if you can use viewports instead of mass -screen
-* move center and drawAABB to Light
-************************************************/
-
+//font taken from http://www.fontspace.com/melifonts/sweet-cheeks
 int main(int argc, char** argv) {
 
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "SFML testy");
-    sf::CircleShape shape(12.f);
-    shape.setFillColor(sf::Color::Blue);
-
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png")) exit(-1);
+    //if(!bg.loadFromFile("data/map2.jpg")) exit(-1);
     //bg.setRepeated(true);
-    sf::Sprite bgSpr(bg);
-    bgSpr.setTextureRect(sf::IntRect(0,0,WIDTH,HEIGHT));
-
-    Player p(1670,2088,2);
-    shape.setPosition(WIDTH/2-2,HEIGHT/2-2);
+    sf::Sprite bgSpr(bg,sf::IntRect(0,0,WIDTH,HEIGHT));
 
     int fps = 0;
     int elapsedFrames = 0;
@@ -50,6 +37,15 @@ int main(int argc, char** argv) {
     text.setString("0");
     text.setColor(sf::Color::White);
 
+    sf::View view;
+    view.setSize(sf::Vector2f(WIDTH,HEIGHT));
+
+    sf::RectangleShape p(sf::Vector2f(10,10));
+    p.setFillColor(sf::Color::Blue);
+    p.setPosition(sf::Vector2f(1670,2088));
+
+    int speed = 5;
+
     DMGDVT::LS::LightSystem ls;
     //1679,1583
     DMGDVT::LS::SpotLight* spot = new DMGDVT::LS::SpotLight(sf::Vector2f(1678,1582),400,sf::Color::Red,0.0f,M_PIf*2.0f,1.0f,5,10,1.0f);
@@ -61,38 +57,51 @@ int main(int argc, char** argv) {
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) window.close();
-            else if(event.type == sf::Event::KeyPressed || event.type == sf::Event::KeyReleased) {
-                bool down = (event.type == sf::Event::KeyPressed);
+            if (event.type == sf::Event::Closed)
+                window.close();
+            else if(event.type == sf::Event::KeyPressed){
                 switch(event.key.code) {
-                    case sf::Keyboard::Up: p.set_keyDown(Player::KEY_UP, down); break;
-                    case sf::Keyboard::Down: p.set_keyDown(Player::KEY_DOWN, down); break;
-                    case sf::Keyboard::Left: p.set_keyDown(Player::KEY_LEFT, down); break;
-                    case sf::Keyboard::Right: p.set_keyDown(Player::KEY_RIGHT, down); break;
-                    case sf::Keyboard::Escape: window.close(); break;
+                    case sf::Keyboard::Escape:
+                    {
+                        window.close();
+                    } break;
+                    case sf::Keyboard::Up :
+                    {
+                        p.move(0,-speed);
+                    } break;
+                    case sf::Keyboard::Down :
+                    {
+                        p.move(0,speed);
+                    } break;
+                    case sf::Keyboard::Left :
+                    {
+                        p.move(-speed,0);
+                    } break;
+                    case sf::Keyboard::Right :
+                    {
+                        p.move(speed,0);
+                    } break;
                     default: break;
                 }
             }
         }
+        window.clear(sf::Color::Red);
 
-        if(pclock.getElapsedTime().asMilliseconds() > 16) {
-            p.move();
-            pclock.restart();
-        }
-        //calculates where the sprite has to be blit
-        int x = p.get_x() - WIDTH/2;
-        int y = p.get_y() - HEIGHT/2;
-        bgSpr.setTextureRect(sf::IntRect(x,y,x+WIDTH,y+WIDTH));
-        //draw
-        window.clear();
+        int x = p.getPosition().x - WIDTH/2;
+        int y = p.getPosition().y - HEIGHT/2;
+        bgSpr.setTextureRect(sf::IntRect(x,y,x+WIDTH,y+HEIGHT));
+
+        sf::View baseView = window.getView();
+        view.setCenter(p.getPosition());
         window.draw(bgSpr);
-        window.draw(shape);
+        window.setView(view);
+        window.draw(p);
+        window.setView(baseView);
 
         ls.render(x,y,WIDTH,HEIGHT,window);
         ls.drawAABB(x,y,WIDTH,HEIGHT,window);
 
         window.draw(text);
-
         window.display();
 
         //sf::sleep(sf::milliseconds(16));
