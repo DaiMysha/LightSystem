@@ -21,6 +21,7 @@ int main(int argc, char** argv) {
     //if(!bg.loadFromFile("data/map2.jpg")) exit(-1);
     //bg.setRepeated(true);
     sf::Sprite bgSpr(bg,sf::IntRect(0,0,WIDTH,HEIGHT));
+    bgSpr.setOrigin(sf::Vector2f(WIDTH/2,HEIGHT/2));
 
     int fps = 0;
     int elapsedFrames = 0;
@@ -42,7 +43,7 @@ int main(int argc, char** argv) {
 
     sf::RectangleShape p(sf::Vector2f(10,10));
     p.setFillColor(sf::Color::Blue);
-    p.setPosition(sf::Vector2f(1670,2088));
+    p.setPosition(sf::Vector2f(1680,2090));
 
     int speed = 5;
 
@@ -81,20 +82,31 @@ int main(int argc, char** argv) {
                     {
                         p.move(speed,0);
                     } break;
+
+                    case sf::Keyboard::V :
+                    {
+                        view.rotate(10);
+                    } break;
+                    case sf::Keyboard::B :
+                    {
+                        view.rotate(-10);
+                    } break;
                     default: break;
                 }
             }
         }
         window.clear(sf::Color::Red);
 
-        int x = p.getPosition().x - WIDTH/2;
-        int y = p.getPosition().y - HEIGHT/2;
-        bgSpr.setTextureRect(sf::IntRect(x,y,x+WIDTH,y+HEIGHT));
+        int x = p.getPosition().x-WIDTH/2;
+        int y = p.getPosition().y-HEIGHT/2;
+
+        bgSpr.setTextureRect(sf::IntRect(x,y,WIDTH,HEIGHT));
+        bgSpr.setPosition(p.getPosition());
 
         sf::View baseView = window.getView();
         view.setCenter(p.getPosition());
-        window.draw(bgSpr);
         window.setView(view);
+        window.draw(bgSpr);
         window.draw(p);
         window.setView(baseView);
 
