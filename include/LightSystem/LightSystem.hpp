@@ -28,10 +28,10 @@ namespace LS {
             //empties the lights
             void reset();
 
-            void render(AABB screen, sf::RenderWindow& window);
-            void render(int x, int y, int w, int h, sf::RenderWindow& window);
-            void drawAABB(AABB screen, sf::RenderWindow& window);
-            void drawAABB(int x, int y, int w, int h, sf::RenderWindow& window);
+            void render(const sf::View& screen, sf::RenderWindow& window);
+            void render(const sf::IntRect& screen, sf::RenderWindow& window);
+            void drawAABB(const sf::View& screen, sf::RenderWindow& window);
+            void drawAABB(const sf::IntRect& screen, sf::RenderWindow& window);
 
         private:
             std::list<Light*> _lights;

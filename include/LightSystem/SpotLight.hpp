@@ -22,13 +22,13 @@ namespace LS {
             SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float s, float b, float lf);
             virtual ~SpotLight();
 
-            virtual void render(AABB screen, sf::RenderWindow& window);
-            virtual void drawAABB(AABB screen, sf::RenderWindow& window);
+            virtual void render(const sf::IntRect& screen, sf::RenderWindow& window);
+            virtual void drawAABB(const sf::IntRect& screen, sf::RenderWindow& window);
 
             virtual void computeAABB();
 
             /*** GETTER - SETTER ***/
-            virtual AABB getAABB();
+            virtual sf::IntRect getAABB();
 
             void setCenter(sf::Vector2f c);
             sf::Vector2f getCenter() const;

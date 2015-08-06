@@ -29,29 +29,26 @@ namespace LS {
         computeAABB();
     }
 
-    void SpotLight::render(AABB screen, sf::RenderWindow& window) {
+    void SpotLight::render(const sf::IntRect& screen, sf::RenderWindow& window) {
         if(_intensity <= 0.0f) return;
 
-        float r = _color.r * _intensity;
+        /*float r = _color.r * _intensity;
         float g = _color.g * _intensity;
-        float b = _color.b * _intensity;
+        float b = _color.b * _intensity;*/
 
         if(_spreadAngle == M_PIf*2.0f) {
             sf::CircleShape shape(_size);
-            shape.setPosition(_center - sf::Vector2f(screen.x+_size/2,screen.y+_size/2));
+            shape.setPosition(_center);
             shape.setFillColor(_color);
 
             window.draw(shape);
-
-            sf::Vector2f s(screen.x-_center.x, screen.y-_center.y), c(s);
         } else {
             sf::ConvexShape shape;
             shape.setPointCount(4);
             shape.setFillColor(sf::Color(_color.r,_color.g,_color.b,125));
             sf::Vector2f v(0,_radius);
-            sf::Vector2f sv(screen.x,screen.y);
             //*
-            shape.setPosition(_center-sv);
+            shape.setPosition(_center);
             shape.setPoint(0,sf::Vector2f(0,0));
             shape.setPoint(1,DMUtils::sfml::rotate(v,-_spreadAngle/2.0f));
             shape.setPoint(2,v);
@@ -63,14 +60,14 @@ namespace LS {
         }
 	}
 
-    void SpotLight::drawAABB(AABB screen, sf::RenderWindow& window) {
-        sf::Vector2f s(screen.x-_center.x, screen.y-_center.y);
+    void SpotLight::drawAABB(const sf::IntRect& screen, sf::RenderWindow& window) {
+        sf::IntRect box = getAABB();
         sf::Vertex lines[] = {
-            sf::Vertex(sf::Vector2f(_aabb.x, _aabb.y)-s,_color),
-            sf::Vertex(sf::Vector2f(_aabb.x+_aabb.w, _aabb.y)-s,_color),
-            sf::Vertex(sf::Vector2f(_aabb.x+_aabb.w, _aabb.y+_aabb.h)-s,_color),
-            sf::Vertex(sf::Vector2f(_aabb.x, _aabb.y+_aabb.h)-s,_color),
-            sf::Vertex(sf::Vector2f(_aabb.x, _aabb.y)-s,_color)
+            sf::Vertex(sf::Vector2f(box.left, box.top),_color),
+            sf::Vertex(sf::Vector2f(box.left+box.width, box.top),_color),
+            sf::Vertex(sf::Vector2f(box.left+box.width, box.top+box.height),_color),
+            sf::Vertex(sf::Vector2f(box.left, box.top+box.height),_color),
+            lines[0]
         };
 
         window.draw(lines,5,sf::LinesStrip);
@@ -79,9 +76,9 @@ namespace LS {
     void SpotLight::computeAABB() {
 
         if(_spreadAngle == M_PIf*2.0f) {
-            _aabb.x = -_radius/2.0f;
-            _aabb.y = -_radius/2.0f;
-            _aabb.w = _aabb.h = _radius;
+            _aabb.left = -_radius/2.0f;
+            _aabb.top = -_radius/2.0f;
+            _aabb.width = _aabb.height = _radius;
         } else {
             // @TODO : move the rotation function to a real good DMGDVT::sfUtils folder
             sf::Vector2f v = DMUtils::sfml::rotate<float>(sf::Vector2f(0.0,_radius),_directionAngle);
@@ -93,21 +90,16 @@ namespace LS {
             int ymin = DMUtils::maths::min<float>(v.y, left.y, right.y, 0.0f);
             int ymax = DMUtils::maths::max<float>(v.y, left.y, right.y, 0.0f);
 
-            _aabb.x = xmin;
-            _aabb.y = ymin;
-            _aabb.w = xmax - xmin;
-            _aabb.h = ymax - ymin;
+            _aabb.left = xmin;
+            _aabb.top = ymin;
+            _aabb.width = xmax - xmin;
+            _aabb.height = ymax - ymin;
         }
     }
 
     /*** GETTER - SETTER ***/
-    AABB SpotLight::getAABB() {
-        AABB ans;
-        ans.x = _center.x+_aabb.x;
-        ans.y = _center.y+_aabb.y;
-        ans.w = _aabb.w;
-        ans.h = _aabb.h;
-        return ans;
+    sf::IntRect SpotLight::getAABB() {
+        return sf::IntRect(sf::Vector2i(_aabb.left+static_cast<int>(_center.x),_aabb.top+static_cast<int>(_center.y)),sf::Vector2i(_aabb.width,_aabb.height));
     }
 
     void SpotLight::setCenter(sf::Vector2f c) {

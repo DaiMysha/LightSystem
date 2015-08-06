@@ -104,14 +104,16 @@ int main(int argc, char** argv) {
         bgSpr.setPosition(p.getPosition());
 
         sf::View baseView = window.getView();
-        view.setCenter(p.getPosition());
-        window.setView(view);
-        window.draw(bgSpr);
-        window.draw(p);
-        window.setView(baseView);
 
-        ls.render(x,y,WIDTH,HEIGHT,window);
-        ls.drawAABB(x,y,WIDTH,HEIGHT,window);
+            view.setCenter(p.getPosition());
+            window.setView(view);
+            window.draw(bgSpr);
+            window.draw(p);
+
+            ls.render(view,window);
+            ls.drawAABB(view,window);
+
+        window.setView(baseView);
 
         window.draw(text);
         window.display();
