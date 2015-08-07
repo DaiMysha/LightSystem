@@ -12,8 +12,8 @@ namespace LS {
             }
             virtual ~Light() {}
 
-            virtual void render(const sf::IntRect& screen, sf::RenderWindow& window) = 0;
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderWindow& window) = 0;
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target) = 0;
+            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) = 0;
 
             virtual void computeAABB() = 0;
 

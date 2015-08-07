@@ -28,24 +28,23 @@ namespace LS {
         _lights.empty();
     }
 
-    void LightSystem::render(const sf::View& screen, sf::RenderWindow& window) {
-        render(DMUtils::sfml::getViewInWorldAABB(screen),window);
+    void LightSystem::render(const sf::View& screen, sf::RenderTarget& target) {
+        render(DMUtils::sfml::getViewInWorldAABB(screen),target);
     }
 
-    void LightSystem::render(const sf::IntRect& screen, sf::RenderWindow& window) {
+    void LightSystem::render(const sf::IntRect& screen, sf::RenderTarget& target) {
         for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) l->render(screen,window);
+            if(l->getAABB().intersects(screen)) l->render(screen,target);
         }
     }
 
-    void LightSystem::drawAABB(const sf::View& screen, sf::RenderWindow& window) {
-        drawAABB(DMUtils::sfml::getViewInWorldAABB(screen),window);
+    void LightSystem::drawAABB(const sf::View& screen, sf::RenderTarget& target) {
+        drawAABB(DMUtils::sfml::getViewInWorldAABB(screen),target);
     }
 
-    void LightSystem::drawAABB(const sf::IntRect& screen, sf::RenderWindow& window) {
-        window.setActive(true);
+    void LightSystem::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
         for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) l->drawAABB(screen,window);
+            if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
     }
 

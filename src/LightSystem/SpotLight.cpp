@@ -29,7 +29,7 @@ namespace LS {
         computeAABB();
     }
 
-    void SpotLight::render(const sf::IntRect& screen, sf::RenderWindow& window) {
+    void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target) {
         if(_intensity <= 0.0f) return;
 
         /*float r = _color.r * _intensity;
@@ -41,7 +41,7 @@ namespace LS {
             shape.setPosition(_center);
             shape.setFillColor(_color);
 
-            window.draw(shape);
+            target.draw(shape);
         } else {
             sf::ConvexShape shape;
             shape.setPointCount(4);
@@ -56,11 +56,11 @@ namespace LS {
 
             shape.setRotation(_directionAngle*180.0f/M_PIf);
 
-            window.draw(shape);
+            target.draw(shape);
         }
 	}
 
-    void SpotLight::drawAABB(const sf::IntRect& screen, sf::RenderWindow& window) {
+    void SpotLight::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
         sf::IntRect box = getAABB();
         sf::Vertex lines[] = {
             sf::Vertex(sf::Vector2f(box.left, box.top),_color),
@@ -70,7 +70,7 @@ namespace LS {
             lines[0]
         };
 
-        window.draw(lines,5,sf::LinesStrip);
+        target.draw(lines,5,sf::LinesStrip);
     }
 
     void SpotLight::computeAABB() {
