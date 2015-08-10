@@ -56,8 +56,8 @@ namespace LS {
             void setBleed(float b);
             float getBleed() const;
 
-            void setLinerizationFactor(float lf);
-            float getLinearisationFactor() const;
+            void setLinearity(float lf);
+            float getLinearity() const;
 
         protected:
             sf::Vector2f _center;
@@ -68,7 +68,7 @@ namespace LS {
             float _intensity; //how bright light is
             float _size; //size of the physical source
             float _bleed; //radius of the light halo
-            float _linearizationFactor;
+            float _linearity;
 
 
             sf::RenderTexture* _renderTexture;

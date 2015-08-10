@@ -22,7 +22,7 @@ namespace LS {
     }
 
     SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float s, float b, float lf, bool iso) : Light(iso),
-     _center(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _size(s), _bleed(b), _linearizationFactor(lf), _renderTexture(nullptr) {
+     _center(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _size(s), _bleed(b), _linearity(lf), _renderTexture(nullptr) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
@@ -182,12 +182,12 @@ namespace LS {
         return _bleed;
 	}
 
-    void SpotLight::setLinerizationFactor(float lf) {
-        _linearizationFactor = lf;
+    void SpotLight::setLinearity(float lf) {
+        _linearity = lf;
 	}
 
-    float SpotLight::getLinearisationFactor() const {
-        return _linearizationFactor;
+    float SpotLight::getLinearity() const {
+        return _linearity;
 	}
 
 	/*** PROTECTED ***/
