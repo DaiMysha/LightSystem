@@ -29,7 +29,7 @@ namespace LS {
         computeAABB();
     }
 
-    void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target) {
+    void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states) {
         if(_intensity <= 0.0f) return;
 
         /*float r = _color.r * _intensity;
@@ -60,7 +60,7 @@ namespace LS {
         }
 	}
 
-    void SpotLight::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
+    void SpotLight::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states) {
         sf::IntRect box = getAABB();
         sf::Vertex lines[] = {
             sf::Vertex(sf::Vector2f(box.left, box.top),_color),

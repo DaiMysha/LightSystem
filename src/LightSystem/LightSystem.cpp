@@ -11,7 +11,7 @@
 namespace DMGDVT {
 namespace LS {
 
-    LightSystem::LightSystem() {
+    LightSystem::LightSystem() : _multiplyState(sf::BlendMultiply) {
     }
 
     LightSystem::~LightSystem() {
@@ -34,7 +34,7 @@ namespace LS {
 
     void LightSystem::render(const sf::IntRect& screen, sf::RenderTarget& target) {
         for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) l->render(screen,target);
+            if(l->getAABB().intersects(screen)) l->render(screen,target,_multiplyState);
         }
     }
 
@@ -44,7 +44,7 @@ namespace LS {
 
     void LightSystem::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
         for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
+            if(l->getAABB().intersects(screen)) l->drawAABB(screen,target,_multiplyState);
         }
     }
 

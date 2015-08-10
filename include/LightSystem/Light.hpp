@@ -1,6 +1,8 @@
 #ifndef HEADER_DMGDVT_LIGHT
 #define HEADER_DMGDVT_LIGHT
 
+#include <SFML/Graphics.hpp>
+
 namespace DMGDVT {
 namespace LS {
 
@@ -12,8 +14,8 @@ namespace LS {
             }
             virtual ~Light() {}
 
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target) = 0;
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) = 0;
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
+            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
 
             virtual void computeAABB() = 0;
 

@@ -22,8 +22,8 @@ namespace LS {
             SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float s, float b, float lf);
             virtual ~SpotLight();
 
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target);
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states=sf::RenderStates::Default);
+            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states=sf::RenderStates::Default);
 
             virtual void computeAABB();
 
