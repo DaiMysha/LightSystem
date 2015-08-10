@@ -22,6 +22,7 @@ namespace LS {
     class LightSystem {
         public:
             LightSystem();
+            LightSystem(const LightSystem& ls) = delete; //doesn't make sense to copy an existing light system
             ~LightSystem();
 
             void addLight(Light* l, bool dynamic = false);
