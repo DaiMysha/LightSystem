@@ -19,9 +19,10 @@
 
 namespace DMGDVT {
 namespace LS {
+    ///this class is not meant to be inherited
     class LightSystem {
         public:
-            LightSystem();
+            LightSystem(bool isometric = false);
             LightSystem(const LightSystem& ls) = delete; //doesn't make sense to copy an existing light system
             ~LightSystem();
 
@@ -34,10 +35,16 @@ namespace LS {
             void drawAABB(const sf::View& screen, sf::RenderTarget& target);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
-        private:
+            void setIsometric(bool i);
+            bool isIsometric() const;
+
+        protected:
+
             std::list<Light*> _lights;
             sf::RenderStates _multiplyState;
             sf::Shader _lightAttenuationShader;
+
+            bool _isometric;
 
     };
 }

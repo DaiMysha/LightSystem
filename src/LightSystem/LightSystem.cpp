@@ -11,7 +11,7 @@
 namespace DMGDVT {
 namespace LS {
 
-    LightSystem::LightSystem() : _multiplyState(sf::BlendMultiply) {
+    LightSystem::LightSystem(bool isometric) : _multiplyState(sf::BlendMultiply), _isometric(isometric) {
         sf::Shader _lightAttenuationShader;
         //this will be loaded from internal memory when lib is created
         //or loaded external crypted
@@ -27,6 +27,7 @@ namespace LS {
 
     void LightSystem::addLight(Light* l, bool dynamic) {
         if(!dynamic) l->preRender(&_lightAttenuationShader);
+        l->setIsometric(_isometric);//ignore what user set before
         _lights.push_back(l);
     }
 
@@ -54,6 +55,15 @@ namespace LS {
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
+    }
+
+    void LightSystem::setIsometric(bool i) {
+        _isometric = i;
+        for(Light* l : _lights) l->setIsometric(_isometric);
+    }
+
+    bool LightSystem::isIsometric() const {
+        return _isometric;
     }
 
 }
