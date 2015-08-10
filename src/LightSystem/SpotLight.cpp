@@ -21,8 +21,8 @@ namespace LS {
     SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, bool iso) : SpotLight(ctr,r,c,0.0f,M_PIf,1.0f,0.0f,0.0f,0.0f) {
     }
 
-    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float s, float b, float lf, bool iso) : Light(iso),
-     _center(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _size(s), _bleed(b), _linearity(lf), _renderTexture(nullptr) {
+    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(iso),
+     _center(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
