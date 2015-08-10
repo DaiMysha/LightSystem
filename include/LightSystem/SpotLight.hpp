@@ -50,9 +50,6 @@ namespace LS {
             void setIntensity(float i);
             float getIntensity() const;
 
-            void setSize(float s);
-            float getSize() const;
-
             void setBleed(float b);
             float getBleed() const;
 
@@ -66,7 +63,6 @@ namespace LS {
             float _directionAngle; //angle light is pointing, rad
             float _spreadAngle; //how wide the light covers, rad
             float _intensity; //how bright light is
-            float _size; //size of the physical source
             float _bleed; //radius of the light halo
             float _linearity;
 

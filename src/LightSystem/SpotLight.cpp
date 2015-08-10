@@ -166,14 +166,6 @@ namespace LS {
         return _intensity;
 	}
 
-    void SpotLight::setSize(float s) {
-        _size = s;
-	}
-
-    float SpotLight::getSize() const {
-        return _size;
-	}
-
     void SpotLight::setBleed(float b) {
         _bleed = b;
 	}
