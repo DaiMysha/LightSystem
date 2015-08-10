@@ -12,6 +12,13 @@ namespace DMGDVT {
 namespace LS {
 
     LightSystem::LightSystem() : _multiplyState(sf::BlendMultiply) {
+        sf::Shader _lightAttenuationShader;
+        //this will be loaded from internal memory when lib is created
+        //or loaded external crypted
+        //the idea is not to allow the user to modify it
+        if(!_lightAttenuationShader.loadFromFile("shaders/lightAttenuation.frag",sf::Shader::Fragment)) {
+           std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
+        }
     }
 
     LightSystem::~LightSystem() {
@@ -34,7 +41,7 @@ namespace LS {
 
     void LightSystem::render(const sf::IntRect& screen, sf::RenderTarget& target) {
         for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) l->render(screen,target,_multiplyState);
+            if(l->getAABB().intersects(screen)) l->render(screen,target,&_lightAttenuationShader,_multiplyState);
         }
     }
 
@@ -44,7 +51,7 @@ namespace LS {
 
     void LightSystem::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
         for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) l->drawAABB(screen,target,_multiplyState);
+            if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
     }
 

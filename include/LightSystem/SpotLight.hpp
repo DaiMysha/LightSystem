@@ -17,13 +17,14 @@ namespace LS {
     class SpotLight : public Light {
         public:
             //Don't create spotlights with spread angles > pi, it doesn't work
-            SpotLight();
-            SpotLight(sf::Vector2f ctr, float r, sf::Color c);
-            SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float s, float b, float lf);
+            SpotLight(bool iso=false);
+            SpotLight(sf::Vector2f ctr, float r, sf::Color c,bool iso=false);
+            SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float s, float b, float lf,bool iso=false);
             virtual ~SpotLight();
 
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states=sf::RenderStates::Default);
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states=sf::RenderStates::Default);
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
+            virtual void debugRender(const sf::IntRect& screen, sf::RenderTarget& target);
+            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
             virtual void computeAABB();
 

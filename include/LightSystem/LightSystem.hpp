@@ -36,6 +36,7 @@ namespace LS {
         private:
             std::list<Light*> _lights;
             sf::RenderStates _multiplyState;
+            sf::Shader _lightAttenuationShader;
 
     };
 }

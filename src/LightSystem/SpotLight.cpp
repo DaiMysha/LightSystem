@@ -12,29 +12,40 @@
 namespace DMGDVT {
 namespace LS {
 
-    SpotLight::SpotLight() : SpotLight(sf::Vector2f(0,0),0,sf::Color(0,0,0,0)) {
+    SpotLight::SpotLight(bool iso) : SpotLight(sf::Vector2f(0,0),0,sf::Color(0,0,0,0)) {
 	}
 
     SpotLight::~SpotLight() {
         delete _renderTexture;
 	}
 
-    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c) : SpotLight(ctr,r,c,0.0f,M_PIf,1.0f,0.0f,0.0f,0.0f) {
+    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, bool iso) : SpotLight(ctr,r,c,0.0f,M_PIf,1.0f,0.0f,0.0f,0.0f) {
     }
 
-    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float s, float b, float lf) : Light(),
+    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float s, float b, float lf, bool iso) : Light(iso),
      _center(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _size(s), _bleed(b), _linearizationFactor(lf), _renderTexture(nullptr) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
     }
 
-    void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states) {
+    void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
         if(_intensity <= 0.0f) return;
 
-        /*float r = _color.r * _intensity;
+        float r = _color.r * _intensity;
         float g = _color.g * _intensity;
-        float b = _color.b * _intensity;*/
+        float b = _color.b * _intensity;
+
+        sf::Color c(r,g,b,1.0);
+
+        if(_spreadAngle == M_PIf*2.0f) {
+        } else {
+        }
+	}
+
+    //keep this as debug option, not used for now at all
+    void SpotLight::debugRender(const sf::IntRect& screen, sf::RenderTarget& target) {
+        if(_intensity <= 0.0f) return;
 
         if(_spreadAngle == M_PIf*2.0f) {
             sf::CircleShape shape(_size);
@@ -60,7 +71,7 @@ namespace LS {
         }
 	}
 
-    void SpotLight::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target, const sf::RenderStates &states) {
+    void SpotLight::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
         sf::IntRect box = getAABB();
         sf::Vertex lines[] = {
             sf::Vertex(sf::Vector2f(box.left, box.top),_color),
