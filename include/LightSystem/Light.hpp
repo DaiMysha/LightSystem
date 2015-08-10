@@ -15,6 +15,7 @@ namespace LS {
             virtual ~Light() {}
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
+            virtual void preRender(sf::Shader* shader) = 0;//for light manager mainly
             virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) = 0;
 
             virtual void computeAABB() = 0;

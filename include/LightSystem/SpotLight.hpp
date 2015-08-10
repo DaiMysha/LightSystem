@@ -23,6 +23,7 @@ namespace LS {
             virtual ~SpotLight();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
+            virtual void preRender(sf::Shader* shader);
             virtual void debugRender(const sf::IntRect& screen, sf::RenderTarget& target);
             virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 

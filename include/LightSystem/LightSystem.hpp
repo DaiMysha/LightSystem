@@ -24,7 +24,7 @@ namespace LS {
             LightSystem();
             ~LightSystem();
 
-            void addLight(Light* l);
+            void addLight(Light* l, bool dynamic = false);
             //empties the lights
             void reset();
 

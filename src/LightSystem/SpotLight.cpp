@@ -43,6 +43,9 @@ namespace LS {
         }
 	}
 
+    void SpotLight::preRender(sf::Shader* shader) {
+    }
+
     //keep this as debug option, not used for now at all
     void SpotLight::debugRender(const sf::IntRect& screen, sf::RenderTarget& target) {
         if(_intensity <= 0.0f) return;

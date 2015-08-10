@@ -25,7 +25,8 @@ namespace LS {
         reset();
     }
 
-    void LightSystem::addLight(Light* l) {
+    void LightSystem::addLight(Light* l, bool dynamic) {
+        if(!dynamic) l->preRender(&_lightAttenuationShader);
         _lights.push_back(l);
     }
 
