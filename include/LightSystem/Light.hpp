@@ -12,7 +12,9 @@ namespace LS {
             //will move to .cpp as soon as functions appear here
             Light(bool iso = false) : _aabb(), _renderTexture(nullptr), _isometric(iso) {
             }
-            virtual ~Light() {}
+            virtual ~Light() {
+                delete _renderTexture;
+            }
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
             virtual void preRender(sf::Shader* shader) = 0;//for light manager mainly

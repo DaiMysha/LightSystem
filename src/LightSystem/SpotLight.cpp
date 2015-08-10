@@ -16,7 +16,6 @@ namespace LS {
 	}
 
     SpotLight::~SpotLight() {
-        delete _renderTexture;
 	}
 
     SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, bool iso) : SpotLight(ctr,r,c,0.0f,M_PIf,1.0f,0.0f,0.0f,0.0f) {
