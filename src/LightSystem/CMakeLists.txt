@@ -9,6 +9,7 @@ set(FILES_HEADER
 
 set(FILES_SRC
 	${SRCROOT}/LightSystem.cpp
+	${SRCROOT}/Light.cpp
 	${SRCROOT}/SpotLight.cpp
 )
 	

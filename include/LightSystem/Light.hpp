@@ -10,11 +10,8 @@ namespace LS {
         public:
             //empty body here to avoid compilation error
             //will move to .cpp as soon as functions appear here
-            Light(bool iso = false) : _aabb(), _renderTexture(nullptr), _isometric(iso) {
-            }
-            virtual ~Light() {
-                delete _renderTexture;
-            }
+            Light(bool iso = false);
+            virtual ~Light();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
             virtual void preRender(sf::Shader* shader) = 0;//for light manager mainly
@@ -25,15 +22,19 @@ namespace LS {
             //returns the AABB according to the whole game
             virtual sf::IntRect getAABB() = 0;
 
-            virtual bool isIsometric() const final {
-                return _isometric;
-            }
+            virtual bool isIsometric() const final;
 
-            virtual void setIsometric(bool i) final {
-                _isometric = i;
-            }
+            virtual void setIsometric(bool i) final;
 
         protected:
+            static const char LAS_PARAM_CENTER[];
+            static const char LAS_PARAM_RADIUS[];
+            static const char LAS_PARAM_COLOR[];
+            static const char LAS_PARAM_BLEED[];
+            static const char LAS_PARAM_LINEARITY[];
+            static const char LAS_PARAM_OUTLINE[];//used mainly for debug, don't mind it
+            static const char LAS_PARAM_ISOMETRIC[];
+
             sf::IntRect _aabb;
 
             sf::RenderTexture* _renderTexture;
