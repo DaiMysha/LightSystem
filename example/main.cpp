@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
                 }
             }
         }
-        window.clear(sf::Color::Red);
+        window.clear();
 
         int x = p.getPosition().x-WIDTH/2;
         int y = p.getPosition().y-HEIGHT/2;

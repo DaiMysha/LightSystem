@@ -37,6 +37,7 @@ namespace LS {
 
             sf::IntRect _aabb;
 
+            //passer à un unique_ptr
             sf::RenderTexture* _renderTexture;
             sf::Sprite _sprite;
 

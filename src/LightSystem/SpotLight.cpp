@@ -35,15 +35,10 @@ namespace LS {
 
         if(_renderTexture!=nullptr) {
             //draw the sprite
-            //_sprite.setPosition(_center);
-            /*std::cout << "shape : " << _sprite.getPosition().x << ";" << _sprite.getPosition().y << std::endl;
-            target.draw(_sprite,states);
-
-            sf::CircleShape shape(_radius);
-            shape.setPosition(_center);
-            shape.setFillColor(_color);
-
-            target.draw(shape);*/
+            _sprite.setPosition(_center);
+            _sprite.setOrigin(sf::Vector2f(_radius,_radius));
+            std::cout << "shape : " << _sprite.getPosition().x << ";" << _sprite.getPosition().y << std::endl;
+            target.draw(_sprite);
         } else {
             if(_spreadAngle == M_PIf*2.0f) {
             } else {
@@ -55,16 +50,22 @@ namespace LS {
         if(shader==nullptr) return; //oopsie, can't work without the shader
         if(_renderTexture!=nullptr) delete _renderTexture;
 
+        float diam = _radius*2.0f;
+
         _renderTexture = new sf::RenderTexture();
         if(_renderTexture == nullptr) return; //couldn't allocate somehow, return
-        if(!_renderTexture->create(_radius,_radius)) return; //somehow texture failed, maybe too big, abort
+        if(!_renderTexture->create(diam,diam)) {
+            delete _renderTexture;
+            _renderTexture=nullptr;
+            return; //somehow texture failed, maybe too big, abort
+        }
 
         //actual rendering code (finally!)
         sf::VertexArray rect(sf::Quads,4);
         rect[0].position = sf::Vector2f(0,0);
-        rect[1].position = sf::Vector2f(0,_radius);
-        rect[2].position = sf::Vector2f(_radius,_radius);
-        rect[3].position = sf::Vector2f(_radius,0);
+        rect[1].position = sf::Vector2f(0,diam);
+        rect[2].position = sf::Vector2f(diam,diam);
+        rect[3].position = sf::Vector2f(diam,0);
         rect[0].texCoords = sf::Vector2f(0.0,0.0);
         rect[1].texCoords = sf::Vector2f(0.0,1.0);
         rect[2].texCoords = sf::Vector2f(1.0,1.0);
@@ -76,9 +77,9 @@ namespace LS {
 
         sf::Color c(r,g,b,1.0);
 
-        _renderTexture->clear();
+        _renderTexture->clear(c);
         //shader parameters
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(_radius/2.0f,_radius/2.0f));
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(_radius,_radius));
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);

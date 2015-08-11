@@ -17,9 +17,9 @@ namespace LS {
     class SpotLight : public Light {
         public:
             //Don't create spotlights with spread angles > pi, it doesn't work
-            SpotLight(bool iso=false);
-            SpotLight(sf::Vector2f ctr, float r, sf::Color c,bool iso=false);
-            SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf,bool iso=false);
+            SpotLight(bool iso = false);
+            SpotLight(sf::Vector2f ctr, float r, sf::Color c, bool iso = false);
+            SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso = false);
             virtual ~SpotLight();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
