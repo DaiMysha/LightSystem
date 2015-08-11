@@ -12,12 +12,11 @@ namespace DMGDVT {
 namespace LS {
 
     LightSystem::LightSystem(bool isometric) : _multiplyState(sf::BlendMultiply), _isometric(isometric), _autoDelete(true) {
-        sf::Shader _lightAttenuationShader;
         //this will be loaded from internal memory when lib is created
         //or loaded external crypted
         //the idea is not to allow the user to modify it
         if(!_lightAttenuationShader.loadFromFile("shaders/lightAttenuation.frag",sf::Shader::Fragment)) {
-           std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
+            std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }
     }
 

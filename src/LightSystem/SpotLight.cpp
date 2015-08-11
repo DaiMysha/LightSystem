@@ -31,14 +31,11 @@ namespace LS {
     void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
         if(_intensity <= 0.0f) return;
 
-        debugRender(screen,target);
+        //debugRender(screen,target);
 
         if(_renderTexture!=nullptr) {
             //draw the sprite
-            _sprite.setPosition(_center);
-            _sprite.setOrigin(sf::Vector2f(_radius,_radius));
-            std::cout << "shape : " << _sprite.getPosition().x << ";" << _sprite.getPosition().y << std::endl;
-            target.draw(_sprite);
+            target.draw(_sprite,states);
         } else {
             if(_spreadAngle == M_PIf*2.0f) {
             } else {
@@ -50,46 +47,41 @@ namespace LS {
         if(shader==nullptr) return; //oopsie, can't work without the shader
         if(_renderTexture!=nullptr) delete _renderTexture;
 
-        float diam = _radius*2.0f;
+        const float diam = _radius*2.0f;
 
         _renderTexture = new sf::RenderTexture();
-        if(_renderTexture == nullptr) return; //couldn't allocate somehow, return
+
         if(!_renderTexture->create(diam,diam)) {
+            std::cerr << "Error : couldn't create a texture of size " << diam << " x " << diam << std::endl;
             delete _renderTexture;
             _renderTexture=nullptr;
             return; //somehow texture failed, maybe too big, abort
         }
 
-        //actual rendering code (finally!)
-        sf::VertexArray rect(sf::Quads,4);
-        rect[0].position = sf::Vector2f(0,0);
-        rect[1].position = sf::Vector2f(0,diam);
-        rect[2].position = sf::Vector2f(diam,diam);
-        rect[3].position = sf::Vector2f(diam,0);
-        rect[0].texCoords = sf::Vector2f(0.0,0.0);
-        rect[1].texCoords = sf::Vector2f(0.0,1.0);
-        rect[2].texCoords = sf::Vector2f(1.0,1.0);
-        rect[3].texCoords = sf::Vector2f(1.0,0.0);
+        _sprite.setTexture(_renderTexture->getTexture());
+        _sprite.setOrigin(sf::Vector2f(_radius,_radius));
+        _sprite.setPosition(_center);
+
+        sf::RectangleShape rect(sf::Vector2f(diam,diam));
 
         float r = _color.r * _intensity;
         float g = _color.g * _intensity;
         float b = _color.b * _intensity;
 
-        sf::Color c(r,g,b,1.0);
+        sf::Color c(r,g,b,255);
 
-        _renderTexture->clear(c);
+        _renderTexture->clear();
         //shader parameters
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(_radius,_radius));
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_OUTLINE,true); //for debug
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric); //for debug
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_OUTLINE,false); //for debug
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
 
         _renderTexture->draw(rect,shader);
-
-        _sprite.setTexture(_renderTexture->getTexture());
+        _renderTexture->display();
     }
 
     //keep this as debug option, not used for now at all
