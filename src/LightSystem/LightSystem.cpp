@@ -11,7 +11,7 @@
 namespace DMGDVT {
 namespace LS {
 
-    LightSystem::LightSystem(bool isometric) : _multiplyState(sf::BlendMultiply), _addState(sf::BlendAdd), _isometric(isometric), _autoDelete(true) {
+    LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _multiplyState(sf::BlendMultiply), _addState(sf::BlendAdd), _isometric(isometric), _autoDelete(true) {
         //this will be loaded from internal memory when lib is created
         //or loaded external crypted
         //the idea is not to allow the user to modify it
@@ -59,7 +59,7 @@ namespace LS {
 
         _sprite.setPosition(screen.left,screen.top);
 
-        _renderTexture.clear(sf::Color::Black);
+        _renderTexture.clear(_ambiant);
         sf::RenderStates st(_addState);
         sf::Transform t;
         t.translate(-_sprite.getPosition());
@@ -83,6 +83,14 @@ namespace LS {
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
+    }
+
+    void LightSystem::setAmbiantLight(sf::Color c) {
+        _ambiant = c;
+    }
+
+    sf::Color LightSystem::getAmbiantLight() const {
+        return _ambiant;
     }
 
     void LightSystem::setIsometric(bool i) {

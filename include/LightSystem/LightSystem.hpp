@@ -47,6 +47,9 @@ namespace LS {
             void drawAABB(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
+            void setAmbiantLight(sf::Color c);
+            sf::Color getAmbiantLight() const;
+
             void setIsometric(bool i);
             bool isIsometric() const;
 
@@ -57,6 +60,7 @@ namespace LS {
         protected:
 
             std::list<Light*> _lights;
+            sf::Color _ambiant;
             sf::RenderStates _multiplyState;
             sf::RenderStates _addState;
             sf::Shader _lightAttenuationShader;
