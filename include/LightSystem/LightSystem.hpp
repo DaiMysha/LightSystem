@@ -25,12 +25,16 @@ namespace LS {
             LightSystem(bool isometric = false);
             LightSystem(const LightSystem& ls) = delete; //doesn't make sense to copy an existing light system
             LightSystem(LightSystem&& ls) = delete; //doesn't make sense to copy an existing light system
-            Lightsystem& operator=(const LightSystem& ls) = delete;
-            Lightsystem& operator=(LightSystem&& ls) = delete;
+            LightSystem& operator=(const LightSystem& ls) = delete;
+            LightSystem& operator=(LightSystem&& ls) = delete;
 
             ~LightSystem();
 
             void addLight(Light* l, bool dynamic = false);
+            /*template <typename T, bool D, typename ... Args>
+            void addLight(Args&& ... args) {
+                addLight(new T(std::forward<Args>(args)...),D);
+            }*/
             //empties the lights
             void reset();
 
