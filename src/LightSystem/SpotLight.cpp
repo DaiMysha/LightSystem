@@ -28,7 +28,10 @@ namespace LS {
         computeAABB();
 
         //32 points for a full circle, so we keep same spacing
-        _precision = _spreadAngle * 360.0 / 32.0;
+        if(_spreadAngle > M_PIf * 3.0f/4.0f) _precision = 32;
+        else if(_spreadAngle > M_PIf) _precision = 16;
+        else if (_spreadAngle < M_PIf/2.0f) _precision = 4;
+        else _precision = 8;
     }
 
     void SpotLight::preRender(sf::Shader* shader) {
@@ -38,6 +41,12 @@ namespace LS {
         const float diam = _radius*2.0f;
 
         _renderTexture = new sf::RenderTexture();
+
+        float r = _color.r * _intensity;
+        float g = _color.g * _intensity;
+        float b = _color.b * _intensity;
+
+        sf::Color c(r,g,b,255);
 
         if(_spreadAngle==M_PIf*2.0f) {
             if(!_renderTexture->create(diam,diam)) {
@@ -53,12 +62,6 @@ namespace LS {
 
             sf::RectangleShape rect(sf::Vector2f(diam,diam));
 
-            float r = _color.r * _intensity;
-            float g = _color.g * _intensity;
-            float b = _color.b * _intensity;
-
-            sf::Color c(r,g,b,255);
-
             _renderTexture->clear();
             //shader parameters
             shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(_radius,_radius));
@@ -72,6 +75,40 @@ namespace LS {
             _renderTexture->draw(rect,shader);
             _renderTexture->display();
         } else {
+            if(!_renderTexture->create(diam,diam)) {
+                std::cerr << "Error : couldn't create a texture of size " << diam << " x " << diam << std::endl;
+                delete _renderTexture;
+                _renderTexture=nullptr;
+                return; //somehow texture failed, maybe too big, abort
+            }
+
+            _sprite.setTexture(_renderTexture->getTexture());
+            _sprite.setPosition(_center);
+            _sprite.setOrigin(sf::Vector2f(_radius,_radius));
+            _renderTexture->clear();
+
+            sf::ConvexShape shape;
+
+            float deltaAngle = _spreadAngle / (float)(_precision-1);
+
+            shape.setPointCount(_precision+1);
+            shape.setPoint(0,sf::Vector2f(_radius,_radius));
+
+            for(int i=0;i<_precision;++i) {
+                float angle = _directionAngle - _spreadAngle/2.0f + (float)i*deltaAngle;
+                shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
+            }
+
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(_radius,_radius));
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_OUTLINE,true); //for debug
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
+
+            _renderTexture->draw(shape,shader);
+            _renderTexture->display();
         }
     }
 
@@ -111,7 +148,7 @@ namespace LS {
             shape.setPoint(2,v);
             shape.setPoint(3,DMUtils::sfml::rotate(v,_spreadAngle/2.0f));
 
-            shape.setRotation(_directionAngle*180.0f/M_PIf);
+            shape.setRotation(DMUtils::maths::radToDeg(_directionAngle));
 
             target.draw(shape,states);
         }
