@@ -14,7 +14,7 @@
 //font taken from http://www.fontspace.com/melifonts/sweet-cheeks
 int main(int argc, char** argv) {
 
-    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "SFML testy");
+    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "LightSystem test");
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png")) exit(-1);
