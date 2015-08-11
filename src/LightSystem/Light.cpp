@@ -20,6 +20,9 @@ namespace LS {
         delete _renderTexture;
     }
 
+    void Light::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
+    }
+
     bool Light::isIsometric() const {
         return _isometric;
     }

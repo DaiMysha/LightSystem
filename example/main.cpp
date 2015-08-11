@@ -16,18 +16,15 @@ int main(int argc, char** argv) {
 
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "LightSystem test");
 
-    bool debug = true;
+    bool debug = false;
+    bool aabb = true;
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png")) exit(-1);
-    sf::Texture bgIso;
-    if(!bgIso.loadFromFile("data/mapIso.png")) exit(-2);
     //if(!bg.loadFromFile("data/map2.jpg")) exit(-1);
     //bg.setRepeated(true);
     sf::Sprite bgSpr(bg,sf::IntRect(0,0,WIDTH,HEIGHT));
-    sf::Sprite bgSprIso(bgIso,sf::IntRect(0,0,WIDTH,HEIGHT));
     bgSpr.setOrigin(sf::Vector2f(WIDTH/2,HEIGHT/2));
-    bgSprIso.setOrigin(sf::Vector2f(WIDTH/2,HEIGHT/2));
 
     int fps = 0;
     int elapsedFrames = 0;
@@ -60,12 +57,14 @@ int main(int argc, char** argv) {
     DMGDVT::LS::SpotLight* spot2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1778,1417),200,sf::Color::Blue,0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
     DMGDVT::LS::SpotLight* spot3 = new DMGDVT::LS::SpotLight(sf::Vector2f(1878,1582),200,sf::Color::Green,0.0f      ,M_PIf*2.0f,1.0f,0.5f,1.0f);
 
-    DMGDVT::LS::SpotLight* spot4 = new DMGDVT::LS::SpotLight(sf::Vector2f(1680,1906),200,sf::Color::White,M_PIf/4.0 ,M_PIf/4.0f,0.5f,1.0f,1.5f);
+    DMGDVT::LS::SpotLight* spot4 = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-M_PIf/4.0 ,M_PIf/5.0f,0.5f,1.0f,1.5f);
+    DMGDVT::LS::SpotLight* spot5 = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,M_PIf/4.0 ,M_PIf/5.0f,0.5f,1.0f,1.5f);
 
     ls.addLight(spot);
     ls.addLight(spot2);
     ls.addLight(spot3);
     ls.addLight(spot4);
+    ls.addLight(spot5);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -96,6 +95,10 @@ int main(int argc, char** argv) {
                     } break;
                     case sf::Keyboard::F1 :
                     {
+                        aabb = !aabb;
+                    } break;
+                    case sf::Keyboard::F2 :
+                    {
                         debug = !debug;
                     } break;
                     default: break;
@@ -117,9 +120,10 @@ int main(int argc, char** argv) {
             window.draw(bgSpr);
             window.draw(p);
 
-            ls.render(view,window);
+            if(debug) ls.debugRender(view,window);
+            else ls.render(view,window);
             ls.draw(view,window);
-            if(debug) ls.drawAABB(view,window);
+            if(aabb) ls.drawAABB(view,window);
 
         window.setView(baseView);
 

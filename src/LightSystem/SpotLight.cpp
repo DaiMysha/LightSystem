@@ -26,22 +26,10 @@ namespace LS {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
+
+        //32 points for a full circle, so we keep same spacing
+        _precision = _spreadAngle * 360.0 / 32.0;
     }
-
-    void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
-        if(_intensity <= 0.0f) return;
-
-        //debugRender(screen,target);
-
-        if(_renderTexture!=nullptr) {
-            //draw the sprite
-            target.draw(_sprite,states);
-        } else {
-            if(_spreadAngle == M_PIf*2.0f) {
-            } else {
-            }
-        }
-	}
 
     void SpotLight::preRender(sf::Shader* shader) {
         if(shader==nullptr) return; //oopsie, can't work without the shader
@@ -87,8 +75,21 @@ namespace LS {
         }
     }
 
+    void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
+        if(_intensity <= 0.0f) return;
+
+        if(_renderTexture!=nullptr) {
+            //draw the sprite
+            target.draw(_sprite,states);
+        } else {
+            if(_spreadAngle == M_PIf*2.0f) {
+            } else {
+            }
+        }
+	}
+
     //keep this as debug option, not used for now at all
-    void SpotLight::debugRender(const sf::IntRect& screen, sf::RenderTarget& target) {
+    void SpotLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
         if(_intensity <= 0.0f) return;
 
         if(_spreadAngle == M_PIf*2.0f) {
@@ -97,7 +98,7 @@ namespace LS {
             shape.setOrigin(sf::Vector2f(1,1)*_radius);
             shape.setFillColor(_color);
 
-            target.draw(shape);
+            target.draw(shape,states);
         } else {
             sf::ConvexShape shape;
             shape.setPointCount(4);
@@ -112,7 +113,7 @@ namespace LS {
 
             shape.setRotation(_directionAngle*180.0f/M_PIf);
 
-            target.draw(shape);
+            target.draw(shape,states);
         }
 	}
 
@@ -224,6 +225,14 @@ namespace LS {
     float SpotLight::getLinearity() const {
         return _linearity;
 	}
+
+    void SpotLight::setPrecision(int p) {
+        _precision = p;
+    }
+
+    int SpotLight::getPrecision() const {
+        return _precision;
+    }
 
 	/*** PROTECTED ***/
 

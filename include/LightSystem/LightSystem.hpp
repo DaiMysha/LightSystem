@@ -39,10 +39,10 @@ namespace LS {
             void reset();
 
             //call this function to prepare the render
-            void render(const sf::View& screen, sf::RenderTarget& target);
-
-            void draw(const sf::View& screen, sf::RenderTarget& target);
-            void drawAABB(const sf::View& screen, sf::RenderTarget& target);
+            void render(const sf::View& screenView, sf::RenderTarget& target);
+            void debugRender(const sf::View& screenView, sf::RenderTarget& target);
+            void draw(const sf::View& screenView, sf::RenderTarget& target);
+            void drawAABB(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
             void setIsometric(bool i);

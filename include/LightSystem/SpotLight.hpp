@@ -22,9 +22,9 @@ namespace LS {
             SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso = false);
             virtual ~SpotLight();
 
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
             virtual void preRender(sf::Shader* shader);
-            virtual void debugRender(const sf::IntRect& screen, sf::RenderTarget& target);
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
+            virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
             virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
             virtual void computeAABB();
@@ -56,6 +56,9 @@ namespace LS {
             void setLinearity(float lf);
             float getLinearity() const;
 
+            void setPrecision(int p);
+            int getPrecision() const;
+
         protected:
             sf::Vector2f _center;
             float _radius;
@@ -65,6 +68,8 @@ namespace LS {
             float _intensity; //how bright light is
             float _bleed; //radius of the light halo
             float _linearity;
+
+            int _precision;//number of arcs in the circle
 
     };
 }
