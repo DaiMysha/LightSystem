@@ -31,10 +31,12 @@ namespace LS {
             ~LightSystem();
 
             void addLight(Light* l, bool dynamic = false);
-            /*template <typename T, bool D, typename ... Args>
-            void addLight(Args&& ... args) {
-                addLight(new T(std::forward<Args>(args)...),D);
-            }*/
+            template <typename T, bool D = false, typename ... Args>
+            Light* addLight(Args&& ... args) {
+                Light *l = new T(std::forward<Args>(args)...);
+                addLight(l,D);
+                return l;
+            }
             //empties the lights
             void reset();
 
