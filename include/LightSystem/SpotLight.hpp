@@ -32,8 +32,8 @@ namespace LS {
             /*** GETTER - SETTER ***/
             virtual sf::IntRect getAABB();
 
-            void setCenter(sf::Vector2f c);
-            sf::Vector2f getCenter() const;
+            void setPosition(sf::Vector2f c);
+            sf::Vector2f getPosition() const;
 
             void setRadius(float r);
             float getRadius() const;
@@ -60,7 +60,7 @@ namespace LS {
             int getPrecision() const;
 
         protected:
-            sf::Vector2f _center;
+            sf::Vector2f _position;
             float _radius;
             sf::Color _color;
             float _directionAngle; //angle light is pointing, rad

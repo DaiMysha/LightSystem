@@ -22,7 +22,7 @@ namespace LS {
     }
 
     SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(iso),
-     _center(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf) {
+     _position(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
@@ -58,7 +58,7 @@ namespace LS {
 
             _sprite.setTexture(_renderTexture->getTexture());
             _sprite.setOrigin(sf::Vector2f(_radius,_radius));
-            _sprite.setPosition(_center);
+            _sprite.setPosition(_position);
 
             sf::RectangleShape rect(sf::Vector2f(diam,diam));
 
@@ -83,7 +83,7 @@ namespace LS {
             }
 
             _sprite.setTexture(_renderTexture->getTexture());
-            _sprite.setPosition(_center);
+            _sprite.setPosition(_position);
             _sprite.setOrigin(sf::Vector2f(_radius,_radius));
             _renderTexture->clear();
 
@@ -131,7 +131,7 @@ namespace LS {
 
         if(_spreadAngle == M_PIf*2.0f) {
             sf::CircleShape shape(_radius);
-            shape.setPosition(_center);
+            shape.setPosition(_position);
             shape.setOrigin(sf::Vector2f(1,1)*_radius);
             shape.setFillColor(_color);
 
@@ -142,7 +142,7 @@ namespace LS {
             shape.setFillColor(sf::Color(_color.r,_color.g,_color.b,125));
             sf::Vector2f v(0,_radius);
             //*
-            shape.setPosition(_center);
+            shape.setPosition(_position);
             shape.setPoint(0,sf::Vector2f(0,0));
             shape.setPoint(1,DMUtils::sfml::rotate(v,-_spreadAngle/2.0f));
             shape.setPoint(2,v);
@@ -193,15 +193,15 @@ namespace LS {
 
     /*** GETTER - SETTER ***/
     sf::IntRect SpotLight::getAABB() {
-        return sf::IntRect(sf::Vector2i(_aabb.left+static_cast<int>(_center.x),_aabb.top+static_cast<int>(_center.y)),sf::Vector2i(_aabb.width,_aabb.height));
+        return sf::IntRect(sf::Vector2i(_aabb.left+static_cast<int>(_position.x),_aabb.top+static_cast<int>(_position.y)),sf::Vector2i(_aabb.width,_aabb.height));
     }
 
-    void SpotLight::setCenter(sf::Vector2f c) {
-        _center = c;
+    void SpotLight::setPosition(sf::Vector2f c) {
+        _position = c;
 	}
 
-    sf::Vector2f SpotLight::getCenter() const {
-        return _center;
+    sf::Vector2f SpotLight::getPosition() const {
+        return _position;
 	}
 
     void SpotLight::setRadius(float r) {
