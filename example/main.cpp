@@ -48,12 +48,15 @@ int main(int argc, char** argv) {
     int speed = 5;
 
     DMGDVT::LS::LightSystem ls;
+    ls.setView(view);
     //1679,1583                                                                      radius              DA         SA         I    B    LF
     DMGDVT::LS::SpotLight* spot =  new DMGDVT::LS::SpotLight(sf::Vector2f(1678,1582),200,sf::Color::Red, 0.0f      ,M_PIf*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spot2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1678,1582),200,sf::Color::Blue,M_PIf/4.0f,M_PIf/4.0f,1.0f,0.5f,1.0f);
+    DMGDVT::LS::SpotLight* spot2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1618,1426),200,sf::Color::Blue,M_PIf/4.0f,M_PIf/4.0f,1.0f,0.5f,1.0f);
+    DMGDVT::LS::SpotLight* spot3 = new DMGDVT::LS::SpotLight(sf::Vector2f(1920,1582),200,sf::Color::Green,M_PIf*2.0f,M_PIf*2.0f,1.0f,0.5f,1.0f);
 
     ls.addLight(spot);
     ls.addLight(spot2);
+    ls.addLight(spot3);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -111,7 +114,8 @@ int main(int argc, char** argv) {
             window.draw(p);
 
             ls.render(view,window);
-            ls.drawAABB(view,window);
+            ls.draw(view,window);
+            //ls.drawAABB(view,window);
 
         window.setView(baseView);
 

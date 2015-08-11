@@ -11,7 +11,7 @@
 namespace DMGDVT {
 namespace LS {
 
-    LightSystem::LightSystem(bool isometric) : _multiplyState(sf::BlendMultiply), _isometric(isometric), _autoDelete(true) {
+    LightSystem::LightSystem(bool isometric) : _multiplyState(sf::BlendMultiply), _addState(sf::BlendAdd), _isometric(isometric), _autoDelete(true) {
         //this will be loaded from internal memory when lib is created
         //or loaded external crypted
         //the idea is not to allow the user to modify it
@@ -36,14 +36,26 @@ namespace LS {
         _lights.empty();
     }
 
-    void LightSystem::render(const sf::View& screen, sf::RenderTarget& target) {
-        render(DMUtils::sfml::getViewInWorldAABB(screen),target);
+    //won't need that liive anymore
+    void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target) {
+        sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
+
+        _sprite.setPosition(screen.left,screen.top);
+
+        _renderTexture.clear(sf::Color::Black);
+        sf::RenderStates st(_addState);
+        sf::Transform t;
+        t.translate(-_sprite.getPosition());
+        st.transform = t;
+        for(Light* l : _lights) {
+            if(l->getAABB().intersects(screen)) l->render(screen,_renderTexture,&_lightAttenuationShader,st);
+        }
+
+        _renderTexture.display();
     }
 
-    void LightSystem::render(const sf::IntRect& screen, sf::RenderTarget& target) {
-        for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) l->render(screen,target,&_lightAttenuationShader,_multiplyState);
-        }
+    void LightSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {
+        target.draw(_sprite,_multiplyState);
     }
 
     void LightSystem::drawAABB(const sf::View& screen, sf::RenderTarget& target) {
@@ -69,5 +81,9 @@ namespace LS {
         _autoDelete = ad;
     }
 
+    void LightSystem::setView(const sf::View& view) {
+        _renderTexture.create(view.getSize().x,view.getSize().y);
+        _sprite.setTexture(_renderTexture.getTexture());
+    }
 }
 }

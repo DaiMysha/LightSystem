@@ -51,37 +51,40 @@ namespace LS {
 
         _renderTexture = new sf::RenderTexture();
 
-        if(!_renderTexture->create(diam,diam)) {
-            std::cerr << "Error : couldn't create a texture of size " << diam << " x " << diam << std::endl;
-            delete _renderTexture;
-            _renderTexture=nullptr;
-            return; //somehow texture failed, maybe too big, abort
+        if(_spreadAngle==M_PIf*2.0f) {
+            if(!_renderTexture->create(diam,diam)) {
+                std::cerr << "Error : couldn't create a texture of size " << diam << " x " << diam << std::endl;
+                delete _renderTexture;
+                _renderTexture=nullptr;
+                return; //somehow texture failed, maybe too big, abort
+            }
+
+            _sprite.setTexture(_renderTexture->getTexture());
+            _sprite.setOrigin(sf::Vector2f(_radius,_radius));
+            _sprite.setPosition(_center);
+
+            sf::RectangleShape rect(sf::Vector2f(diam,diam));
+
+            float r = _color.r * _intensity;
+            float g = _color.g * _intensity;
+            float b = _color.b * _intensity;
+
+            sf::Color c(r,g,b,255);
+
+            _renderTexture->clear();
+            //shader parameters
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(_radius,_radius));
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_OUTLINE,false); //for debug
+            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
+
+            _renderTexture->draw(rect,shader);
+            _renderTexture->display();
+        } else {
         }
-
-        _sprite.setTexture(_renderTexture->getTexture());
-        _sprite.setOrigin(sf::Vector2f(_radius,_radius));
-        _sprite.setPosition(_center);
-
-        sf::RectangleShape rect(sf::Vector2f(diam,diam));
-
-        float r = _color.r * _intensity;
-        float g = _color.g * _intensity;
-        float b = _color.b * _intensity;
-
-        sf::Color c(r,g,b,255);
-
-        _renderTexture->clear();
-        //shader parameters
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(_radius,_radius));
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_OUTLINE,false); //for debug
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
-
-        _renderTexture->draw(rect,shader);
-        _renderTexture->display();
     }
 
     //keep this as debug option, not used for now at all

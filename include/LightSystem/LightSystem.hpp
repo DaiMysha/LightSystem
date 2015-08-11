@@ -38,8 +38,10 @@ namespace LS {
             //empties the lights
             void reset();
 
+            //call this function to prepare the render
             void render(const sf::View& screen, sf::RenderTarget& target);
-            void render(const sf::IntRect& screen, sf::RenderTarget& target);
+
+            void draw(const sf::View& screen, sf::RenderTarget& target);
             void drawAABB(const sf::View& screen, sf::RenderTarget& target);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
@@ -48,11 +50,16 @@ namespace LS {
 
             void setAutoDelete(bool ad);
 
+            void setView(const sf::View& view);//reallocates the texture
+
         protected:
 
             std::list<Light*> _lights;
             sf::RenderStates _multiplyState;
+            sf::RenderStates _addState;
             sf::Shader _lightAttenuationShader;
+            sf::RenderTexture _renderTexture;
+            sf::Sprite _sprite;
 
             bool _isometric;
             bool _autoDelete;
