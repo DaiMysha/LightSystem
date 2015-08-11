@@ -11,7 +11,7 @@
 namespace DMGDVT {
 namespace LS {
 
-    LightSystem::LightSystem(bool isometric) : _multiplyState(sf::BlendMultiply), _isometric(isometric) {
+    LightSystem::LightSystem(bool isometric) : _multiplyState(sf::BlendMultiply), _isometric(isometric), _autoDelete(true) {
         sf::Shader _lightAttenuationShader;
         //this will be loaded from internal memory when lib is created
         //or loaded external crypted
@@ -32,7 +32,7 @@ namespace LS {
     }
 
     void LightSystem::reset() {
-        for(Light* l : _lights) delete l;
+        if(_autoDelete) for(Light* l : _lights) delete l;
 
         _lights.empty();
     }
@@ -64,6 +64,10 @@ namespace LS {
 
     bool LightSystem::isIsometric() const {
         return _isometric;
+    }
+
+    void LightSystem::setAutoDelete(bool ad) {
+        _autoDelete = ad;
     }
 
 }

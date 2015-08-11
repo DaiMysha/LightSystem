@@ -24,6 +24,10 @@ namespace LS {
         public:
             LightSystem(bool isometric = false);
             LightSystem(const LightSystem& ls) = delete; //doesn't make sense to copy an existing light system
+            LightSystem(LightSystem&& ls) = delete; //doesn't make sense to copy an existing light system
+            Lightsystem& operator=(const LightSystem& ls) = delete;
+            Lightsystem& operator=(LightSystem&& ls) = delete;
+
             ~LightSystem();
 
             void addLight(Light* l, bool dynamic = false);
@@ -38,6 +42,8 @@ namespace LS {
             void setIsometric(bool i);
             bool isIsometric() const;
 
+            void setAutoDelete(bool ad);
+
         protected:
 
             std::list<Light*> _lights;
@@ -45,6 +51,7 @@ namespace LS {
             sf::Shader _lightAttenuationShader;
 
             bool _isometric;
+            bool _autoDelete;
 
     };
 }
