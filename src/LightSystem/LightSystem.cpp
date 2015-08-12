@@ -112,7 +112,10 @@ namespace LS {
 
     void LightSystem::setIsometric(bool i) {
         _isometric = i;
-        for(Light* l : _lights) l->setIsometric(_isometric);
+        for(Light* l : _lights) {
+            l->setIsometric(_isometric);
+            update(l);
+        }
     }
 
     bool LightSystem::isIsometric() const {
