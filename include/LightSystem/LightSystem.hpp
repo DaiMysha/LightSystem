@@ -38,8 +38,8 @@ namespace LS {
 
             void addLight(Light* l);
             template <typename T, typename ... Args>
-            Light* addLight(Args&& ... args) {
-                Light *l = new T(std::forward<Args>(args)...);
+            T* addLight(Args&& ... args) {
+                T *l = new T(std::forward<Args>(args)...);
                 addLight(l);
                 return l;
             }
