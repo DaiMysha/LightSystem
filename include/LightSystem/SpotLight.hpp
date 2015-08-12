@@ -34,6 +34,7 @@ namespace LS {
 
             void setPosition(sf::Vector2f c);
             sf::Vector2f getPosition() const;
+            void move(sf::Vector2f delta);
 
             void setRadius(float r);
             float getRadius() const;

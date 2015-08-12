@@ -235,6 +235,10 @@ namespace LS {
         return _position;
 	}
 
+    void SpotLight::move(sf::Vector2f delta) {
+        _position += delta;
+    }
+
     void SpotLight::setRadius(float r) {
         _radius = r;
 	}
