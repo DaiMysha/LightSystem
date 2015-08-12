@@ -63,8 +63,11 @@ int main(int argc, char** argv) {
     DMGDVT::LS::SpotLight* spot5 = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
 
     /*template add example*/ls.addLight<DMGDVT::LS::SpotLight>(sf::Vector2f(1679,2200),800,sf::Color(250,95,20),M_PIf ,M_PIf/3.0f,1.0f,0.0f,2.0f);
+    //1679,1583                                                                      radius              DA              SA  I    B    LF
+    DMGDVT::LS::SpotLight* playerLight = new DMGDVT::LS::SpotLight(p.getPosition(),150,sf::Color::White);
 
-    DMGDVT::LS::SpotLight* playerLight = new DMGDVT::LS::SpotLight(p.getPosition(),150,sf::Color::White,0.0f ,M_PIf*2.0f,1.0f,0.0f,0.0f,2.0f);
+    playerLight->setLinearity(2.0f);
+    playerLight->setBleed(0.0f);
 
     ls.addLight(spot);
     ls.addLight(spot2);

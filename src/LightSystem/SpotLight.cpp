@@ -18,7 +18,7 @@ namespace LS {
     SpotLight::~SpotLight() {
 	}
 
-    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, bool iso) : SpotLight(ctr,r,c,0.0f,M_PIf,1.0f,0.0f,0.0f,0.0f) {
+    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, bool iso) : SpotLight(ctr,r,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f,iso) {
     }
 
     SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(iso),
@@ -125,7 +125,6 @@ namespace LS {
         }
 	}
 
-    //keep this as debug option, not used for now at all
     void SpotLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
         if(_intensity <= 0.0f) return;
 
@@ -198,6 +197,7 @@ namespace LS {
 
     void SpotLight::setPosition(sf::Vector2f c) {
         _position = c;
+        _sprite.setPosition(c);
 	}
 
     sf::Vector2f SpotLight::getPosition() const {
