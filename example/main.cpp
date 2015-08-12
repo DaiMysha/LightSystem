@@ -17,8 +17,10 @@ int main(int argc, char** argv) {
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "LightSystem test");
 
     bool debugLightMapOnly = false;
-    bool aabb = true;
+    bool aabb = false;
     bool debugUseShader = true;
+
+    bool update = false;
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png")) exit(-1);
@@ -48,6 +50,7 @@ int main(int argc, char** argv) {
     sf::RectangleShape p(sf::Vector2f(10,10));
     p.setFillColor(sf::Color::Blue);
     p.setPosition(sf::Vector2f(1680,2090));
+    p.setOrigin(5,5);
 
     int speed = 5;
 
@@ -64,10 +67,12 @@ int main(int argc, char** argv) {
 
     /*template add example*/ls.addLight<DMGDVT::LS::SpotLight>(sf::Vector2f(1679,2200),800,sf::Color(250,95,20),M_PIf ,M_PIf/3.0f,1.0f,0.0f,2.0f);
     //1679,1583                                                                      radius              DA              SA  I    B    LF
-    DMGDVT::LS::SpotLight* playerLight = new DMGDVT::LS::SpotLight(p.getPosition(),150,sf::Color::White);
+    DMGDVT::LS::SpotLight* playerLight = new DMGDVT::LS::SpotLight(p.getPosition(),200,sf::Color::White);
 
     playerLight->setLinearity(2.0f);
     playerLight->setBleed(0.0f);
+    playerLight->setSpreadAngle(M_PIf/3.0f);
+    playerLight->setDirectionAngle(M_PIf);
 
     ls.addLight(spot);
     ls.addLight(spot2);
@@ -103,6 +108,17 @@ int main(int argc, char** argv) {
                     {
                         p.move(speed,0);
                     } break;
+                    case sf::Keyboard::V :
+                    {
+                        //view.rotate(-10);
+                        playerLight->rotate(-M_PIf/10.0f);
+                    } break;
+                    case sf::Keyboard::B :
+                    {
+                        //view.rotate(10);
+                        playerLight->rotate(M_PIf/10.0f);
+
+                    } break;
                     case sf::Keyboard::F1 :
                     {
                         aabb = !aabb;
@@ -121,6 +137,8 @@ int main(int argc, char** argv) {
         }
 
         playerLight->setPosition(p.getPosition());
+        if(update) ls.update(playerLight);
+        update = false;
 
         int x = p.getPosition().x-WIDTH/2;
         int y = p.getPosition().y-HEIGHT/2;

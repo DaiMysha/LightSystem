@@ -226,6 +226,7 @@ namespace LS {
         _directionAngle += delta;
         while(_directionAngle > 2.0*M_PIf) _directionAngle -= 2.0*M_PIf;
         while(_directionAngle < 0) _directionAngle += 2.0*M_PIf;
+        _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle)-180.0f);
     }
 
     void SpotLight::setSpreadAngle(float sa) {
