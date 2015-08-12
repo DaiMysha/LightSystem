@@ -24,8 +24,8 @@ namespace LS {
         reset();
     }
 
-    void LightSystem::addLight(Light* l, bool dynamic) {
-        if(!dynamic) l->preRender(&_lightAttenuationShader);
+    void LightSystem::addLight(Light* l) {
+        l->preRender(&_lightAttenuationShader);
         l->setIsometric(_isometric);//ignore what user set before
         _lights.emplace_back(l);
     }

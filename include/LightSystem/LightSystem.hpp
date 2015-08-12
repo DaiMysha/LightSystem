@@ -36,11 +36,11 @@ namespace LS {
 
             ~LightSystem();
 
-            void addLight(Light* l, bool dynamic = false);
-            template <typename T, bool D = false, typename ... Args>
+            void addLight(Light* l);
+            template <typename T, typename ... Args>
             Light* addLight(Args&& ... args) {
                 Light *l = new T(std::forward<Args>(args)...);
-                addLight(l,D);
+                addLight(l);
                 return l;
             }
             void removeLight(Light* l);//User is responsible for memory
