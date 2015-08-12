@@ -95,6 +95,7 @@ namespace LS {
             _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
         }
         _renderTexture->display();
+        computeAABB();
     }
 
     void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
@@ -253,6 +254,8 @@ namespace LS {
     void SpotLight::setDirectionAngle(float da) {
         _directionAngle = da;
         _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
+
+        computeAABB();
 	}
 
     float SpotLight::getDirectionAngle() const {
