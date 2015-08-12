@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
     bool debugLightMapOnly = false;
     bool aabb = false;
     bool debugUseShader = true;
+    bool debugDrawLights = true;
 
     bool update = false;
     //bg
@@ -124,6 +125,10 @@ int main(int argc, char** argv) {
                     {
                         debugUseShader = !debugUseShader;
                     } break;
+                    case sf::Keyboard::F4 :
+                    {
+                        debugDrawLights = !debugDrawLights;
+                    } break;
                     default: break;
                 }
             }
@@ -158,7 +163,7 @@ int main(int argc, char** argv) {
             if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DEBUG_FLAGS::SHADER_OFF;
             ls.debugRender(view,window,flags);
             //use ls.render if not using debug
-            ls.draw(view,window);
+            if(debugDrawLights) ls.draw(view,window);
             if(aabb) ls.drawAABB(view,window);
 
         window.setView(baseView);
