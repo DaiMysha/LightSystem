@@ -16,8 +16,9 @@ int main(int argc, char** argv) {
 
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "LightSystem test");
 
-    bool debug = false;
+    bool debugLightMapOnly = false;
     bool aabb = true;
+    bool debugUseShader = true;
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png")) exit(-1);
@@ -51,23 +52,26 @@ int main(int argc, char** argv) {
     int speed = 5;
 
     DMGDVT::LS::LightSystem ls;
-    ls.setAmbiantLight(sf::Color(30,0,105));
+    ls.setAmbiantLight(sf::Color(15,0,60));
     ls.setView(view);
     //1679,1583                                                                      radius              DA         SA         I    B    LF
     DMGDVT::LS::SpotLight* spot =  new DMGDVT::LS::SpotLight(sf::Vector2f(1678,1582),200,sf::Color::Red, 0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
     DMGDVT::LS::SpotLight* spot2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1778,1417),200,sf::Color::Blue,0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
     DMGDVT::LS::SpotLight* spot3 = new DMGDVT::LS::SpotLight(sf::Vector2f(1878,1582),200,sf::Color::Green,0.0f      ,M_PIf*2.0f,1.0f,0.5f,1.0f);
 
-    DMGDVT::LS::SpotLight* spot4 = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-M_PIf/4.0 ,M_PIf/5.0f,0.5f,1.0f,1.5f);
-    DMGDVT::LS::SpotLight* spot5 = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,M_PIf/4.0 ,M_PIf/5.0f,0.5f,1.0f,1.5f);
+    DMGDVT::LS::SpotLight* spot4 = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
+    DMGDVT::LS::SpotLight* spot5 = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
 
     /*template add example*/ls.addLight<DMGDVT::LS::SpotLight>(sf::Vector2f(1679,2200),800,sf::Color(250,95,20),M_PIf ,M_PIf/3.0f,1.0f,0.0f,2.0f);
+
+    DMGDVT::LS::SpotLight* playerLight = new DMGDVT::LS::SpotLight(p.getPosition(),150,sf::Color::White,0.0f ,M_PIf*2.0f,1.0f,0.0f,0.0f,2.0f);
 
     ls.addLight(spot);
     ls.addLight(spot2);
     ls.addLight(spot3);
     ls.addLight(spot4);
     ls.addLight(spot5);
+    ls.addLight(playerLight);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -102,19 +106,26 @@ int main(int argc, char** argv) {
                     } break;
                     case sf::Keyboard::F2 :
                     {
-                        debug = !debug;
+                        debugLightMapOnly = !debugLightMapOnly;
+                    } break;
+                    case sf::Keyboard::F3 :
+                    {
+                        debugUseShader = !debugUseShader;
                     } break;
                     default: break;
                 }
             }
         }
-        window.clear();
+
+        playerLight->setPosition(p.getPosition());
 
         int x = p.getPosition().x-WIDTH/2;
         int y = p.getPosition().y-HEIGHT/2;
 
         bgSpr.setTextureRect(sf::IntRect(x,y,WIDTH,HEIGHT));
         bgSpr.setPosition(p.getPosition());
+
+        window.clear();
 
         sf::View baseView = window.getView();
 
@@ -123,8 +134,11 @@ int main(int argc, char** argv) {
             window.draw(bgSpr);
             window.draw(p);
 
-            if(debug) ls.debugRender(view,window);
-            else ls.render(view,window);
+            int flags = 0;
+            if(debugLightMapOnly) flags |= DMGDVT::LS::LightSystem::DEBUG_FLAGS::LIGHTMAP_ONLY;
+            if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DEBUG_FLAGS::SHADER_OFF;
+            ls.debugRender(view,window,flags);
+            //use ls.render if not using debug
             ls.draw(view,window);
             if(aabb) ls.drawAABB(view,window);
 

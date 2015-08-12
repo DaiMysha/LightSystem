@@ -54,7 +54,7 @@ namespace LS {
         _renderTexture.display();
     }
 
-    void LightSystem::debugRender(const sf::View& screenView, sf::RenderTarget& target) {
+    void LightSystem::debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags) {
         sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
 
         _sprite.setPosition(screen.left,screen.top);
@@ -65,10 +65,15 @@ namespace LS {
         t.translate(-_sprite.getPosition());
         st.transform = t;
         for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) l->debugRender(_renderTexture,st);
+            if(l->getAABB().intersects(screen)) {
+                if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,st);
+                else l->render(screen,_renderTexture,&_lightAttenuationShader,st);
+            }
         }
 
         _renderTexture.display();
+
+        if(flags & DEBUG_FLAGS::LIGHTMAP_ONLY) target.clear(sf::Color::White);
     }
 
     void LightSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {
