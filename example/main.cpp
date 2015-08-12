@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
     sf::Vector2i mouseInt = sf::Mouse::getPosition(window);
     sf::Vector2f mouse(window.mapPixelToCoords(mouseInt));
 
-    /** LIGHTSYSTEM EXAMPLE */
+    /** LIGHTSYSTEM EXAMPLE **/
 
     //create your LightSystem
     //one per game is usually enough
@@ -71,9 +71,9 @@ int main(int argc, char** argv) {
 
     //Let's create a bunch of lights now
     //the lights HAVE to be dynamically allocated. The LightSystem destroys them for you when it's destroyed
-    //do NOT destroy a light that hasn't been removed yet, it will cause a segfault
     //you can change that using LightSystem::setAutoDelete
     //if you do that you have to take care of the deletion yourself so be careful
+    //do NOT destroy a light that hasn't been removed yet, it will cause a segfault
 
     //to ensure R + G + B = W
     DMGDVT::LS::SpotLight* spotRed =  new DMGDVT::LS::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
@@ -99,6 +99,7 @@ int main(int argc, char** argv) {
     DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
 
     //add them all to the LightSystem
+    //except the playerLight, since it's been added by the template function
     ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
@@ -111,9 +112,11 @@ int main(int argc, char** argv) {
     ls.addLight(hugeSpot);
 
     //Modify a light
+    //if you change its direcionAngle or its position, it doesn't need to be updated
     playerLight->setDirectionAngle(M_PIf);
     //if you modify ANY of the parameters below, you have to update the light's texture using ls.update(Light*);
     //otherwise the update won't be taken into account
+    //basically any parameter except for directionAngle and position
     playerLight->setLinearity(2.0f);
     playerLight->setBleed(0.0f);
     playerLight->setSpreadAngle(M_PIf/3.0f);
