@@ -168,11 +168,14 @@ namespace LS {
             shape.setFillColor(sf::Color(_color.r,_color.g,_color.b,125));
             sf::Vector2f v(0,_radius);
             //*
-            shape.setPosition(_position);
+            shape.setPosition(_position);shape.setPointCount(_precision+1);
             shape.setPoint(0,sf::Vector2f(0,0));
-            shape.setPoint(1,DMUtils::sfml::rotate(v,-_spreadAngle/2.0f));
-            shape.setPoint(2,v);
-            shape.setPoint(3,DMUtils::sfml::rotate(v,_spreadAngle/2.0f));
+
+            float deltaAngle = _spreadAngle / (float)(_precision-1);
+            for(int i=0;i<_precision;++i) {
+                float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
+                shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
+            }
 
             shape.setRotation(DMUtils::maths::radToDeg(_directionAngle));
 
