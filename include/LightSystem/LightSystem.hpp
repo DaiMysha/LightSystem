@@ -53,6 +53,9 @@ namespace LS {
             void drawAABB(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
+            void update();
+            void update(Light* l);
+
             void setAmbiantLight(sf::Color c);
             sf::Color getAmbiantLight() const;
 

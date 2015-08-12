@@ -90,6 +90,14 @@ namespace LS {
         }
     }
 
+    void LightSystem::update() {
+        for(Light* ls : _lights) ls->preRender(&_lightAttenuationShader);
+    }
+
+    void LightSystem::update(Light* l) {
+        l->preRender(&_lightAttenuationShader);
+    }
+
     void LightSystem::setAmbiantLight(sf::Color c) {
         _ambiant = c;
     }

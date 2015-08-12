@@ -36,25 +36,25 @@ namespace LS {
 
     void SpotLight::preRender(sf::Shader* shader) {
         if(shader==nullptr) return; //oopsie, can't work without the shader
-        if(_renderTexture!=nullptr) delete _renderTexture;
 
         const float diam = _radius*2.0f;
 
-        _renderTexture = new sf::RenderTexture();
+        if(_renderTexture==nullptr) _renderTexture = new sf::RenderTexture();
 
         float r = _color.r * _intensity;
         float g = _color.g * _intensity;
         float b = _color.b * _intensity;
 
+        if(diam != _renderTexture->getSize().x && !_renderTexture->create(diam,diam)) {
+            std::cerr << "Error : couldn't create a texture of size " << diam << " x " << diam << std::endl;
+            delete _renderTexture;
+            _renderTexture=nullptr;
+            return; //somehow texture failed, maybe too big, abort
+        }
+
         sf::Color c(r,g,b,255);
 
         if(_spreadAngle==M_PIf*2.0f) {
-            if(!_renderTexture->create(diam,diam)) {
-                std::cerr << "Error : couldn't create a texture of size " << diam << " x " << diam << std::endl;
-                delete _renderTexture;
-                _renderTexture=nullptr;
-                return; //somehow texture failed, maybe too big, abort
-            }
 
             _sprite.setTexture(_renderTexture->getTexture());
             _sprite.setOrigin(sf::Vector2f(_radius,_radius));
@@ -75,12 +75,6 @@ namespace LS {
             _renderTexture->draw(rect,shader);
             _renderTexture->display();
         } else {
-            if(!_renderTexture->create(diam,diam)) {
-                std::cerr << "Error : couldn't create a texture of size " << diam << " x " << diam << std::endl;
-                delete _renderTexture;
-                _renderTexture=nullptr;
-                return; //somehow texture failed, maybe too big, abort
-            }
 
             _sprite.setTexture(_renderTexture->getTexture());
             _sprite.setPosition(_position);
