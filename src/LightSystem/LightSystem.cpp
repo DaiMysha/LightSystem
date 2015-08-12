@@ -42,7 +42,7 @@ namespace LS {
 
         _sprite.setPosition(screen.left,screen.top);
 
-        _renderTexture.clear(sf::Color::Black);
+        _renderTexture.clear(_ambiant);
         sf::RenderStates st(_addState);
         sf::Transform t;
         t.translate(-_sprite.getPosition());
