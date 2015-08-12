@@ -89,7 +89,7 @@ namespace LS {
             shape.setPoint(0,sf::Vector2f(_radius,_radius));
 
             for(int i=0;i<_precision;++i) {
-                float angle = _directionAngle - _spreadAngle/2.0f + (float)i*deltaAngle;
+                float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
                 shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
             }
 
@@ -103,6 +103,7 @@ namespace LS {
 
             _renderTexture->draw(shape,shader);
             _renderTexture->display();
+            _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
         }
     }
 
@@ -216,6 +217,7 @@ namespace LS {
 
     void SpotLight::setDirectionAngle(float da) {
         _directionAngle = da;
+        _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
 	}
 
     float SpotLight::getDirectionAngle() const {
@@ -223,10 +225,10 @@ namespace LS {
 	}
 
     void SpotLight::rotate(float delta) {
-        _directionAngle += delta;
-        while(_directionAngle > 2.0*M_PIf) _directionAngle -= 2.0*M_PIf;
-        while(_directionAngle < 0) _directionAngle += 2.0*M_PIf;
-        _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle)-180.0f);
+        float a =  _directionAngle + delta;
+        while(a > 2.0*M_PIf) a -= 2.0*M_PIf;
+        while(a < 0) a += 2.0*M_PIf;
+        setDirectionAngle(a);
     }
 
     void SpotLight::setSpreadAngle(float sa) {

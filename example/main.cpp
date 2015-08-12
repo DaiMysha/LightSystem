@@ -5,6 +5,7 @@
 #include <GL/gl.h>
 
 #include <DMUtils/maths.hpp>
+#include <DMUtils/sfml.hpp>
 #include <LightSystem/LightSystem.hpp>
 #include <LightSystem/SpotLight.hpp>
 
@@ -81,6 +82,9 @@ int main(int argc, char** argv) {
     ls.addLight(spot5);
     ls.addLight(playerLight);
 
+    sf::Vector2i mouseInt = sf::Mouse::getPosition(window);
+    sf::Vector2f mouse(window.mapPixelToCoords(mouseInt));
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -108,17 +112,6 @@ int main(int argc, char** argv) {
                     {
                         p.move(speed,0);
                     } break;
-                    case sf::Keyboard::V :
-                    {
-                        //view.rotate(-10);
-                        playerLight->rotate(-M_PIf/10.0f);
-                    } break;
-                    case sf::Keyboard::B :
-                    {
-                        //view.rotate(10);
-                        playerLight->rotate(M_PIf/10.0f);
-
-                    } break;
                     case sf::Keyboard::F1 :
                     {
                         aabb = !aabb;
@@ -135,6 +128,11 @@ int main(int argc, char** argv) {
                 }
             }
         }
+
+        mouseInt = sf::Mouse::getPosition(window);
+        mouse = window.mapPixelToCoords(mouseInt);
+
+        playerLight->setDirectionAngle(DMUtils::sfml::getAngleBetweenVectors(sf::Vector2f(0.0f,1.0f),mouse-sf::Vector2f(WIDTH/2.0f,HEIGHT/2.0f)));
 
         playerLight->setPosition(p.getPosition());
         if(update) ls.update(playerLight);
