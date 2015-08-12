@@ -43,6 +43,7 @@ namespace LS {
                 addLight(l,D);
                 return l;
             }
+            void removeLight(Light* l);//User is responsible for memory
             //empties the lights
             void reset();
 

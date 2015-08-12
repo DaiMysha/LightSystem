@@ -30,6 +30,10 @@ namespace LS {
         _lights.emplace_back(l);
     }
 
+    void LightSystem::removeLight(Light* l) {
+        _lights.remove(l);
+    }
+
     void LightSystem::reset() {
         if(_autoDelete) for(Light* l : _lights) delete l;
 
