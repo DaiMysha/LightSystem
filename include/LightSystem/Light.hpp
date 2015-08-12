@@ -8,8 +8,6 @@ namespace LS {
 
     class Light {
         public:
-            //empty body here to avoid compilation error
-            //will move to .cpp as soon as functions appear here
             Light(bool iso = false);
             virtual ~Light();
 
@@ -20,8 +18,7 @@ namespace LS {
 
             virtual void computeAABB() = 0;
 
-            //returns the AABB according to the whole game
-            virtual sf::IntRect getAABB() = 0;
+            virtual sf::IntRect getAABB() = 0;//returns the AABB according to the whole map
 
             virtual bool isIsometric() const final;
 
@@ -38,11 +35,10 @@ namespace LS {
 
             sf::IntRect _aabb;
 
-            //passer à un unique_ptr
+            //change to unique_ptr ?
             sf::RenderTexture* _renderTexture;
             sf::Sprite _sprite;
 
-            //used later
             bool _isometric;
     };
 }

@@ -10,7 +10,7 @@ namespace LS {
     const char Light::LAS_PARAM_COLOR[] = "color";
     const char Light::LAS_PARAM_BLEED[] = "bleed";
     const char Light::LAS_PARAM_LINEARITY[] = "linearFactor";
-    const char Light::LAS_PARAM_OUTLINE[] = "outline";//used mainly for debug, don't mind it
+    const char Light::LAS_PARAM_OUTLINE[] = "outline";
     const char Light::LAS_PARAM_ISOMETRIC[] = "iso";
 
     Light::Light(bool iso) : _aabb(), _renderTexture(nullptr), _isometric(iso) {

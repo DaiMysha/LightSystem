@@ -44,12 +44,13 @@ namespace LS {
                 return l;
             }
             void removeLight(Light* l);//User is responsible for memory
-            //empties the lights
-            void reset();
+
+            void reset();//empties the lights
 
             //call this function to prepare the render
             void render(const sf::View& screenView, sf::RenderTarget& target);
             void debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags = DEBUG_FLAGS::DEFAULT);
+            //call these to draw the light on the screen
             void draw(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);

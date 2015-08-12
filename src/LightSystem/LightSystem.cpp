@@ -40,7 +40,6 @@ namespace LS {
         _lights.empty();
     }
 
-    //won't need that liive anymore
     void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target) {
         sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
 
