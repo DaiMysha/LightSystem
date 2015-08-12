@@ -43,6 +43,7 @@ namespace LS {
 
             void setDirectionAngle(float da);
             float getDirectionAngle() const;
+            void rotate(float delta);
 
             void setSpreadAngle(float sa);
             float getSpreadAngle() const;

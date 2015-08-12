@@ -228,6 +228,12 @@ namespace LS {
         return _directionAngle;
 	}
 
+    void SpotLight::rotate(float delta) {
+        _directionAngle += delta;
+        while(_directionAngle > 2.0*M_PIf) _directionAngle -= 2.0*M_PIf;
+        while(_directionAngle < 0) _directionAngle += 2.0*M_PIf;
+    }
+
     void SpotLight::setSpreadAngle(float sa) {
         if(sa<0) sa = -sa;
         while(sa > 2.0f*M_PIf) sa = 2.0f*M_PIf;
