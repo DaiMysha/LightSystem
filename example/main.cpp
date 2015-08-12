@@ -15,14 +15,14 @@
 //font taken from http://www.fontspace.com/melifonts/sweet-cheeks
 int main(int argc, char** argv) {
 
+    /** SFML STUFF **/
+
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "LightSystem test");
 
     bool debugLightMapOnly = false;
     bool aabb = false;
     bool debugUseShader = true;
     bool debugDrawLights = true;
-
-    bool update = false;
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png")) exit(-1);
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
     int fps = 0;
     int elapsedFrames = 0;
-    sf::Clock clock, pclock;
+    sf::Clock clock, flickerClock;
 
     sf::Font font;
 
@@ -56,36 +56,73 @@ int main(int argc, char** argv) {
 
     int speed = 5;
 
-    DMGDVT::LS::LightSystem ls;
-    ls.setAmbiantLight(sf::Color(15,0,60));
-    ls.setView(view);
-    //1679,1583                                                                      radius              DA         SA         I    B    LF
-    DMGDVT::LS::SpotLight* spot =  new DMGDVT::LS::SpotLight(sf::Vector2f(1678,1582),200,sf::Color::Red, 0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spot2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1778,1417),200,sf::Color::Blue,0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spot3 = new DMGDVT::LS::SpotLight(sf::Vector2f(1878,1582),200,sf::Color::Green,0.0f      ,M_PIf*2.0f,1.0f,0.5f,1.0f);
-
-    DMGDVT::LS::SpotLight* spot4 = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
-    DMGDVT::LS::SpotLight* spot5 = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
-
-    /*template add example*/ls.addLight<DMGDVT::LS::SpotLight>(sf::Vector2f(1679,2200),800,sf::Color(250,95,20),M_PIf ,M_PIf/3.0f,1.0f,0.0f,2.0f);
-    //1679,1583                                                                      radius              DA              SA  I    B    LF
-    DMGDVT::LS::SpotLight* playerLight = new DMGDVT::LS::SpotLight(p.getPosition(),200,sf::Color::White);
-
-    playerLight->setLinearity(2.0f);
-    playerLight->setBleed(0.0f);
-    playerLight->setSpreadAngle(M_PIf/3.0f);
-    playerLight->setDirectionAngle(M_PIf);
-
-    ls.addLight(spot);
-    ls.addLight(spot2);
-    ls.addLight(spot3);
-    ls.addLight(spot4);
-    ls.addLight(spot5);
-    ls.addLight(playerLight);
-
     sf::Vector2i mouseInt = sf::Mouse::getPosition(window);
     sf::Vector2f mouse(window.mapPixelToCoords(mouseInt));
 
+    /** LIGHTSYSTEM EXAMPLE */
+
+    //create your LightSystem
+    //one per game is usually enough
+    DMGDVT::LS::LightSystem ls;
+    //change ambiant light
+    ls.setAmbiantLight(sf::Color(15,0,60));
+    //the lightSystem needs to be aware of the view you're using to properly draw the lights
+    ls.setView(view);
+
+    //Let's create a bunch of lights now
+    //the lights HAVE to be dynamically allocated. The LightSystem destroys them for you when it's destroyed
+    //do NOT destroy a light that hasn't been removed yet, it will cause a segfault
+    //you can change that using LightSystem::setAutoDelete
+    //if you do that you have to take care of the deletion yourself so be careful
+
+    //to ensure R + G + B = W
+    DMGDVT::LS::SpotLight* spotRed =  new DMGDVT::LS::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
+    DMGDVT::LS::SpotLight* spotBlue = new DMGDVT::LS::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
+    DMGDVT::LS::SpotLight* spotGreen = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green,0.0f      ,M_PIf*2.0f,1.0f,0.5f,1.0f);
+
+    //looks at the player, shows that you don't need to update a light if you're just rotating it around
+    DMGDVT::LS::SpotLight* eyeSpotLeft = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
+    DMGDVT::LS::SpotLight* eyeSpotRight = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
+
+    DMGDVT::LS::SpotLight* sunRise = new DMGDVT::LS::SpotLight(sf::Vector2f(1679,2200),500,sf::Color(245,125,20),M_PIf ,M_PIf/3.0f,1.0f,0.0f,2.0f);
+
+    //flickering light. Something for dynamic lights is planned for later, but for now the code later shows how to do it
+    DMGDVT::LS::SpotLight* firePit1 = new DMGDVT::LS::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,M_PIf*2.0f,1.0f,0.1f,1.0f);
+    DMGDVT::LS::SpotLight* firePit2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,M_PIf*2.0f,1.0f,0.1f,1.0f);
+
+    //just some more lights to test a few things
+    DMGDVT::LS::SpotLight* lamp = new DMGDVT::LS::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,M_PIf*2.0f,1.0f,0.0f,0.50f);
+    DMGDVT::LS::SpotLight* hugeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2845,1245),800,sf::Color::White,M_PIf/2.0f ,M_PIf/10.0f,1.0f,0.0f,2.0f);
+
+    //template add example
+    //also follows the player around, showing you don't need to update a light if you're just moving it around
+    DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
+
+    //add them all to the LightSystem
+    ls.addLight(spotRed);
+    ls.addLight(spotBlue);
+    ls.addLight(spotGreen);
+    ls.addLight(eyeSpotLeft);
+    ls.addLight(eyeSpotRight);
+    ls.addLight(sunRise);
+    ls.addLight(firePit1);
+    ls.addLight(firePit2);
+    ls.addLight(lamp);
+    ls.addLight(hugeSpot);
+
+    //Modify a light
+    playerLight->setDirectionAngle(M_PIf);
+    //if you modify ANY of the parameters below, you have to update the light's texture using ls.update(Light*);
+    //otherwise the update won't be taken into account
+    playerLight->setLinearity(2.0f);
+    playerLight->setBleed(0.0f);
+    playerLight->setSpreadAngle(M_PIf/3.0f);
+    playerLight->setColor(sf::Color::White);
+    playerLight->setIntensity(1.0f);
+    playerLight->setRadius(200);
+    ls.update(playerLight);
+
+    //the loop
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -129,6 +166,27 @@ int main(int argc, char** argv) {
                     {
                         debugDrawLights = !debugDrawLights;
                     } break;
+                    case sf::Keyboard::F:
+                    {
+                        //see above, this parameter requires an update of the light's internal texture
+                        //shows you how to turn a light ON and OFF easily
+                        //in this particular case, you wouldn't need to update the texture
+                        //since the lights aren't drawn if their intensity is 0
+                        playerLight->setIntensity(1.0f - playerLight->getIntensity());
+                        ls.update(playerLight);
+                    } break;
+                    case sf::Keyboard::S:
+                    {
+                        //this parameter requires an update
+                        if(playerLight->getSpreadAngle()==2.0f*M_PIf) {
+                            playerLight->setSpreadAngle(M_PIf/3.0f);
+                            playerLight->setRadius(200);
+                        } else {
+                            playerLight->setSpreadAngle(2.0*M_PIf);
+                            playerLight->setRadius(100);
+                        }
+                        ls.update(playerLight);
+                    } break;
                     default: break;
                 }
             }
@@ -137,12 +195,17 @@ int main(int argc, char** argv) {
         mouseInt = sf::Mouse::getPosition(window);
         mouse = window.mapPixelToCoords(mouseInt);
 
+        //example of code allowing you to make a light following your cursor centered on your character
+        //my character is fixed on the screen at {w/2,h/2}
+        //for something cleaner you might want to be using window.mapCoordsToPixel(p.getPosition()) instead
         playerLight->setDirectionAngle(DMUtils::sfml::getAngleBetweenVectors(sf::Vector2f(0.0f,1.0f),mouse-sf::Vector2f(WIDTH/2.0f,HEIGHT/2.0f)));
-
         playerLight->setPosition(p.getPosition());
-        if(update) ls.update(playerLight);
-        update = false;
 
+        //shows you how to follow an object of the map
+        eyeSpotLeft->setDirectionAngle(DMUtils::sfml::getAngleBetweenVectors(sf::Vector2f(0.0f,1.0f),p.getPosition() - eyeSpotLeft->getPosition()));
+        eyeSpotRight->setDirectionAngle(DMUtils::sfml::getAngleBetweenVectors(sf::Vector2f(0.0f,1.0f),p.getPosition() - eyeSpotRight->getPosition()));
+
+        //basic drawing stuff
         int x = p.getPosition().x-WIDTH/2;
         int y = p.getPosition().y-HEIGHT/2;
 
@@ -153,17 +216,22 @@ int main(int argc, char** argv) {
 
         sf::View baseView = window.getView();
 
-            view.setCenter(p.getPosition());
-            window.setView(view);
+        view.setCenter(p.getPosition());
+
+        //it is EXTREMELY IMPORTANT that you use the LightSystem::draw INSIDE your view
+        window.setView(view);
             window.draw(bgSpr);
             window.draw(p);
 
             int flags = 0;
             if(debugLightMapOnly) flags |= DMGDVT::LS::LightSystem::DEBUG_FLAGS::LIGHTMAP_ONLY;
             if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DEBUG_FLAGS::SHADER_OFF;
+
+            //use LightSystem::render if not using debug
+            //if using debugRender, the flags allow you to modify the way the lights are drawn
             ls.debugRender(view,window,flags);
-            //use ls.render if not using debug
             if(debugDrawLights) ls.draw(view,window);
+            //draws the light's AABB
             if(aabb) ls.drawAABB(view,window);
 
         window.setView(baseView);
@@ -181,6 +249,19 @@ int main(int argc, char** argv) {
             std::ostringstream str;
             str << (fps*2);
             text.setString(str.str());
+        }
+        //this is an example of how to make a light flicker
+        if(flickerClock.getElapsedTime().asMilliseconds() > 100) {
+            flickerClock.restart();
+            if(firePit1->getRadius() == 200) {
+                firePit1->setRadius(180);
+                firePit2->setRadius(180);
+            } else {
+                firePit1->setRadius(200);
+                firePit2->setRadius(200);
+            }
+            ls.update(firePit1);
+            ls.update(firePit2);
         }
     }
 
