@@ -80,11 +80,11 @@ namespace LS {
             void setView(const sf::View& view);//reallocates the texture
 
         protected:
+            static const sf::RenderStates _multiplyState;
+            static const sf::RenderStates _addState;
 
             std::list<Light*> _lights;
             sf::Color _ambiant;
-            sf::RenderStates _multiplyState;
-            sf::RenderStates _addState;
             sf::Shader _lightAttenuationShader;
             sf::RenderTexture _renderTexture;
             sf::Sprite _sprite;
