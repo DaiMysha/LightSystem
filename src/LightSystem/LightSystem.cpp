@@ -25,18 +25,20 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/LightSystem.hpp>
 
-///See if you can do somethiing with viewports instead of moving everything by hand
-
 namespace DMGDVT {
 namespace LS {
 
-    LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _multiplyState(sf::BlendMultiply), _addState(sf::BlendAdd), _isometric(isometric), _autoDelete(true) {
+    const sf::RenderStates LightSystem::_multiplyState(sf::BlendMultiply);
+    const sf::RenderStates LightSystem::_addState(sf::BlendAdd);
+
+    LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _isometric(isometric), _autoDelete(true) {
         //this will be loaded from internal memory when lib is created
         //or loaded external crypted
         //the idea is not to allow the user to modify it
         if(!_lightAttenuationShader.loadFromFile("shaders/lightAttenuation.frag",sf::Shader::Fragment)) {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }
+
     }
 
     LightSystem::~LightSystem() {
