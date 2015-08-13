@@ -79,6 +79,8 @@ namespace LS {
             void setPrecision(int p);
             int getPrecision() const;
 
+            virtual bool isNegative() const;
+
         protected:
             sf::Vector2f _position;
             float _radius;
@@ -90,6 +92,8 @@ namespace LS {
             float _linearity;
 
             int _precision;//number of arcs in the circle
+
+            bool _negative;
 
     };
 }

@@ -82,6 +82,7 @@ namespace LS {
         protected:
             static const sf::RenderStates _multiplyState;
             static const sf::RenderStates _addState;
+            static const sf::RenderStates _subtractState;
 
             std::list<Light*> _lights;
             sf::Color _ambiant;

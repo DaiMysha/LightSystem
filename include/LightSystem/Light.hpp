@@ -43,6 +43,8 @@ namespace LS {
 
             virtual void setIsometric(bool i) final;
 
+            virtual bool isNegative() const = 0;
+
         protected:
             static const char LAS_PARAM_CENTER[];
             static const char LAS_PARAM_RADIUS[];

@@ -30,6 +30,8 @@ namespace LS {
 
     const sf::RenderStates LightSystem::_multiplyState(sf::BlendMultiply);
     const sf::RenderStates LightSystem::_addState(sf::BlendAdd);
+    const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::SrcAlpha, sf::BlendMode::One, sf::BlendMode::ReverseSubtract,
+    sf::BlendMode::SrcAlpha, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
 
     LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _isometric(isometric), _autoDelete(true) {
         //this will be loaded from internal memory when lib is created
@@ -71,14 +73,16 @@ namespace LS {
         _sprite.setPosition(screen.left,screen.top);
 
         _renderTexture.clear(_ambiant);
-        sf::RenderStates st(_addState);
+        sf::RenderStates stAdd(_addState);
+        sf::RenderStates stRm(_subtractState);
         sf::Transform t;
         t.translate(-_sprite.getPosition());
-        st.transform = t;
+        stAdd.transform = t;
+        stRm.transform = t;
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
-                if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,st);
-                else l->render(screen,_renderTexture,&_lightAttenuationShader,st);
+                if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,(l->isNegative()?stRm:stAdd));
+                else l->render(screen,_renderTexture,&_lightAttenuationShader,(l->isNegative()?stRm:stAdd));
             }
         }
 

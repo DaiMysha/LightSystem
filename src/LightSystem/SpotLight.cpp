@@ -303,6 +303,12 @@ namespace LS {
     }
 
     void SpotLight::setIntensity(float i) {
+        if(i<0.0f) {
+            i = -i;
+            _negative = true;
+        } else {
+            _negative = false;
+        }
         DMUtils::maths::clamp(i,0.0f,1.0f);
         _intensity = i;
 	}
@@ -333,6 +339,10 @@ namespace LS {
 
     int SpotLight::getPrecision() const {
         return _precision;
+    }
+
+    bool SpotLight::isNegative() const {
+        return _negative;
     }
 
 	/*** PROTECTED ***/
