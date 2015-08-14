@@ -46,6 +46,9 @@ namespace LS {
 
             virtual bool isNegative() const = 0;
 
+            virtual void setActive(bool a) final;
+            virtual bool isActive() const final;
+
         protected:
             static const char LAS_PARAM_CENTER[];
             static const char LAS_PARAM_RADIUS[];
@@ -62,6 +65,7 @@ namespace LS {
             sf::Sprite _sprite;
 
             bool _isometric;
+            bool _active;
     };
 }
 }

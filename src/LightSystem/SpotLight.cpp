@@ -181,6 +181,7 @@ namespace LS {
 
     void SpotLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
         if(_intensity <= 0.0f) return;
+        if(!_active) return;
 
         if(_spreadAngle == M_PIf*2.0f) {
             sf::CircleShape shape(_radius);

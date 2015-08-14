@@ -51,6 +51,13 @@ namespace LS {
         _isometric = i;
     }
 
+    void Light::setActive(bool a) {
+        _active = a;
+    }
+
+    bool Light::isActive() const {
+        return _active;
+    }
 
 }
 }
