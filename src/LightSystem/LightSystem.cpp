@@ -30,8 +30,8 @@ namespace LS {
 
     const sf::RenderStates LightSystem::_multiplyState(sf::BlendMultiply);
     const sf::RenderStates LightSystem::_addState(sf::BlendAdd);
-    const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::SrcAlpha, sf::BlendMode::One, sf::BlendMode::ReverseSubtract,
-    sf::BlendMode::SrcAlpha, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
+    const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::One, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
+    //const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::Zero, sf::BlendMode::OneMinusSrcColor, sf::BlendMode::Add));
 
     LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _isometric(isometric), _autoDelete(true) {
         //this will be loaded from internal memory when lib is created
