@@ -114,6 +114,9 @@ int main(int argc, char** argv) {
     DMGDVT::LS::SpotLight* lamp = new DMGDVT::LS::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,M_PIf*2.0f,1.0f,0.0f,0.50f);
     DMGDVT::LS::SpotLight* hugeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2845,1245),800,sf::Color::White,M_PIf/2.0f ,M_PIf/10.0f,1.0f,0.0f,2.0f);
 
+    //one negative spot in the room with the ceiling white light
+    DMGDVT::LS::SpotLight* negativeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),M_PIf/4.0f ,M_PIf/4.0f,-1.0f,0.0f,2.0f);
+
     //template add example
     //also follows the player around, showing you don't need to update a light if you're just moving it around
     DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
@@ -138,6 +141,7 @@ int main(int argc, char** argv) {
     ls.addLight(firePit2);
     ls.addLight(lamp);
     ls.addLight(hugeSpot);
+    ls.addLight(negativeSpot);
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated
@@ -282,7 +286,7 @@ int main(int argc, char** argv) {
             text.setString(str.str());
         }
         //this is an example of how to make a light flicker
-        if(flickerClock.getElapsedTime().asMilliseconds() > 500) {
+        if(flickerClock.getElapsedTime().asMilliseconds() > 100) {
             flickerClock.restart();
             if(firePit1->getRadius() == 200) {
                 firePit1->setRadius(180);
@@ -293,6 +297,14 @@ int main(int argc, char** argv) {
             }
             ls.update(firePit1);
             ls.update(firePit2);
+
+            //also use this timer to alternate the negative light to a positive light
+            //you can change the positivity of a light just by changing its intensity
+            //this however requires an update of the light
+            if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
+            else negativeSpot->setIntensity(-1.0f);
+            ls.update(negativeSpot);
+
         }
     }
 

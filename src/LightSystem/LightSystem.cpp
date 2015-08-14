@@ -51,11 +51,13 @@ namespace LS {
     void LightSystem::addLight(Light* l) {
         l->preRender(&_lightAttenuationShader);
         l->setIsometric(_isometric);//ignore what user set before
-        _lights.emplace_back(l);
+        if(l->isNegative()) _negativeLights.emplace_back(l);
+        else _lights.emplace_back(l);
     }
 
     void LightSystem::removeLight(Light* l) {
-        _lights.remove(l);
+        if(l->isNegative()) _negativeLights.remove(l);
+        else _lights.remove(l);
     }
 
     void LightSystem::reset() {
@@ -82,8 +84,14 @@ namespace LS {
         stRm.transform = t;
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
-                if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,(l->isNegative()?stRm:stAdd));
-                else l->render(screen,_renderTexture,&_lightAttenuationShader,(l->isNegative()?stRm:stAdd));
+                if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,(stAdd));
+                else l->render(screen,_renderTexture,&_lightAttenuationShader,(stAdd));
+            }
+        }
+        for(Light* l : _negativeLights) {
+            if(l->getAABB().intersects(screen)) {
+                if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,(stRm));
+                else l->render(screen,_renderTexture,&_lightAttenuationShader,(stRm));
             }
         }
 
@@ -107,11 +115,22 @@ namespace LS {
     }
 
     void LightSystem::update() {
-        for(Light* ls : _lights) ls->preRender(&_lightAttenuationShader);
+        for(Light* l : _lights) update(l);
     }
 
     void LightSystem::update(Light* l) {
+        bool wasNegative = l->isNegative();
         l->preRender(&_lightAttenuationShader);
+        bool isNegative = l->isNegative();
+        if(wasNegative xor isNegative) {
+            if(isNegative) {
+                _lights.remove(l);
+                _negativeLights.emplace_back(l);
+            } else {
+                _negativeLights.remove(l);
+                _lights.emplace_back(l);
+            }
+        }
     }
 
     void LightSystem::setAmbiantLight(sf::Color c) {

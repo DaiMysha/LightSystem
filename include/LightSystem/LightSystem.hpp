@@ -86,6 +86,7 @@ namespace LS {
             static const sf::RenderStates _subtractState;
 
             std::list<Light*> _lights;
+            std::list<Light*> _negativeLights;
             sf::Color _ambiant;
             sf::Shader _lightAttenuationShader;
             sf::RenderTexture _renderTexture;
