@@ -57,6 +57,13 @@ namespace LS {
     void SpotLight::preRender(sf::Shader* shader) {
         if(shader==nullptr) return; //oopsie, can't work without the shader
 
+        if(_intensity<0.0f) {
+            _intensity = -_intensity;
+            _negative = true;
+        } else {
+            _negative = false;
+        }
+
         const float diam = _radius*2.0f;
 
         if(_renderTexture==nullptr) _renderTexture = new sf::RenderTexture();
@@ -311,13 +318,7 @@ namespace LS {
     }
 
     void SpotLight::setIntensity(float i) {
-        if(i<0.0f) {
-            i = -i;
-            _negative = true;
-        } else {
-            _negative = false;
-        }
-        DMUtils::maths::clamp(i,0.0f,1.0f);
+        DMUtils::maths::clamp(i,-1.0f,1.0f);
         _intensity = i;
 	}
 
