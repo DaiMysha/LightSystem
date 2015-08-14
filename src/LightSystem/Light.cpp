@@ -18,8 +18,6 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 */
 
-
-
 #include <LightSystem/Light.hpp>
 
 namespace DMGDVT {
@@ -33,7 +31,7 @@ namespace LS {
     const char Light::LAS_PARAM_OUTLINE[] = "outline";
     const char Light::LAS_PARAM_ISOMETRIC[] = "iso";
 
-    Light::Light(bool iso) : _aabb(), _renderTexture(nullptr), _isometric(iso) {
+    Light::Light(bool iso) : _aabb(), _renderTexture(nullptr), _isometric(iso), _active(true) {
     }
 
     Light::~Light() {

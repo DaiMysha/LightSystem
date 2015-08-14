@@ -133,6 +133,7 @@ namespace LS {
 
     void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
         if(_intensity <= 0.0f) return;
+        if(!isActive()) return;
 
         if(_renderTexture!=nullptr) {
             //draw the sprite
@@ -188,7 +189,7 @@ namespace LS {
 
     void SpotLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
         if(_intensity <= 0.0f) return;
-        if(!_active) return;
+        if(!isActive()) return;
 
         if(_spreadAngle == M_PIf*2.0f) {
             sf::CircleShape shape(_radius);

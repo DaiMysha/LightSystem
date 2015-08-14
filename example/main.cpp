@@ -305,6 +305,10 @@ int main(int argc, char** argv) {
             else negativeSpot->setIntensity(-1.0f);
             ls.update(negativeSpot);
 
+            //you can easily switch a light on and off with this function
+            //and it doesn't require an update of the light
+            hugeSpot->setActive(!hugeSpot->isActive());
+
         }
     }
 
