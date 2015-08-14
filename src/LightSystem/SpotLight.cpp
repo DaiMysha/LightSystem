@@ -42,7 +42,7 @@ namespace LS {
     }
 
     SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(iso),
-     _position(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf) {
+     _position(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf), _resizeWhenIncrease(false) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
@@ -61,12 +61,18 @@ namespace LS {
 
         if(_renderTexture==nullptr) _renderTexture = new sf::RenderTexture();
 
-        if(diam != _renderTexture->getSize().x && !_renderTexture->create(diam,diam)) {
-            std::cerr << "Error : couldn't create a texture of size " << diam << " x " << diam << std::endl;
+        bool resizeTexture = false;
+
+        if(_resizeWhenIncrease && _renderTexture->getSize().x < diam) resizeTexture = true;
+        else if(_renderTexture->getSize().x != diam) resizeTexture = true;
+
+        if(resizeTexture && !_renderTexture->create(diam,diam)) {
             delete _renderTexture;
             _renderTexture=nullptr;
             return; //somehow texture failed, maybe too big, abort
         }
+
+        float center = _renderTexture->getSize().x/2.0f;
 
         float r = _color.r * _intensity;
         float g = _color.g * _intensity;
@@ -76,7 +82,7 @@ namespace LS {
         _renderTexture->clear();
 
         //shader parameters
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(_radius,_radius));
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(center,center));
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
@@ -87,10 +93,10 @@ namespace LS {
         if(_spreadAngle==M_PIf*2.0f) {
 
             _sprite.setTexture(_renderTexture->getTexture());
-            _sprite.setOrigin(sf::Vector2f(_radius,_radius));
+            _sprite.setOrigin(sf::Vector2f(center,center));
             _sprite.setPosition(_position);
 
-            sf::RectangleShape rect(sf::Vector2f(diam,diam));
+            sf::RectangleShape rect(sf::Vector2f(center*2.0f,center*2.0f));
 
             _renderTexture->draw(rect,shader);
         } else {
@@ -344,6 +350,14 @@ namespace LS {
 
     bool SpotLight::isNegative() const {
         return _negative;
+    }
+
+    bool SpotLight::getResizeWhenIncrease() const {
+        return _resizeWhenIncrease;
+    }
+
+    void SpotLight::setResizeWhenIncrease(bool r) {
+        _resizeWhenIncrease = r;
     }
 
 	/*** PROTECTED ***/

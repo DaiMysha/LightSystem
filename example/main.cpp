@@ -118,6 +118,14 @@ int main(int argc, char** argv) {
     //also follows the player around, showing you don't need to update a light if you're just moving it around
     DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
 
+    //this parameter allows you to change the way textures are resized when a call to LightSystem::update(Light*) is done
+    //with this set to true, the texture will only be resized when the new required size is greater than the current allocated size
+    //with this set to false (default), the texture is always reallocated as long as the new light radius is different than the previous one
+    //this loses some place on the graphic card but increases performance
+    //especially useful set to true for lights that oscillate between two radius, like this flickering light
+    //that goes from 180 to 200 in a wave
+    firePit1->setResizeWhenIncrease(true);
+
     //add them all to the LightSystem
     //except the playerLight, since it's been added by the template function
     ls.addLight(spotRed);
@@ -274,7 +282,7 @@ int main(int argc, char** argv) {
             text.setString(str.str());
         }
         //this is an example of how to make a light flicker
-        if(flickerClock.getElapsedTime().asMilliseconds() > 100) {
+        if(flickerClock.getElapsedTime().asMilliseconds() > 500) {
             flickerClock.restart();
             if(firePit1->getRadius() == 200) {
                 firePit1->setRadius(180);

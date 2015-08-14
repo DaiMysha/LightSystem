@@ -82,6 +82,9 @@ namespace LS {
 
             virtual bool isNegative() const;
 
+            bool getResizeWhenIncrease() const;
+            void setResizeWhenIncrease(bool r);
+
         protected:
             sf::Vector2f _position;
             float _radius;
@@ -95,6 +98,7 @@ namespace LS {
             int _precision;//number of arcs in the circle
 
             bool _negative;
+            bool _resizeWhenIncrease;//if set to true, the texture is reallocated only if the needed size increases (if new _radius is inferior to previous, it doesn't change)
 
     };
 }
