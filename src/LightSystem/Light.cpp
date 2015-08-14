@@ -1,5 +1,6 @@
 /*
 Copyright DaiMysha (c) 2015, All rights reserved.
+DaiMysha@gmail.com
 https://github.com/DaiMysha
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

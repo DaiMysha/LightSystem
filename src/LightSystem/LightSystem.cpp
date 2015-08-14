@@ -1,5 +1,6 @@
 /*
 Copyright DaiMysha (c) 2015, All rights reserved.
+DaiMysha@gmail.com
 https://github.com/DaiMysha
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,8 +31,8 @@ namespace LS {
 
     const sf::RenderStates LightSystem::_multiplyState(sf::BlendMultiply);
     const sf::RenderStates LightSystem::_addState(sf::BlendAdd);
-    const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::One, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
-    //const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::Zero, sf::BlendMode::OneMinusSrcColor, sf::BlendMode::Add));
+    //const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::One, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
+    const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::Zero, sf::BlendMode::OneMinusSrcColor, sf::BlendMode::Add));
 
     LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _isometric(isometric), _autoDelete(true) {
         //this will be loaded from internal memory when lib is created
