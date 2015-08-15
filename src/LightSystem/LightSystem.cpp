@@ -80,8 +80,8 @@ namespace LS {
         sf::RenderStates stRm(_subtractState);
         sf::Transform t;
         t.translate(-_sprite.getPosition());
-        stAdd.transform = t;
-        stRm.transform = t;
+        stAdd.transform.combine(t);
+        stRm.transform.combine(t);
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
                 if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,(stAdd));
