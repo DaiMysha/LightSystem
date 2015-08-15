@@ -135,6 +135,19 @@ namespace LS {
         }
     }
 
+    size_t LightSystem::getLightsCount() const {
+        return getNormalLightsCount() + getNegativeLightsCount();
+    }
+
+    size_t LightSystem::getNormalLightsCount() const {
+        return _lights.size();
+    }
+
+    size_t LightSystem::getNegativeLightsCount() const {
+        return _negativeLights.size();
+    }
+
+
     void LightSystem::setAmbiantLight(sf::Color c) {
         _ambiant = c;
     }

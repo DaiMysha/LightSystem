@@ -70,6 +70,10 @@ namespace LS {
             void update();
             void update(Light* l);
 
+            size_t getLightsCount() const;
+            size_t getNormalLightsCount() const;
+            size_t getNegativeLightsCount() const;
+
             void setAmbiantLight(sf::Color c);
             sf::Color getAmbiantLight() const;
 
