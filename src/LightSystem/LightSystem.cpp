@@ -105,7 +105,7 @@ namespace LS {
     }
 
     void LightSystem::drawAABB(const sf::View& screen, sf::RenderTarget& target) {
-        drawAABB(DMUtils::sfml::getViewInWorldAABB(screen),target);
+        drawAABB(target.getViewport(screen),target);
     }
 
     void LightSystem::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
