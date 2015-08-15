@@ -28,25 +28,32 @@ namespace LS {
 
     class Light {
         public:
-            Light(bool iso = false);
+            Light(sf::Vector2f p, sf::Color c, bool iso = false);
             virtual ~Light();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
             virtual void preRender(sf::Shader* shader) = 0;//for light manager mainly
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) = 0;
+            void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
             virtual void computeAABB() = 0;
 
-            virtual sf::IntRect getAABB() = 0;//returns the AABB according to the whole map
+            sf::IntRect getAABB();//returns the AABB according to the whole map
 
-            virtual bool isIsometric() const final;
-            virtual void setIsometric(bool i) final;
+            void setPosition(sf::Vector2f c);
+            sf::Vector2f getPosition() const;
+            void move(sf::Vector2f delta);
+
+            void setColor(sf::Color c);
+            sf::Color getColor() const;
+
+            bool isIsometric() const;
+            void setIsometric(bool i);
 
             virtual bool isNegative() const = 0;
 
-            virtual void setActive(bool a) final;
-            virtual bool isActive() const final;
+            void setActive(bool a);
+            bool isActive() const;
 
         protected:
             static const char LAS_PARAM_CENTER[];
@@ -58,6 +65,9 @@ namespace LS {
             static const char LAS_PARAM_ISOMETRIC[];
 
             sf::IntRect _aabb;
+
+            sf::Vector2f _position;
+            sf::Color _color;
 
             //change to unique_ptr ?
             sf::RenderTexture* _renderTexture;

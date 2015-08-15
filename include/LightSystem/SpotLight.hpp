@@ -36,30 +36,18 @@ namespace LS {
     **/
     class SpotLight : public Light {
         public:
-            SpotLight(bool iso = false);
-            SpotLight(sf::Vector2f ctr, float r, sf::Color c, bool iso = false);
-            SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso = false);
+            SpotLight(sf::Vector2f p, float r, sf::Color c, bool iso = false);
+            SpotLight(sf::Vector2f p, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso = false);
             virtual ~SpotLight();
 
-            virtual void preRender(sf::Shader* shader);
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
-            virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
+            virtual void preRender(sf::Shader* shader) override;
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
+            virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
-            virtual void computeAABB();
-
-            /*** GETTER - SETTER ***/
-            virtual sf::IntRect getAABB();
-
-            void setPosition(sf::Vector2f c);
-            sf::Vector2f getPosition() const;
-            void move(sf::Vector2f delta);
+            virtual void computeAABB() override;
 
             void setRadius(float r);
             float getRadius() const;
-
-            void setColor(sf::Color c);
-            sf::Color getColor() const;
 
             void setDirectionAngle(float da);
             float getDirectionAngle() const;
@@ -80,15 +68,13 @@ namespace LS {
             void setPrecision(int p);
             int getPrecision() const;
 
-            virtual bool isNegative() const;
+            virtual bool isNegative() const override;
 
             bool getResizeWhenIncrease() const;
             void setResizeWhenIncrease(bool r);
 
         protected:
-            sf::Vector2f _position;
             float _radius;
-            sf::Color _color;
             float _directionAngle; //angle light is pointing, rad
             float _spreadAngle; //how wide the light covers, rad
             float _intensity; //how bright light is

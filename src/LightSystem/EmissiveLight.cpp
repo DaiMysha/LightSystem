@@ -28,7 +28,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
 
-    EmissiveLight::EmissiveLight(sf::Vector2f p, sf::Color c, float a, sf::Sprite spr) : Light(false), _position(p), _color(c), _angle(a), _sprite(spr) {
+    EmissiveLight::EmissiveLight(sf::Vector2f p, sf::Color c, float a, sf::Sprite spr) : Light(p,c,false), _angle(a) {
+        _sprite = spr;
         preRender(nullptr);
 	}
 
@@ -53,31 +54,12 @@ namespace LS {
         render(target.getViewport(target.getView()),target,nullptr,states);
 	}
 
-    void EmissiveLight::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
-        sf::IntRect box = getAABB();
-        sf::Vertex lines[] = {
-            sf::Vertex(sf::Vector2f(box.left, box.top),_color),
-            sf::Vertex(sf::Vector2f(box.left+box.width, box.top),_color),
-            sf::Vertex(sf::Vector2f(box.left+box.width, box.top+box.height),_color),
-            sf::Vertex(sf::Vector2f(box.left, box.top+box.height),_color),
-            lines[0]
-        };
-
-        target.draw(lines,5,sf::LinesStrip);
-    }
-
     void EmissiveLight::computeAABB() {
         sf::FloatRect f(_sprite.getGlobalBounds());
-        _aabb.left = f.left;
-        _aabb.top = f.top;
+        _aabb.left = f.left - _position.x;
+        _aabb.top = f.top - _position.y;
         _aabb.width = f.width;
         _aabb.height = f.height;
-
-        std::cout << "Emissive light aabb : " << _aabb.left << ";" << _aabb.top << ";" << _aabb.width << ";" << _aabb.height << std::endl;
-	}
-
-    sf::IntRect EmissiveLight::getAABB() {
-        return _aabb;
 	}
 
     bool EmissiveLight::isNegative() const {

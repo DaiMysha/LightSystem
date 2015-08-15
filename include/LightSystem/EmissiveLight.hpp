@@ -33,24 +33,16 @@ namespace LS {
             EmissiveLight(sf::Vector2f p, sf::Color c, float a, sf::Sprite spr);
             virtual ~EmissiveLight();
 
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
-            virtual void preRender(sf::Shader* shader);
-            virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
+            virtual void preRender(sf::Shader* shader) override;
+            virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
-            virtual void computeAABB();
+            virtual void computeAABB() override;
 
-            virtual sf::IntRect getAABB();
-
-            virtual bool isNegative() const;//cannot be negative
+            virtual bool isNegative() const override;//cannot be negative
 
         protected:
-            sf::IntRect _aabb;
-
-            sf::Vector2f _position;
-            sf::Color _color;
             float _angle;
-            sf::Sprite _sprite;
     };
 }
 }

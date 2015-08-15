@@ -31,7 +31,7 @@ namespace LS {
     const char Light::LAS_PARAM_OUTLINE[] = "outline";
     const char Light::LAS_PARAM_ISOMETRIC[] = "iso";
 
-    Light::Light(bool iso) : _aabb(), _renderTexture(nullptr), _isometric(iso), _active(true) {
+    Light::Light(sf::Vector2f p, sf::Color c, bool iso) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _isometric(iso), _active(true) {
     }
 
     Light::~Light() {
@@ -41,9 +41,47 @@ namespace LS {
     void Light::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
     }
 
+    void Light::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
+        sf::IntRect box = getAABB();
+        sf::Vertex lines[] = {
+            sf::Vertex(sf::Vector2f(box.left, box.top),_color),
+            sf::Vertex(sf::Vector2f(box.left+box.width, box.top),_color),
+            sf::Vertex(sf::Vector2f(box.left+box.width, box.top+box.height),_color),
+            sf::Vertex(sf::Vector2f(box.left, box.top+box.height),_color),
+            lines[0]
+        };
+
+        target.draw(lines,5,sf::LinesStrip);
+    }
+
     bool Light::isIsometric() const {
         return _isometric;
     }
+
+    sf::IntRect Light::getAABB() {
+        return sf::IntRect(sf::Vector2i(_aabb.left+static_cast<int>(_position.x),_aabb.top+static_cast<int>(_position.y)),sf::Vector2i(_aabb.width,_aabb.height));
+    }
+
+    void Light::setPosition(sf::Vector2f c) {
+        _position = c;
+        _sprite.setPosition(c);
+	}
+
+    sf::Vector2f Light::getPosition() const {
+        return _position;
+	}
+
+    void Light::move(sf::Vector2f delta) {
+        _position += delta;
+    }
+
+    void Light::setColor(sf::Color c) {
+        _color = c;
+	}
+
+    sf::Color Light::getColor() const {
+        return _color;
+	}
 
     void Light::setIsometric(bool i) {
         _isometric = i;

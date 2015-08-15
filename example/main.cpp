@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
     //emissive lights CANNOT be negative
     //but they can be updated at any moment on any parameter without any cost
     //still need to call the LightSystem::update(Light*) on it
-    DMGDVT::LS::EmissiveLight* emissive = new DMGDVT::LS::EmissiveLight(sf::Vector2f(2368,1592),sf::Color(255,0,127),M_PIf/2.0f,emissiveSprite);
+    DMGDVT::LS::EmissiveLight* emissive = new DMGDVT::LS::EmissiveLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),M_PIf/2.0f,emissiveSprite);
 
     //this parameter allows you to change the way textures are resized when a call to LightSystem::update(Light*) is done
     //with this set to true, the texture will only be resized when the new required size is greater than the current allocated size

@@ -35,11 +35,11 @@ namespace LS {
     SpotLight::~SpotLight() {
 	}
 
-    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, bool iso) : SpotLight(ctr,r,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f,iso) {
+    SpotLight::SpotLight(sf::Vector2f p, float r, sf::Color c, bool iso) : SpotLight(p,r,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f,iso) {
     }
 
-    SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(iso),
-     _position(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf), _negative(false), _resizeWhenIncrease(false) {
+    SpotLight::SpotLight(sf::Vector2f p, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(p,c,iso),
+     _radius(r), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf), _negative(false), _resizeWhenIncrease(false) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
@@ -211,19 +211,6 @@ namespace LS {
         }
 	}
 
-    void SpotLight::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
-        sf::IntRect box = getAABB();
-        sf::Vertex lines[] = {
-            sf::Vertex(sf::Vector2f(box.left, box.top),_color),
-            sf::Vertex(sf::Vector2f(box.left+box.width, box.top),_color),
-            sf::Vertex(sf::Vector2f(box.left+box.width, box.top+box.height),_color),
-            sf::Vertex(sf::Vector2f(box.left, box.top+box.height),_color),
-            lines[0]
-        };
-
-        target.draw(lines,5,sf::LinesStrip);
-    }
-
     void SpotLight::computeAABB() {
 
         if(_spreadAngle == M_PIf*2.0f) {
@@ -248,38 +235,12 @@ namespace LS {
         }
     }
 
-    /*** GETTER - SETTER ***/
-    sf::IntRect SpotLight::getAABB() {
-        return sf::IntRect(sf::Vector2i(_aabb.left+static_cast<int>(_position.x),_aabb.top+static_cast<int>(_position.y)),sf::Vector2i(_aabb.width,_aabb.height));
-    }
-
-    void SpotLight::setPosition(sf::Vector2f c) {
-        _position = c;
-        _sprite.setPosition(c);
-	}
-
-    sf::Vector2f SpotLight::getPosition() const {
-        return _position;
-	}
-
-    void SpotLight::move(sf::Vector2f delta) {
-        _position += delta;
-    }
-
     void SpotLight::setRadius(float r) {
         _radius = r;
 	}
 
     float SpotLight::getRadius() const {
         return _radius;
-	}
-
-    void SpotLight::setColor(sf::Color c) {
-        _color = c;
-	}
-
-    sf::Color SpotLight::getColor() const {
-        return _color;
 	}
 
     void SpotLight::setDirectionAngle(float da) {

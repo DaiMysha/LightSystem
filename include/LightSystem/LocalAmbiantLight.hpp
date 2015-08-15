@@ -33,21 +33,16 @@ namespace LS {
             LocalAmbiantLight(sf::Vector2f p, sf::Vector2f s, sf::Color c, bool negative = false, bool iso = false);
             virtual ~LocalAmbiantLight();
 
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
-            virtual void preRender(sf::Shader* shader);
-            virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
+            virtual void preRender(sf::Shader* shader) override;
+            virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
-            virtual void computeAABB();
+            virtual void computeAABB() override;
 
-            virtual sf::IntRect getAABB();
-
-            virtual bool isNegative() const;
+            virtual bool isNegative() const override;
 
         protected:
-            sf::Vector2f _position;
             sf::Vector2f _size;
-            sf::Color _color;
             bool _negative;
             sf::ConvexShape _shape;
     };

@@ -30,7 +30,7 @@ namespace LS {
     LocalAmbiantLight::~LocalAmbiantLight() {
     }
 
-    LocalAmbiantLight::LocalAmbiantLight(sf::Vector2f p, sf::Vector2f s, sf::Color c, bool negative, bool iso) : Light(iso), _position(p), _size(s), _color(c), _negative(negative) {
+    LocalAmbiantLight::LocalAmbiantLight(sf::Vector2f p, sf::Vector2f s, sf::Color c, bool negative, bool iso) : Light(p,c,iso), _size(s), _negative(negative) {
 
         computeAABB();
     }
@@ -71,26 +71,13 @@ namespace LS {
         render(target.getViewport(target.getView()),target,nullptr,states);
     }
 
-    void LocalAmbiantLight::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
-        sf::IntRect box = getAABB();
-        sf::Vertex lines[] = {
-            sf::Vertex(sf::Vector2f(box.left, box.top),_color),
-            sf::Vertex(sf::Vector2f(box.left+box.width, box.top),_color),
-            sf::Vertex(sf::Vector2f(box.left+box.width, box.top+box.height),_color),
-            sf::Vertex(sf::Vector2f(box.left, box.top+box.height),_color),
-            lines[0]
-        };
-
-        target.draw(lines,5,sf::LinesStrip);
-    }
-
     void LocalAmbiantLight::computeAABB() {
         if(isIsometric()) {
             sf::Vector2f points[4];
-            points[0] = _position;
-            points[1] = _position + sf::Vector2f(_size.x,0.0f);
-            points[2] = _position + sf::Vector2f(_size.x,_size.y);
-            points[3] = _position + sf::Vector2f(0.0f,_size.y);
+            points[0] = sf::Vector2f(0.0f,0.0f);
+            points[1] = sf::Vector2f(_size.x,0.0f);
+            points[2] = sf::Vector2f(_size.x,_size.y);
+            points[3] = sf::Vector2f(0.0f,_size.y);
 
             for(int i=1;i<4;++i) {
                 points[i] = DMUtils::sfml::rotate(points[i],M_PIf/4.0f,points[0]);
@@ -101,15 +88,11 @@ namespace LS {
             _aabb.width = DMUtils::maths::max(points[0].x,points[1].x,points[2].x,points[3].x) - _aabb.left;
             _aabb.height = (DMUtils::maths::max(points[0].y,points[1].y,points[2].y,points[3].y) - _aabb.top)/2.0f;
         } else {
-            _aabb.left = _position.x;
-            _aabb.top = _position.y;
+            _aabb.left = 0;
+            _aabb.top = 0;
             _aabb.width = _size.x;
             _aabb.height = _size.y;
         }
-    }
-
-    sf::IntRect LocalAmbiantLight::getAABB() {
-        return _aabb;
     }
 
     bool LocalAmbiantLight::isNegative() const {
