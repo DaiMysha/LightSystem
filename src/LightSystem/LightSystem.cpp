@@ -149,12 +149,14 @@ namespace LS {
         return _renderTexture.getTexture().copyToImage();
     }
 
-    sf::Color LightSystem::getLightMapPixel(int x, int y) const {
+    sf::Color LightSystem::getLightMapPixel(const sf::View& view, int x, int y) const {
+        x -= view.getViewport().left;
+        y -= view.getViewport().top;
         return getLightMap().getPixel(x,y);
     }
 
-    sf::Color LightSystem::getLightMapPixel(sf::Vector2f p) const {
-        return getLightMapPixel(p.x,p.y);
+    sf::Color LightSystem::getLightMapPixel(const sf::View& view, sf::Vector2f p) const {
+        return getLightMapPixel(view,p.x,p.y);
     }
 
     void LightSystem::setAmbiantLight(sf::Color c) {
