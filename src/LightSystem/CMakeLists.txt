@@ -5,12 +5,14 @@ set(FILES_HEADER
 	${INCROOT}/LightSystem.hpp
 	${INCROOT}/Light.hpp
 	${INCROOT}/SpotLight.hpp
+	${INCROOT}/LocalAmbiantLight.hpp
 )
 
 set(FILES_SRC
 	${SRCROOT}/LightSystem.cpp
 	${SRCROOT}/Light.cpp
 	${SRCROOT}/SpotLight.cpp
+	${SRCROOT}/LocalAmbiantLight.cpp
 )
 	
 build_library(${PROJECT_NAME}

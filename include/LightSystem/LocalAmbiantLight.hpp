@@ -18,56 +18,42 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 */
 
-#ifndef HEADER_DMGDVT_LIGHT
-#define HEADER_DMGDVT_LIGHT
+#ifndef HEADER_DMGDVT_LOCALAMBIANTLIGHT
+#define HEADER_DMGDVT_LOCALAMBIANTLIGHT
 
 #include <SFML/Graphics.hpp>
+
+#include <LightSystem/Light.hpp>
 
 namespace DMGDVT {
 namespace LS {
 
-    class Light {
+    class LocalAmbiantLight : public Light {
         public:
-            Light(bool iso = false);
-            virtual ~Light();
+            LocalAmbiantLight(sf::Vector2f p, sf::Vector2f s, sf::Color c, bool negative = false, bool iso = false);
+            virtual ~LocalAmbiantLight();
 
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
-            virtual void preRender(sf::Shader* shader) = 0;//for light manager mainly
+            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default);
+            virtual void preRender(sf::Shader* shader);
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
-            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) = 0;
+            virtual void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
-            virtual void computeAABB() = 0;
+            virtual void computeAABB();
 
-            virtual sf::IntRect getAABB() = 0;//returns the AABB according to the whole map
+            virtual sf::IntRect getAABB();
 
-            virtual bool isIsometric() const final;
-            virtual void setIsometric(bool i) final;
-
-            virtual bool isNegative() const = 0;
-
-            virtual void setActive(bool a) final;
-            virtual bool isActive() const final;
+            virtual bool isNegative() const;
 
         protected:
-            static const char LAS_PARAM_CENTER[];
-            static const char LAS_PARAM_RADIUS[];
-            static const char LAS_PARAM_COLOR[];
-            static const char LAS_PARAM_BLEED[];
-            static const char LAS_PARAM_LINEARITY[];
-            static const char LAS_PARAM_OUTLINE[];//used mainly for debug, don't mind it
-            static const char LAS_PARAM_ISOMETRIC[];
-
-            sf::IntRect _aabb;
-
-            //change to unique_ptr ?
-            sf::RenderTexture* _renderTexture;
-            sf::Sprite _sprite;
-
-            bool _isometric;
-            bool _active;
+            sf::Vector2f _position;
+            sf::Vector2f _size;
+            sf::Color _color;
+            bool _negative;
+            sf::ConvexShape _shape;
     };
 }
 }
 
-#endif // HEADER_DMGDVT_LIGHT
+#endif // HEADER_DMGDVT_LOCALAMBIANTLIGHT
+
 

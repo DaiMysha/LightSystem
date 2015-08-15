@@ -28,6 +28,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/sfml.hpp>
 #include <LightSystem/LightSystem.hpp>
 #include <LightSystem/SpotLight.hpp>
+#include <LightSystem/LocalAmbiantLight.hpp>
 
 #define WIDTH   640
 #define HEIGHT  480
@@ -122,6 +123,11 @@ int main(int argc, char** argv) {
     //also follows the player around, showing you don't need to update a light if you're just moving it around
     DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
 
+    //local ambiant lights are useful for example to make a difference between day and night
+    DMGDVT::LS::LocalAmbiantLight* localAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(1440,1408),sf::Vector2f(480,350),sf::Color::Red);
+    //they can also be negative
+    DMGDVT::LS::LocalAmbiantLight* negativeAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(991,1087),sf::Vector2f(417,290),sf::Color::Green,true);
+
     //this parameter allows you to change the way textures are resized when a call to LightSystem::update(Light*) is done
     //with this set to true, the texture will only be resized when the new required size is greater than the current allocated size
     //with this set to false (default), the texture is always reallocated as long as the new light radius is different than the previous one
@@ -144,6 +150,8 @@ int main(int argc, char** argv) {
     ls.addLight(lamp);
     ls.addLight(hugeSpot);
     ls.addLight(negativeSpot);
+    ls.addLight(localAmbiant);
+    ls.addLight(negativeAmbiant);
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated
