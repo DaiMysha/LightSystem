@@ -73,7 +73,7 @@ namespace LS {
     }
 
     void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target) {
-        debugRender(screenView,target,LightSystem::DEBUG_FLAGS::DEFAULT);
+        debugRender(screenView,target,LightSystem::DebugFlags::Default);
     }
 
     void LightSystem::debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags) {
@@ -90,20 +90,20 @@ namespace LS {
         stRm.transform.combine(t);
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
-                if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,(stAdd));
+                if(flags & DebugFlags::Shader_off) l->debugRender(_renderTexture,(stAdd));
                 else l->render(screen,_renderTexture,&_lightAttenuationShader,(stAdd));
             }
         }
         for(Light* l : _negativeLights) {
             if(l->getAABB().intersects(screen)) {
-                if(flags & DEBUG_FLAGS::SHADER_OFF) l->debugRender(_renderTexture,(stRm));
+                if(flags & DebugFlags::Shader_off) l->debugRender(_renderTexture,(stRm));
                 else l->render(screen,_renderTexture,&_lightAttenuationShader,(stRm));
             }
         }
 
         _renderTexture.display();
 
-        if(flags & DEBUG_FLAGS::LIGHTMAP_ONLY) target.clear(sf::Color::White);
+        if(flags & DebugFlags::LightMap_only) target.clear(sf::Color::White);
     }
 
     void LightSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {

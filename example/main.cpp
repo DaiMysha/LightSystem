@@ -282,8 +282,8 @@ int main(int argc, char** argv) {
             window.draw(p);
 
             int flags = 0;
-            if(debugLightMapOnly) flags |= DMGDVT::LS::LightSystem::DEBUG_FLAGS::LIGHTMAP_ONLY;
-            if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DEBUG_FLAGS::SHADER_OFF;
+            if(debugLightMapOnly) flags |= DMGDVT::LS::LightSystem::DebugFlags::LightMap_only;
+            if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DebugFlags::Shader_off;
 
             //use LightSystem::render if not using debug
             //if using debugRender, the flags allow you to modify the way the lights are drawn
