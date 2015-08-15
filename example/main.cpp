@@ -29,6 +29,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/LightSystem.hpp>
 #include <LightSystem/SpotLight.hpp>
 #include <LightSystem/LocalAmbiantLight.hpp>
+#include <LightSystem/EmissiveLight.hpp>
 
 #define WIDTH   640
 #define HEIGHT  480
@@ -47,10 +48,14 @@ int main(int argc, char** argv) {
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png")) exit(-1);
-    //if(!bg.loadFromFile("data/map2.jpg")) exit(-1);
-    //bg.setRepeated(true);
+
+    sf::Texture emissiveSpriteTexture;
+    if(!emissiveSpriteTexture.loadFromFile("data/emissive.png")) exit(-2);
+
     sf::Sprite bgSpr(bg,sf::IntRect(0,0,WIDTH,HEIGHT));
     bgSpr.setOrigin(sf::Vector2f(WIDTH/2,HEIGHT/2));
+
+    sf::Sprite emissiveSprite(emissiveSpriteTexture);
 
     int fps = 0;
     int elapsedFrames = 0;
@@ -128,6 +133,13 @@ int main(int argc, char** argv) {
     //they can also be negative
     DMGDVT::LS::LocalAmbiantLight* negativeAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(991,1087),sf::Vector2f(417,290),sf::Color::Green,true);
 
+    //Example of emissive lights. Emissive lights are just a white sprite on a transparent background that are drawn with a different color above everything else
+    //the sprite is copied and stored locally
+    //emissive lights CANNOT be negative
+    //but they can be updated at any moment on any parameter without any cost
+    //still need to call the LightSystem::update(Light*) on it
+    DMGDVT::LS::EmissiveLight* emissive = new DMGDVT::LS::EmissiveLight(sf::Vector2f(2368,1592),sf::Color(255,0,127),M_PIf/2.0f,emissiveSprite);
+
     //this parameter allows you to change the way textures are resized when a call to LightSystem::update(Light*) is done
     //with this set to true, the texture will only be resized when the new required size is greater than the current allocated size
     //with this set to false (default), the texture is always reallocated as long as the new light radius is different than the previous one
@@ -152,6 +164,7 @@ int main(int argc, char** argv) {
     ls.addLight(negativeSpot);
     ls.addLight(localAmbiant);
     ls.addLight(negativeAmbiant);
+    ls.addLight(emissive);
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated

@@ -27,7 +27,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <SFML/Graphics.hpp>
 
-#include "Light.hpp"
+#include <LightSystem/Light.hpp>
+#include <LightSystem/EmissiveLight.hpp>
 
 namespace DMGDVT {
 namespace LS {
@@ -49,6 +50,7 @@ namespace LS {
             ~LightSystem();
 
             void addLight(Light* l);
+            void addLight(EmissiveLight* l);
             template <typename T, typename ... Args>
             T* addLight(Args&& ... args) {
                 T *l = new T(std::forward<Args>(args)...);
@@ -96,6 +98,7 @@ namespace LS {
 
             std::list<Light*> _lights;
             std::list<Light*> _negativeLights;
+            std::list<EmissiveLight*> _emissiveLights;
             sf::Color _ambiant;
             sf::Shader _lightAttenuationShader;
             sf::RenderTexture _renderTexture;

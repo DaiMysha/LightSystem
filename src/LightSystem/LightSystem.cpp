@@ -55,6 +55,12 @@ namespace LS {
         else _lights.emplace_back(l);
     }
 
+    void LightSystem::addLight(EmissiveLight* l) {
+        l->setIsometric(_isometric);//ignore what user set before
+        l->preRender(&_lightAttenuationShader);
+        _emissiveLights.emplace_back(l);
+    }
+
     void LightSystem::removeLight(Light* l) {
         if(l->isNegative()) _negativeLights.remove(l);
         else _lights.remove(l);
@@ -101,7 +107,11 @@ namespace LS {
     }
 
     void LightSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {
+        sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
         target.draw(_sprite,_multiplyState);
+        for(EmissiveLight* l : _emissiveLights) {
+            if(l->getAABB().intersects(screen)) l->render(screen,target,nullptr);
+        }
     }
 
     void LightSystem::drawAABB(const sf::View& screen, sf::RenderTarget& target) {
@@ -112,6 +122,7 @@ namespace LS {
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
+        for(EmissiveLight* l : _emissiveLights) if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
     }
 
     void LightSystem::update() {
