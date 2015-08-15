@@ -49,8 +49,8 @@ namespace LS {
     }
 
     void LightSystem::addLight(Light* l) {
-        l->preRender(&_lightAttenuationShader);
         l->setIsometric(_isometric);//ignore what user set before
+        l->preRender(&_lightAttenuationShader);
         if(l->isNegative()) _negativeLights.emplace_back(l);
         else _lights.emplace_back(l);
     }
@@ -116,6 +116,7 @@ namespace LS {
 
     void LightSystem::update() {
         for(Light* l : _lights) update(l);
+        for(Light* l : _negativeLights) update(l);
     }
 
     void LightSystem::update(Light* l) {
@@ -169,10 +170,7 @@ namespace LS {
 
     void LightSystem::setIsometric(bool i) {
         _isometric = i;
-        for(Light* l : _lights) {
-            l->setIsometric(_isometric);
-            update(l);
-        }
+        update();
     }
 
     bool LightSystem::isIsometric() const {
