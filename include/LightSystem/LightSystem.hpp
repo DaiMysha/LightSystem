@@ -74,6 +74,11 @@ namespace LS {
             size_t getNormalLightsCount() const;
             size_t getNegativeLightsCount() const;
 
+            sf::Image getLightMap() const;//this function is expensive so don't call it too often
+
+            sf::Color getLightMapPixel(int x, int y) const;
+            sf::Color getLightMapPixel(sf::Vector2f p) const;
+
             void setAmbiantLight(sf::Color c);
             sf::Color getAmbiantLight() const;
 

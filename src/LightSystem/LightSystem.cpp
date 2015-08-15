@@ -147,6 +147,17 @@ namespace LS {
         return _negativeLights.size();
     }
 
+    sf::Image LightSystem::getLightMap() const {
+        return _renderTexture.getTexture().copyToImage();
+    }
+
+    sf::Color LightSystem::getLightMapPixel(int x, int y) const {
+        return getLightMap().getPixel(x,y);
+    }
+
+    sf::Color LightSystem::getLightMapPixel(sf::Vector2f p) const {
+        return getLightMapPixel(p.x,p.y);
+    }
 
     void LightSystem::setAmbiantLight(sf::Color c) {
         _ambiant = c;
