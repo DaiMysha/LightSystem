@@ -25,6 +25,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/sfml.hpp>
 
 #include <LightSystem/LightSystem.hpp>
+#include <LightSystem/staticData/staticData.hpp>
 
 namespace DMGDVT {
 namespace LS {
@@ -35,10 +36,12 @@ namespace LS {
     const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::Zero, sf::BlendMode::OneMinusSrcColor, sf::BlendMode::Add));
 
     LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _isometric(isometric), _autoDelete(true) {
-        //this will be loaded from internal memory when lib is created
-        //or loaded external crypted
-        //the idea is not to allow the user to modify it
-        if(!_lightAttenuationShader.loadFromFile("shaders/lightAttenuation.frag",sf::Shader::Fragment)) {
+
+        /*if(!_lightAttenuationShader.loadFromFile("shaders/lightAttenuation.frag",sf::Shader::Fragment)) {
+            std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
+        }*/
+
+        if(!_lightAttenuationShader.loadFromMemory(DMGDVT::LS::StaticData::LIGHT_ATTENUATION_SHADER,sf::Shader::Fragment)) {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }
 

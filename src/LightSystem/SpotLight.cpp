@@ -86,7 +86,6 @@ namespace LS {
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_OUTLINE,false); //for debug
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
 
         if(_spreadAngle==M_PIf*2.0f) {
@@ -146,7 +145,6 @@ namespace LS {
             shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
             shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
             shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
-            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_OUTLINE,false); //for debug
             shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
 
             sf::RenderStates st(states);

@@ -3,7 +3,6 @@ uniform float radius;
 uniform vec4 color;
 uniform float bleed;
 uniform float linearFactor;
-uniform bool outline;
 uniform bool iso;
 
 void main() {
@@ -17,8 +16,6 @@ void main() {
 	attenuation = distFromFalloff * (bleed / (dist*dist) + linearFactor / radius);
 			
 	attenuation = clamp(attenuation, 0.0, 1.0);
-
-	if(outline && floor(dist)==floor(radius)) attenuation = 1;
 	
 	vec4 color = vec4(attenuation, attenuation, attenuation, 1.0) * vec4(color.r, color.g, color.b, color.a);
 
