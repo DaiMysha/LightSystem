@@ -53,8 +53,6 @@ namespace LS {
         l->setIsometric(_isometric);//ignore what user set before
         if(l->isNegative()) _negativeLights.emplace_back(l);
         else _lights.emplace_back(l);
-
-        std::cout << "neg size : " << _negativeLights.size() << " ; pos size : " << _lights.size() << std::endl;
     }
 
     void LightSystem::removeLight(Light* l) {
