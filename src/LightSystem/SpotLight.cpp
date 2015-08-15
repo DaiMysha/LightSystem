@@ -42,7 +42,7 @@ namespace LS {
     }
 
     SpotLight::SpotLight(sf::Vector2f ctr, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(iso),
-     _position(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf), _resizeWhenIncrease(false) {
+     _position(ctr), _radius(r), _color(c), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf), _negative(false), _resizeWhenIncrease(false) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
@@ -56,13 +56,6 @@ namespace LS {
 
     void SpotLight::preRender(sf::Shader* shader) {
         if(shader==nullptr) return; //oopsie, can't work without the shader
-
-        if(_intensity<0.0f) {
-            _intensity = -_intensity;
-            _negative = true;
-        } else {
-            _negative = false;
-        }
 
         const float diam = _radius*2.0f;
 
@@ -79,11 +72,13 @@ namespace LS {
             return; //somehow texture failed, maybe too big, abort
         }
 
+        _negative = (_intensity<0.0f);
+
         float center = _renderTexture->getSize().x/2.0f;
 
-        float r = _color.r * _intensity;
-        float g = _color.g * _intensity;
-        float b = _color.b * _intensity;
+        float r = _color.r * DMUtils::maths::abs(_intensity);
+        float g = _color.g * DMUtils::maths::abs(_intensity);
+        float b = _color.b * DMUtils::maths::abs(_intensity);
         sf::Color c(r,g,b,255);
 
         _renderTexture->clear();
@@ -132,7 +127,7 @@ namespace LS {
     }
 
     void SpotLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
-        if(_intensity <= 0.0f) return;
+        if(_intensity == 0.0f) return;
         if(!isActive()) return;
 
         if(_renderTexture!=nullptr) {
@@ -140,9 +135,9 @@ namespace LS {
             target.draw(_sprite,states);
         } else {
             //need to find a way to put thiis as common code between render and preRender
-            float r = _color.r * _intensity;
-            float g = _color.g * _intensity;
-            float b = _color.b * _intensity;
+            float r = _color.r * DMUtils::maths::abs(_intensity);
+            float g = _color.g * DMUtils::maths::abs(_intensity);
+            float b = _color.b * DMUtils::maths::abs(_intensity);
             sf::Color c(r,g,b,255);
 
             const float diam = _radius*2.0f;
@@ -188,7 +183,7 @@ namespace LS {
 	}
 
     void SpotLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
-        if(_intensity <= 0.0f) return;
+        if(_intensity == 0.0f) return;
         if(!isActive()) return;
 
         if(_spreadAngle == M_PIf*2.0f) {
@@ -319,12 +314,11 @@ namespace LS {
     }
 
     void SpotLight::setIntensity(float i) {
-        DMUtils::maths::clamp(i,-1.0f,1.0f);
-        _intensity = i;
+        _intensity = DMUtils::maths::clamp(i,-1.0f,1.0f);;
 	}
 
     float SpotLight::getIntensity() const {
-        return _intensity;
+        return DMUtils::maths::abs(_intensity);
 	}
 
     void SpotLight::setBleed(float b) {

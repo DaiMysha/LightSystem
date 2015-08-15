@@ -99,6 +99,7 @@ int main(int argc, char** argv) {
     DMGDVT::LS::SpotLight* spotRed =  new DMGDVT::LS::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
     DMGDVT::LS::SpotLight* spotBlue = new DMGDVT::LS::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
     DMGDVT::LS::SpotLight* spotGreen = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green,0.0f      ,M_PIf*2.0f,1.0f,0.5f,1.0f);
+    DMGDVT::LS::SpotLight* negativeColors = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,0.0f      ,M_PIf*2.0f,-1.0f,5.0f,5.0f);
 
     //looks at the player, shows that you don't need to update a light if you're just rotating it around
     DMGDVT::LS::SpotLight* eyeSpotLeft = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
@@ -134,6 +135,7 @@ int main(int argc, char** argv) {
     ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
+    ls.addLight(negativeColors);//you can add them anywhere, not just at the end
     ls.addLight(eyeSpotLeft);
     ls.addLight(eyeSpotRight);
     ls.addLight(sunRise);
@@ -284,6 +286,28 @@ int main(int argc, char** argv) {
             std::ostringstream str;
             str << (fps*2);
             text.setString(str.str());
+
+
+            //also use this timer to alternate the negative light to a positive light
+            //you can change the positivity of a light just by changing its intensity
+            //this however requires an update of the light
+            if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
+            else negativeSpot->setIntensity(-1.0f);
+            ls.update(negativeSpot);
+
+            //you can easily switch a light on and off with this function
+            //and it doesn't require an update of the light
+            hugeSpot->setActive(!hugeSpot->isActive());
+
+            //this light alternates between a few colors to show the effect of a negative light
+            sf::Color c = negativeColors->getColor();
+            if(c==sf::Color::Red) negativeColors->setColor(sf::Color::Green);
+            if(c==sf::Color::Green) negativeColors->setColor(sf::Color::Blue);
+            if(c==sf::Color::Blue) negativeColors->setColor(sf::Color(127,127,127));
+            if(c==sf::Color(127,127,127)) negativeColors->setColor(sf::Color::Black);
+            if(c==sf::Color::Black) negativeColors->setColor(sf::Color::Red);
+            ls.update(negativeColors);
+            c = negativeColors->getColor();
         }
         //this is an example of how to make a light flicker
         if(flickerClock.getElapsedTime().asMilliseconds() > 100) {
@@ -297,20 +321,9 @@ int main(int argc, char** argv) {
             }
             ls.update(firePit1);
             ls.update(firePit2);
-
-            //also use this timer to alternate the negative light to a positive light
-            //you can change the positivity of a light just by changing its intensity
-            //this however requires an update of the light
-            if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
-            else negativeSpot->setIntensity(-1.0f);
-            ls.update(negativeSpot);
-
-            //you can easily switch a light on and off with this function
-            //and it doesn't require an update of the light
-            hugeSpot->setActive(!hugeSpot->isActive());
-
         }
     }
+
 
     return 0;
 }
