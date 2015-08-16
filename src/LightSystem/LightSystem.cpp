@@ -125,7 +125,12 @@ namespace LS {
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
-        for(EmissiveLight* l : _emissiveLights) if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
+        for(Light* l : _negativeLights) {
+            if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
+        }
+        for(EmissiveLight* l : _emissiveLights) {
+            if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
+        }
     }
 
     void LightSystem::update() {
