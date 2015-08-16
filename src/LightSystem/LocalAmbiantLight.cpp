@@ -19,6 +19,8 @@ GOODS OR SERVICES {
 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
+#include <iostream>
+
 #include <LightSystem/LocalAmbiantLight.hpp>
 
 #include <DMUtils/maths.hpp>
@@ -30,7 +32,7 @@ namespace LS {
     LocalAmbiantLight::~LocalAmbiantLight() {
     }
 
-    LocalAmbiantLight::LocalAmbiantLight(sf::Vector2f p, sf::Vector2f s, sf::Color c, bool negative, bool iso) : Light(p,c,iso), _size(s), _negative(negative) {
+    LocalAmbiantLight::LocalAmbiantLight(sf::Vector2f p, sf::ConvexShape s, sf::Color c, bool negative, bool iso) : Light(p,c,iso), _shape(s), _negative(negative) {
 
         computeAABB();
     }
@@ -42,26 +44,15 @@ namespace LS {
     }
 
     void LocalAmbiantLight::preRender(sf::Shader* shader) {
-        _shape.setPointCount(4);
         _shape.setFillColor(_color);
         _shape.setPosition(_position);
 
-        sf::Vector2f points[4];
-        points[0] = sf::Vector2f(0.0f,0.0f);
-        points[1] = sf::Vector2f(_size.x,0.0f);
-        points[2] = sf::Vector2f(_size.x,_size.y);
-        points[3] = sf::Vector2f(0.0f,_size.y);
-
         if(isIsometric()) {
-            for(int i=1;i<4;++i) {
-                points[i] = DMUtils::sfml::rotate(points[i],DMUtils::maths::degToRad(45.0f),points[0]);
-                points[i].y /= 2.0f;
+            for(size_t i=1;i<_shape.getPointCount();++i) {
+                sf::Vector2f point = DMUtils::sfml::rotate(_shape.getPoint(i),DMUtils::maths::degToRad(45.0f),_shape.getPoint(0));
+                point.y /= 2.0f;
+                _shape.setPoint(i,point);
             }
-
-        }
-
-        for(int i=1;i<4;++i) {
-            _shape.setPoint(i,points[i]);
         }
 
         computeAABB();
@@ -72,26 +63,24 @@ namespace LS {
     }
 
     void LocalAmbiantLight::computeAABB() {
+        float minx = _shape.getPoint(0).x, maxx = minx;
+        float miny = _shape.getPoint(0).y, maxy = miny;
+        for(size_t i=0;i<_shape.getPointCount();++i) {
+            minx = DMUtils::maths::min(minx,_shape.getPoint(i).x);
+            maxx = DMUtils::maths::max(maxx,_shape.getPoint(i).x);
+
+            miny = DMUtils::maths::min(miny,_shape.getPoint(i).y);
+            maxy = DMUtils::maths::max(maxy,_shape.getPoint(i).y);
+        }
+
+        _aabb.left = minx;
+        _aabb.top = miny;
+        _aabb.width = maxx - minx;
+        _aabb.height = maxy - miny;
+
         if(isIsometric()) {
-            sf::Vector2f points[4];
-            points[0] = sf::Vector2f(0.0f,0.0f);
-            points[1] = sf::Vector2f(_size.x,0.0f);
-            points[2] = sf::Vector2f(_size.x,_size.y);
-            points[3] = sf::Vector2f(0.0f,_size.y);
-
-            for(int i=1;i<4;++i) {
-                points[i] = DMUtils::sfml::rotate(points[i],M_PIf/4.0f,points[0]);
-            }
-
-            _aabb.left = DMUtils::maths::min(points[0].x,points[1].x,points[2].x,points[3].x);
-            _aabb.top = DMUtils::maths::min(points[0].y,points[1].y,points[2].y,points[3].y);
-            _aabb.width = DMUtils::maths::max(points[0].x,points[1].x,points[2].x,points[3].x) - _aabb.left;
-            _aabb.height = (DMUtils::maths::max(points[0].y,points[1].y,points[2].y,points[3].y) - _aabb.top)/2.0f;
-        } else {
-            _aabb.left = 0;
-            _aabb.top = 0;
-            _aabb.width = _size.x;
-            _aabb.height = _size.y;
+            _aabb.width /= 2.0f;
+            _aabb.height /= 2.0f;
         }
     }
 

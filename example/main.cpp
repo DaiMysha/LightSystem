@@ -85,6 +85,30 @@ int main(int argc, char** argv) {
     sf::Vector2i mouseInt = sf::Mouse::getPosition(window);
     sf::Vector2f mouse(window.mapPixelToCoords(mouseInt));
 
+    sf::ConvexShape ambiantShape;
+    ambiantShape.setPointCount(12);
+    //position : 1440,1408
+    //480,350
+    ambiantShape.setPoint(0,sf::Vector2f(0.0f,0.0f));
+    ambiantShape.setPoint(1,sf::Vector2f(289.0f,0.0f));
+    ambiantShape.setPoint(2,sf::Vector2f(289.0f,63.0f));
+    ambiantShape.setPoint(3,sf::Vector2f(352.0f,63.0f));
+    ambiantShape.setPoint(4,sf::Vector2f(352.0f,225.0f));
+    ambiantShape.setPoint(5,sf::Vector2f(289.0f,225.0f));
+    ambiantShape.setPoint(6,sf::Vector2f(289.0f,288.0f));
+    ambiantShape.setPoint(7,sf::Vector2f(0.0f,288.0f));
+    ambiantShape.setPoint(8,sf::Vector2f(0.0f,225.0f));
+    ambiantShape.setPoint(9,sf::Vector2f(-63.0f,225.0f));
+    ambiantShape.setPoint(10,sf::Vector2f(-63.0f,63.0f));
+    ambiantShape.setPoint(11,sf::Vector2f(0.0f,63.0f));
+
+    sf::ConvexShape negativeShape;
+    negativeShape.setPointCount(4);
+    negativeShape.setPoint(0,sf::Vector2f(0.0f,0.0f));
+    negativeShape.setPoint(1,sf::Vector2f(417.0f,0.0f));
+    negativeShape.setPoint(2,sf::Vector2f(417.0f,290.0f));
+    negativeShape.setPoint(3,sf::Vector2f(0.0f,290.0f));
+
     /** LIGHTSYSTEM EXAMPLE **/
 
     //create your LightSystem
@@ -129,9 +153,9 @@ int main(int argc, char** argv) {
     DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
 
     //local ambiant lights are useful for example to make a difference between day and night
-    DMGDVT::LS::LocalAmbiantLight* localAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(1440,1408),sf::Vector2f(480,350),sf::Color::Red);
+    DMGDVT::LS::LocalAmbiantLight* localAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(1535,1439),ambiantShape,sf::Color::Red);
     //they can also be negative
-    DMGDVT::LS::LocalAmbiantLight* negativeAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(991,1087),sf::Vector2f(417,290),sf::Color::Green,true);
+    DMGDVT::LS::LocalAmbiantLight* negativeAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(991,1087),negativeShape,sf::Color::Green,true);
 
     //Example of emissive lights. Emissive lights are just a white sprite on a transparent background that are drawn with a different color above everything else
     //the sprite is copied and stored locally
