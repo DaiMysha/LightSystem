@@ -22,7 +22,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_D
 set_option(LIGHTSYSTEM_BUILD_EXAMPLES TRUE BOOL "TRUE to build the examples, FALSE to ignore them")
 
 # add an option for building the API documentation
-# set_option(UTILS_BUILD_DOC TRUE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
+# set_option(LIGHTSYSTEM_BUILD_DOC TRUE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 
 set(LIBS "")
 
@@ -35,6 +35,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(LIB_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
+set(CMAKE_SHARED_LIBRARY_PREFIX )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules;${CMAKE_SOURCE_DIR}")
 
@@ -70,11 +72,11 @@ include_directories(${DMUTILS_INCLUDE_DIR})
 
 # add the subdirectories
 add_subdirectory(src)
-if(UTILS_BUILD_EXAMPLES)
+if(LIGHTSYSTEM_BUILD_EXAMPLES)
     add_subdirectory(example)
 endif()
 #build doc
-if(UTILS_BUILD_DOC)
+if(LIGHTSYSTEM_BUILD_DOC)
     add_subdirectory(doc)
 endif()
 
