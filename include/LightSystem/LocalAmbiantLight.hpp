@@ -41,8 +41,10 @@ namespace LS {
 
             virtual bool isNegative() const override;
 
+            void setShape(sf::ConvexShape s);
+            sf::ConvexShape getShape() const;
+
         protected:
-            sf::Vector2f _size;
             sf::ConvexShape _shape;
             bool _negative;
     };

@@ -88,5 +88,12 @@ namespace LS {
         return _negative;
     }
 
+    void LocalAmbiantLight::setShape(sf::ConvexShape s) {
+        _shape = s;
+    }
+
+    sf::ConvexShape LocalAmbiantLight::getShape() const {
+        return _shape;
+    }
 }
 }

@@ -66,7 +66,13 @@ namespace LS {
         return false;
 	}
 
+    void EmissiveLight::setAngle(float a) {
+        _angle = a;
+    }
 
+    float EmissiveLight::getAngle() const {
+        return _angle;
+    }
 
 }
 }
