@@ -46,6 +46,8 @@ namespace LS {
 
             virtual void computeAABB() override;
 
+            virtual bool isNegative() const override;
+
             void setRadius(float r);
             float getRadius() const;
 
@@ -67,8 +69,6 @@ namespace LS {
 
             void setPrecision(int p);
             int getPrecision() const;
-
-            virtual bool isNegative() const override;
 
             bool getResizeWhenIncrease() const;
             void setResizeWhenIncrease(bool r);

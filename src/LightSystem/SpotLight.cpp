@@ -154,6 +154,10 @@ namespace LS {
         }
     }
 
+    bool SpotLight::isNegative() const {
+        return _negative;
+    }
+
     void SpotLight::setRadius(float r) {
         _radius = r;
 	}
@@ -220,10 +224,6 @@ namespace LS {
 
     int SpotLight::getPrecision() const {
         return _precision;
-    }
-
-    bool SpotLight::isNegative() const {
-        return _negative;
     }
 
     bool SpotLight::getResizeWhenIncrease() const {
