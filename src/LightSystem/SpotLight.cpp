@@ -39,7 +39,7 @@ namespace LS {
     }
 
     SpotLight::SpotLight(sf::Vector2f p, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(p,c,iso),
-     _radius(r), _directionAngle(da), _spreadAngle(sa), _bleed(b), _linearity(lf), _negative(false), _resizeWhenIncrease(false) {
+     _radius(r), _directionAngle(DMUtils::maths::degToRad(da)), _spreadAngle(sa), _bleed(b), _linearity(lf), _negative(false), _resizeWhenIncrease(false) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
@@ -174,24 +174,25 @@ namespace LS {
 	}
 
     float SpotLight::getDirectionAngle() const {
-        return _directionAngle;
+        return DMUtils::maths::radToDeg(_directionAngle);
 	}
 
     void SpotLight::rotate(float delta) {
-        float a =  _directionAngle + delta;
+        float a =  _directionAngle + DMUtils::maths::degToRad(delta);
         while(a > 2.0*M_PIf) a -= 2.0*M_PIf;
         while(a < 0) a += 2.0*M_PIf;
         setDirectionAngle(a);
     }
 
     void SpotLight::setSpreadAngle(float sa) {
+        sa = DMUtils::maths::degToRad(sa);
         if(sa<0) sa = -sa;
         while(sa > 2.0f*M_PIf) sa = 2.0f*M_PIf;
         _spreadAngle = sa;
     }
 
     float SpotLight::getSpreadAngle() const {
-        return _spreadAngle;
+        return DMUtils::maths::radToDeg(_spreadAngle);
     }
 
     void SpotLight::setIntensity(float i) {

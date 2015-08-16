@@ -126,27 +126,27 @@ int main(int argc, char** argv) {
     //do NOT destroy a light that hasn't been removed yet, it will cause a segfault
 
     //to ensure R + G + B = W
-    DMGDVT::LS::SpotLight* spotRed =  new DMGDVT::LS::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spotBlue = new DMGDVT::LS::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,0.0f       ,M_PIf*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spotGreen = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green,0.0f      ,M_PIf*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* negativeColors = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,0.0f      ,M_PIf*2.0f,-1.0f,5.0f,5.0f);
+    DMGDVT::LS::SpotLight* spotRed =  new DMGDVT::LS::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
+    DMGDVT::LS::SpotLight* spotBlue = new DMGDVT::LS::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
+    DMGDVT::LS::SpotLight* spotGreen = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green,0.0f      ,180.0f*2.0f,1.0f,0.5f,1.0f);
+    DMGDVT::LS::SpotLight* negativeColors = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,0.0f      ,180.0f*2.0f,-1.0f,5.0f,5.0f);
 
     //looks at the player, shows that you don't need to update a light if you're just rotating it around
-    DMGDVT::LS::SpotLight* eyeSpotLeft = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
-    DMGDVT::LS::SpotLight* eyeSpotRight = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,M_PIf/4.0f ,M_PIf/5.0f,0.5f,1.0f,1.5f);
+    DMGDVT::LS::SpotLight* eyeSpotLeft = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
+    DMGDVT::LS::SpotLight* eyeSpotRight = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
 
-    DMGDVT::LS::SpotLight* sunRise = new DMGDVT::LS::SpotLight(sf::Vector2f(1679,2200),500,sf::Color(245,125,20),M_PIf ,M_PIf/3.0f,1.0f,0.0f,2.0f);
+    DMGDVT::LS::SpotLight* sunRise = new DMGDVT::LS::SpotLight(sf::Vector2f(1679,2200),500,sf::Color(245,125,20),180.0f ,180.0f/3.0f,1.0f,0.0f,2.0f);
 
     //flickering light. Something for dynamic lights is planned for later, but for now the code later shows how to do it
-    DMGDVT::LS::SpotLight* firePit1 = new DMGDVT::LS::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,M_PIf*2.0f,1.0f,0.1f,1.0f);
-    DMGDVT::LS::SpotLight* firePit2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,M_PIf*2.0f,1.0f,0.1f,1.0f);
+    DMGDVT::LS::SpotLight* firePit1 = new DMGDVT::LS::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
+    DMGDVT::LS::SpotLight* firePit2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
 
     //just some more lights to test a few things
-    DMGDVT::LS::SpotLight* lamp = new DMGDVT::LS::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,M_PIf*2.0f,1.0f,0.0f,0.50f);
-    DMGDVT::LS::SpotLight* hugeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2845,1245),800,sf::Color::White,M_PIf/2.0f ,M_PIf/10.0f,1.0f,0.0f,2.0f);
+    DMGDVT::LS::SpotLight* lamp = new DMGDVT::LS::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,180.0f*2.0f,1.0f,0.0f,0.50f);
+    DMGDVT::LS::SpotLight* hugeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2845,1245),800,sf::Color::White,180.0f/2.0f ,180.0f/10.0f,1.0f,0.0f,2.0f);
 
     //one negative spot in the room with the ceiling white light
-    DMGDVT::LS::SpotLight* negativeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),M_PIf/4.0f ,M_PIf/4.0f,-1.0f,0.0f,2.0f);
+    DMGDVT::LS::SpotLight* negativeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),180.0f/4.0f ,180.0f/4.0f,-1.0f,0.0f,2.0f);
 
     //template add example
     //also follows the player around, showing you don't need to update a light if you're just moving it around
@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
     //emissive lights CANNOT be negative
     //but they can be updated at any moment on any parameter without any cost
     //still need to call the LightSystem::update(Light*) on it
-    DMGDVT::LS::EmissiveLight* emissive = new DMGDVT::LS::EmissiveLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),M_PIf/2.0f,emissiveSprite);
+    DMGDVT::LS::EmissiveLight* emissive = new DMGDVT::LS::EmissiveLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),180.0f/2.0f,emissiveSprite);
 
     //this parameter allows you to change the way textures are resized when a call to LightSystem::update(Light*) is done
     //with this set to true, the texture will only be resized when the new required size is greater than the current allocated size
@@ -192,13 +192,13 @@ int main(int argc, char** argv) {
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated
-    playerLight->setDirectionAngle(M_PIf);
+    playerLight->setDirectionAngle(180.0f);
     //if you modify ANY of the parameters below, you have to update the light's texture using ls.update(Light*);
     //otherwise the update won't be taken into account
     //basically any parameter except for directionAngle and position
     playerLight->setLinearity(2.0f);
     playerLight->setBleed(0.0f);
-    playerLight->setSpreadAngle(M_PIf/3.0f);
+    playerLight->setSpreadAngle(180.0f/3.0f);
     playerLight->setColor(sf::Color::White);
     playerLight->setIntensity(1.0f);
     playerLight->setRadius(200);
@@ -260,11 +260,11 @@ int main(int argc, char** argv) {
                     case sf::Keyboard::S:
                     {
                         //this parameter requires an update
-                        if(playerLight->getSpreadAngle()==2.0f*M_PIf) {
-                            playerLight->setSpreadAngle(M_PIf/3.0f);
+                        if(playerLight->getSpreadAngle()==2.0f*180.0f) {
+                            playerLight->setSpreadAngle(180.0f/3.0f);
                             playerLight->setRadius(200);
                         } else {
-                            playerLight->setSpreadAngle(2.0*M_PIf);
+                            playerLight->setSpreadAngle(2.0*180.0f);
                             playerLight->setRadius(100);
                         }
                         ls.update(playerLight);

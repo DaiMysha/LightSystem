@@ -69,7 +69,6 @@ namespace LS {
             sf::Vector2f _position;
             sf::Color _color;
 
-            //change to unique_ptr ?
             sf::RenderTexture* _renderTexture;
             sf::Sprite _sprite;
 
