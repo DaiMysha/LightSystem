@@ -52,6 +52,9 @@ namespace LS {
     }
 
     void SpotLight::preRender(sf::Shader* shader) {
+
+        _negative = (_intensity<0.0f);
+
         if(shader==nullptr) return; //oopsie, can't work without the shader
 
         const float diam = _radius*2.0f;
@@ -69,56 +72,17 @@ namespace LS {
             return; //somehow texture failed, maybe too big, abort
         }
 
-        _negative = (_intensity<0.0f);
-
-        float center = _renderTexture->getSize().x/2.0f;
-
-        float r = _color.r * DMUtils::maths::abs(_intensity);
-        float g = _color.g * DMUtils::maths::abs(_intensity);
-        float b = _color.b * DMUtils::maths::abs(_intensity);
-        sf::Color c(r,g,b,255);
+        sf::Vector2f center(_renderTexture->getSize().x/2.0f,_renderTexture->getSize().y/2.0f);
 
         _renderTexture->clear();
-
-        //shader parameters
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(center,center));
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
-
-        if(_spreadAngle==M_PIf*2.0f) {
-
-            _sprite.setTexture(_renderTexture->getTexture());
-            _sprite.setOrigin(sf::Vector2f(center,center));
-            _sprite.setPosition(_position);
-
-            sf::RectangleShape rect(sf::Vector2f(center*2.0f,center*2.0f));
-
-            _renderTexture->draw(rect,shader);
-        } else {
-
-            _sprite.setTexture(_renderTexture->getTexture());
-            _sprite.setPosition(_position);
-            _sprite.setOrigin(sf::Vector2f(_radius,_radius));
-
-            sf::ConvexShape shape;
-
-            float deltaAngle = _spreadAngle / (float)(_precision-1);
-
-            shape.setPointCount(_precision+1);
-            shape.setPoint(0,sf::Vector2f(_radius,_radius));
-
-            for(int i=0;i<_precision;++i) {
-                float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
-                shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
-            }
-
-            _renderTexture->draw(shape,shader);
-            _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
-        }
+        _render(*_renderTexture,sf::RenderStates::Default,shader,center);
         _renderTexture->display();
+
+        _sprite.setOrigin(center);
+        _sprite.setPosition(_position);
+        _sprite.setTexture(_renderTexture->getTexture());
+        _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
+
         computeAABB();
     }
 
@@ -127,53 +91,10 @@ namespace LS {
         if(!isActive()) return;
 
         if(_renderTexture!=nullptr) {
-            //draw the sprite
             target.draw(_sprite,states);
         } else {
-            //need to find a way to put thiis as common code between render and preRender
-            float r = _color.r * DMUtils::maths::abs(_intensity);
-            float g = _color.g * DMUtils::maths::abs(_intensity);
-            float b = _color.b * DMUtils::maths::abs(_intensity);
-            sf::Color c(r,g,b,255);
-
-            const float diam = _radius*2.0f;
-            sf::Vector2f radVec(_radius,_radius);
             sf::Vector2f newCenter = _position - sf::Vector2f(screen.left,screen.top);
-            // for some reason in this case it considers the center to be from the bottom of the screen
-            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,sf::Vector2f(newCenter.x,screen.height - newCenter.y));
-            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
-            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
-            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
-            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
-            shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
-
-            sf::RenderStates st(states);
-            st.shader = shader;
-
-            if(_spreadAngle==M_PIf*2.0f) {
-                sf::RectangleShape rect(sf::Vector2f(diam,diam));
-                rect.setOrigin(radVec);
-                rect.setPosition(_position);
-
-                target.draw(rect,st);
-            } else {
-                sf::ConvexShape shape;
-                shape.setPosition(_position);
-                shape.setOrigin(radVec);
-
-                float deltaAngle = _spreadAngle / (float)(_precision-1);
-
-                shape.setPointCount(_precision+1);
-                shape.setPoint(0,sf::Vector2f(_radius,_radius));
-
-                for(int i=0;i<_precision;++i) {
-                    float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
-                    shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
-                }
-
-                shape.setRotation(DMUtils::maths::radToDeg(_directionAngle));
-                target.draw(shape,st);
-            }
+            _render(target,states,shader,sf::Vector2f(newCenter.x,screen.height - newCenter.y),_position,sf::Vector2f(_radius,_radius),DMUtils::maths::radToDeg(_directionAngle));
         }
 	}
 
@@ -314,6 +235,54 @@ namespace LS {
     }
 
 	/*** PROTECTED ***/
+
+	void SpotLight::_render(sf::RenderTarget& target, const sf::RenderStates& states, sf::Shader* shader, sf::Vector2f center, sf::Vector2f shapePosition, sf::Vector2f shapeOrigin, float shapeRotation) {
+
+        float r = _color.r * DMUtils::maths::abs(_intensity);
+        float g = _color.g * DMUtils::maths::abs(_intensity);
+        float b = _color.b * DMUtils::maths::abs(_intensity);
+        sf::Color c(r,g,b,255);
+
+        sf::RenderStates st(states);
+        st.shader = shader;
+
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,center);
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
+
+        sf::ConvexShape shape;
+
+        if(_spreadAngle==M_PIf*2.0f) {
+
+            float diam = _radius*2.0f;
+
+            shape.setPointCount(4);
+            shape.setPoint(0,sf::Vector2f(0.0f,0.0f));
+            shape.setPoint(1,sf::Vector2f(diam,0.0f));
+            shape.setPoint(2,sf::Vector2f(diam,diam));
+            shape.setPoint(3,sf::Vector2f(0.0f,diam));
+
+        } else {
+
+            float deltaAngle = _spreadAngle / (float)(_precision-1);
+
+            shape.setPointCount(_precision+1);
+            shape.setPoint(0,sf::Vector2f(_radius,_radius));
+
+            for(int i=0;i<_precision;++i) {
+                float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
+                shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
+            }
+
+            shape.setRotation(shapeRotation);
+        }
+        shape.setPosition(shapePosition);
+        shape.setOrigin(shapeOrigin);
+        target.draw(shape,st);
+	}
 
 }
 }

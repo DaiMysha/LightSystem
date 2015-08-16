@@ -93,14 +93,14 @@ namespace LS {
         stRm.transform.combine(t);
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
-                if(flags & DebugFlags::Shader_off) l->debugRender(_renderTexture,(stAdd));
-                else l->render(screen,_renderTexture,&_lightAttenuationShader,(stAdd));
+                if(flags & DebugFlags::Shader_off) l->debugRender(_renderTexture,stAdd);
+                else l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
             }
         }
         for(Light* l : _negativeLights) {
             if(l->getAABB().intersects(screen)) {
-                if(flags & DebugFlags::Shader_off) l->debugRender(_renderTexture,(stRm));
-                else l->render(screen,_renderTexture,&_lightAttenuationShader,(stRm));
+                if(flags & DebugFlags::Shader_off) l->debugRender(_renderTexture,stRm);
+                else l->render(screen,_renderTexture,&_lightAttenuationShader,stRm);
             }
         }
 
