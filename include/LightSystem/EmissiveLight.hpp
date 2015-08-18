@@ -30,7 +30,7 @@ namespace LS {
 
     class EmissiveLight : public Light {
         public:
-            EmissiveLight(sf::Vector2f p, sf::Color c, float a, sf::Sprite spr);
+            EmissiveLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr);
             virtual ~EmissiveLight();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
@@ -43,6 +43,8 @@ namespace LS {
 
             void setAngle(float a);
             float getAngle() const;
+
+            void setSprite(const sf::Sprite& s);
 
         protected:
             float _angle;

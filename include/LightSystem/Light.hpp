@@ -28,7 +28,7 @@ namespace LS {
 
     class Light {
         public:
-            Light(sf::Vector2f p, sf::Color c, bool iso = false);
+            Light(const sf::Vector2f& p, const sf::Color& c, bool iso = false);
             virtual ~Light();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
@@ -40,11 +40,11 @@ namespace LS {
 
             sf::IntRect getAABB();//returns the AABB according to the whole map
 
-            void setPosition(sf::Vector2f c);
+            void setPosition(const sf::Vector2f& c);
             sf::Vector2f getPosition() const;
-            void move(sf::Vector2f delta);
+            void move(const sf::Vector2f& delta);
 
-            void setColor(sf::Color c);
+            void setColor(const sf::Color& c);
             sf::Color getColor() const;
 
             bool isIsometric() const;

@@ -31,7 +31,7 @@ namespace LS {
     const char Light::LAS_PARAM_OUTLINE[] = "outline";
     const char Light::LAS_PARAM_ISOMETRIC[] = "iso";
 
-    Light::Light(sf::Vector2f p, sf::Color c, bool iso) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _isometric(iso), _active(true) {
+    Light::Light(const sf::Vector2f& p, const sf::Color& c, bool iso) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _isometric(iso), _active(true) {
     }
 
     Light::~Light() {
@@ -62,7 +62,7 @@ namespace LS {
         return sf::IntRect(sf::Vector2i(_aabb.left+static_cast<int>(_position.x),_aabb.top+static_cast<int>(_position.y)),sf::Vector2i(_aabb.width,_aabb.height));
     }
 
-    void Light::setPosition(sf::Vector2f c) {
+    void Light::setPosition(const sf::Vector2f& c) {
         _position = c;
         _sprite.setPosition(c);
 	}
@@ -71,11 +71,11 @@ namespace LS {
         return _position;
 	}
 
-    void Light::move(sf::Vector2f delta) {
+    void Light::move(const sf::Vector2f& delta) {
         _position += delta;
     }
 
-    void Light::setColor(sf::Color c) {
+    void Light::setColor(const sf::Color& c) {
         _color = c;
 	}
 

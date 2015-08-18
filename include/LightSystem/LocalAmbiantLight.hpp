@@ -30,7 +30,7 @@ namespace LS {
 
     class LocalAmbiantLight : public Light {
         public:
-            LocalAmbiantLight(sf::Vector2f p, sf::ConvexShape s, sf::Color c, bool negative = false, bool iso = false);
+            LocalAmbiantLight(const sf::Vector2f& p, const sf::ConvexShape& s, const sf::Color& c, bool negative = false, bool iso = false);
             virtual ~LocalAmbiantLight();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
@@ -41,7 +41,7 @@ namespace LS {
 
             virtual bool isNegative() const override;
 
-            void setShape(sf::ConvexShape s);
+            void setShape(const sf::ConvexShape& s);
             sf::ConvexShape getShape() const;
 
         protected:

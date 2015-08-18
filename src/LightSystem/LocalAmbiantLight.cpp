@@ -32,7 +32,7 @@ namespace LS {
     LocalAmbiantLight::~LocalAmbiantLight() {
     }
 
-    LocalAmbiantLight::LocalAmbiantLight(sf::Vector2f p, sf::ConvexShape s, sf::Color c, bool negative, bool iso) : Light(p,c,iso), _shape(s), _negative(negative) {
+    LocalAmbiantLight::LocalAmbiantLight(const sf::Vector2f& p, const sf::ConvexShape& s, const sf::Color& c, bool negative, bool iso) : Light(p,c,iso), _shape(s), _negative(negative) {
 
         computeAABB();
     }
@@ -88,7 +88,7 @@ namespace LS {
         return _negative;
     }
 
-    void LocalAmbiantLight::setShape(sf::ConvexShape s) {
+    void LocalAmbiantLight::setShape(const sf::ConvexShape& s) {
         _shape = s;
     }
 

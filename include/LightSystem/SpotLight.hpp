@@ -36,8 +36,8 @@ namespace LS {
     **/
     class SpotLight : public Light {
         public:
-            SpotLight(sf::Vector2f p, float r, sf::Color c, bool iso = false);
-            SpotLight(sf::Vector2f p, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso = false);
+            SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, bool iso = false);
+            SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf, bool iso = false);
             virtual ~SpotLight();
 
             virtual void preRender(sf::Shader* shader) override;

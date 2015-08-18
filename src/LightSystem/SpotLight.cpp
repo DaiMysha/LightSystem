@@ -35,10 +35,10 @@ namespace LS {
     SpotLight::~SpotLight() {
 	}
 
-    SpotLight::SpotLight(sf::Vector2f p, float r, sf::Color c, bool iso) : SpotLight(p,r,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f,iso) {
+    SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, bool iso) : SpotLight(p,r,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f,iso) {
     }
 
-    SpotLight::SpotLight(sf::Vector2f p, float r, sf::Color c, float da, float sa, float i, float b, float lf, bool iso) : Light(p,c,iso),
+    SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf, bool iso) : Light(p,c,iso),
      _radius(r), _directionAngle(DMUtils::maths::degToRad(da)), _spreadAngle(sa), _bleed(b), _linearity(lf), _negative(false), _resizeWhenIncrease(false) {
         setSpreadAngle(sa);
         setIntensity(i);
