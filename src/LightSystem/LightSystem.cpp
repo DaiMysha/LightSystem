@@ -35,7 +35,7 @@ namespace LS {
     //const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::One, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
     const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::Zero, sf::BlendMode::OneMinusSrcColor, sf::BlendMode::Add));
 
-    LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _isometric(isometric), _autoDelete(true) {
+    LightSystem::LightSystem(bool isometric) : _ambiant(sf::Color::Black), _isometric(isometric), _autoDelete(true), _updateLightMapImage(true) {
 
         /*if(!_lightAttenuationShader.loadFromFile("shaders/lightAttenuation.frag",sf::Shader::Fragment)) {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
@@ -106,6 +106,7 @@ namespace LS {
 
         _renderTexture.display();
 
+        _updateLightMapImage = true;
         if(flags & DebugFlags::LightMap_only) target.clear(sf::Color::White);
     }
 
@@ -151,6 +152,7 @@ namespace LS {
                 _lights.emplace_back(l);
             }
         }
+        _updateLightMapImage = true;
     }
 
     size_t LightSystem::getLightsCount() const {
@@ -166,13 +168,19 @@ namespace LS {
     }
 
     sf::Image LightSystem::getLightMap() const {
-        return _renderTexture.getTexture().copyToImage();
+        if(_updateLightMapImage) {
+            _lightMapImage = _renderTexture.getTexture().copyToImage();
+            _updateLightMapImage = false;
+        }
+        return _lightMapImage;
     }
 
-    sf::Color LightSystem::getLightMapPixel(const sf::View& view, int x, int y) const {
+    sf::Color LightSystem::getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y) const {
+        sf::Image lightMap = getLightMap();
         x -= view.getViewport().left;
         y -= view.getViewport().top;
-        return getLightMap().getPixel(x,y);
+        if(x>=0&&y>=0&&x<lightMap.getSize().x&&y<lightMap.getSize().y) return lightMap.getPixel(x,y);
+        else return sf::Color::Black;
     }
 
     sf::Color LightSystem::getLightMapPixel(const sf::View& view, sf::Vector2f p) const {

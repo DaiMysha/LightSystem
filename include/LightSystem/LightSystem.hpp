@@ -78,7 +78,7 @@ namespace LS {
 
             sf::Image getLightMap() const;//this function is expensive so don't call it too often
 
-            sf::Color getLightMapPixel(const sf::View& view, int x, int y) const;
+            sf::Color getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y) const;
             sf::Color getLightMapPixel(const sf::View& view, sf::Vector2f p) const;
 
             void setAmbiantLight(sf::Color c);
@@ -106,6 +106,9 @@ namespace LS {
 
             bool _isometric;
             bool _autoDelete;
+            //yeah...
+            mutable bool _updateLightMapImage;
+            mutable sf::Image _lightMapImage;
 
     };
 }
