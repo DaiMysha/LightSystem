@@ -47,14 +47,6 @@ namespace LS {
         _shape.setFillColor(_color);
         _shape.setPosition(_position);
 
-        if(isIsometric()) {
-            for(size_t i=1;i<_shape.getPointCount();++i) {
-                sf::Vector2f point = DMUtils::sfml::rotate(_shape.getPoint(i),DMUtils::maths::degToRad(45.0f),_shape.getPoint(0));
-                point.y /= 2.0f;
-                _shape.setPoint(i,point);
-            }
-        }
-
         computeAABB();
     }
 
@@ -77,11 +69,6 @@ namespace LS {
         _aabb.top = miny;
         _aabb.width = maxx - minx;
         _aabb.height = maxy - miny;
-
-        if(isIsometric()) {
-            _aabb.width /= 2.0f;
-            _aabb.height /= 2.0f;
-        }
     }
 
     bool LocalAmbiantLight::isNegative() const {
