@@ -107,7 +107,7 @@ namespace LS {
             shape.setPosition(_position);
             shape.setOrigin(sf::Vector2f(1,1)*_radius);
             shape.setFillColor(_color);
-
+            if(isIsometric()) shape.setScale(1.0f,0.5f);
             target.draw(shape,states);
         } else {
             sf::ConvexShape shape;
@@ -120,13 +120,28 @@ namespace LS {
 
             float deltaAngle = _spreadAngle / (float)(_precision-1);
             for(int i=0;i<_precision;++i) {
-                float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
-                shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
+                float angle = _directionAngle - _spreadAngle/2.0f + (float)i*deltaAngle;
+                sf::Vector2f p(DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
+                if(isIsometric()) {
+                    p.y /= 2.0f;
+                }
+                shape.setPoint(i+1,p);
             }
 
-            shape.setRotation(DMUtils::maths::radToDeg(_directionAngle));
-
             target.draw(shape,states);
+
+            /*//draws the target angle
+            sf::Vertex line[2];
+            line[0].position = _position + sf::Vector2f(0.0f,0.0f);
+            line[0].color = _color;
+            line[1].position = _position +  DMUtils::sfml::rotate(v,_directionAngle);
+            line[1].color = _color;
+
+            if(isIsometric()) {
+                line[1].position.y -= (line[1].position.y-_position.y)/2.0f;
+            }
+
+            target.draw(line,2,sf::Lines, states);*/
         }
 	}
 
