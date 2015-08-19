@@ -149,7 +149,7 @@ namespace LS {
         bool wasNegative = l->isNegative();
         l->preRender(&_lightAttenuationShader);
         bool isNegative = l->isNegative();
-        if(wasNegative xor isNegative) {
+        if((wasNegative && !isNegative) || (!wasNegative && isNegative)) {
             if(isNegative) {
                 _lights.remove(l);
                 _negativeLights.emplace_back(l);
