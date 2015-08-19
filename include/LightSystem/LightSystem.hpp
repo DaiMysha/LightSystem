@@ -76,10 +76,10 @@ namespace LS {
             size_t getNormalLightsCount() const;
             size_t getNegativeLightsCount() const;
 
-            sf::Image getLightMap() const;//this function is expensive so don't call it too often
+            sf::Image getLightMap();//this function is expensive so don't call it too often
 
-            sf::Color getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y) const;
-            sf::Color getLightMapPixel(const sf::View& view, sf::Vector2f p) const;
+            sf::Color getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y);
+            sf::Color getLightMapPixel(const sf::View& view, sf::Vector2f p);
 
             void setAmbiantLight(sf::Color c);
             sf::Color getAmbiantLight() const;
@@ -107,8 +107,8 @@ namespace LS {
             bool _isometric;
             bool _autoDelete;
             //yeah...
-            mutable bool _updateLightMapImage;
-            mutable sf::Image _lightMapImage;
+            bool _updateLightMapImage;
+            sf::Image _lightMapImage;
 
     };
 }

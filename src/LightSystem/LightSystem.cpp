@@ -52,6 +52,8 @@ namespace LS {
     }
 
     void LightSystem::addLight(Light* l) {
+        if(l==nullptr) return;
+
         l->setIsometric(_isometric);//ignore what user set before
         l->preRender(&_lightAttenuationShader);
         if(l->isNegative()) _negativeLights.emplace_back(l);
@@ -59,12 +61,16 @@ namespace LS {
     }
 
     void LightSystem::addLight(EmissiveLight* l) {
+        if(l==nullptr) return;
+
         l->setIsometric(_isometric);//ignore what user set before
         l->preRender(&_lightAttenuationShader);
         _emissiveLights.emplace_back(l);
     }
 
     void LightSystem::removeLight(Light* l) {
+        if(l==nullptr) return;
+
         if(l->isNegative()) _negativeLights.remove(l);
         else _lights.remove(l);
     }
@@ -167,7 +173,7 @@ namespace LS {
         return _negativeLights.size();
     }
 
-    sf::Image LightSystem::getLightMap() const {
+    sf::Image LightSystem::getLightMap() {
         if(_updateLightMapImage) {
             _lightMapImage = _renderTexture.getTexture().copyToImage();
             _updateLightMapImage = false;
@@ -175,7 +181,7 @@ namespace LS {
         return _lightMapImage;
     }
 
-    sf::Color LightSystem::getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y) const {
+    sf::Color LightSystem::getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y) {
         sf::Image lightMap = getLightMap();
         x -= view.getViewport().left;
         y -= view.getViewport().top;
@@ -183,7 +189,7 @@ namespace LS {
         else return sf::Color::Black;
     }
 
-    sf::Color LightSystem::getLightMapPixel(const sf::View& view, sf::Vector2f p) const {
+    sf::Color LightSystem::getLightMapPixel(const sf::View& view, sf::Vector2f p) {
         return getLightMapPixel(view,p.x,p.y);
     }
 
