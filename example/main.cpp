@@ -336,9 +336,11 @@ int main(int argc, char** argv) {
             //also use this timer to alternate the negative light to a positive light
             //you can change the positivity of a light just by changing its intensity
             //this however requires an update of the light
+            ls.removeLight(negativeSpot);
             if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
             else negativeSpot->setIntensity(-1.0f);
-            ls.update(negativeSpot);
+            ls.addLight(negativeSpot);
+
 
             //you can easily switch a light on and off with this function
             //and it doesn't require an update of the light

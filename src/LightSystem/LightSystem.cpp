@@ -58,6 +58,8 @@ namespace LS {
         l->preRender(&_lightAttenuationShader);
         if(l->isNegative()) _negativeLights.emplace_back(l);
         else _lights.emplace_back(l);
+
+        _updateLightMapImage = true;
     }
 
     void LightSystem::addLight(EmissiveLight* l) {
@@ -146,18 +148,7 @@ namespace LS {
     }
 
     void LightSystem::update(Light* l) {
-        bool wasNegative = l->isNegative();
         l->preRender(&_lightAttenuationShader);
-        bool isNegative = l->isNegative();
-        if((wasNegative && !isNegative) || (!wasNegative && isNegative)) {
-            if(isNegative) {
-                _lights.remove(l);
-                _negativeLights.emplace_back(l);
-            } else {
-                _negativeLights.remove(l);
-                _lights.emplace_back(l);
-            }
-        }
         _updateLightMapImage = true;
     }
 

@@ -106,7 +106,7 @@ namespace LS {
 
             bool _isometric;
             bool _autoDelete;
-            //yeah...
+
             bool _updateLightMapImage;
             sf::Image _lightMapImage;
 
