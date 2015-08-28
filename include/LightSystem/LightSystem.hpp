@@ -41,7 +41,7 @@ namespace LS {
                 LightMap_only = 2,
             };
 
-            LightSystem(bool isometric = false);
+            LightSystem();
             LightSystem(const LightSystem& ls) = delete; //doesn't make sense to copy an existing light system
             LightSystem(LightSystem&& ls) = delete; //doesn't make sense to copy an existing light system
             LightSystem& operator=(const LightSystem& ls) = delete;
@@ -84,8 +84,8 @@ namespace LS {
             void setAmbiantLight(sf::Color c);
             sf::Color getAmbiantLight() const;
 
-            void setIsometric(bool i);
-            bool isIsometric() const;
+            //void setIsometric(bool i);
+            //bool isIsometric() const;
 
             void setAutoDelete(bool ad);
 

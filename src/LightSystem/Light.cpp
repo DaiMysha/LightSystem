@@ -84,7 +84,7 @@ namespace LS {
 	}
 
     void Light::setIsometric(bool i) {
-        _isometric = i;
+        _isometric = false;
     }
 
     void Light::setActive(bool a) {
