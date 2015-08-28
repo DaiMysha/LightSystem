@@ -28,7 +28,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
 
-    EmissiveLight::EmissiveLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr) : Light(p,c,false), _angle(DMUtils::maths::degToRad(a)) {
+    EmissiveLight::EmissiveLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr) : Light(p,c), _angle(DMUtils::maths::degToRad(a)) {
         _sprite = spr;
         preRender(nullptr);
 	}
@@ -60,10 +60,6 @@ namespace LS {
         _aabb.top = f.top - _position.y;
         _aabb.width = f.width;
         _aabb.height = f.height;
-	}
-
-    bool EmissiveLight::isNegative() const {
-        return false;
 	}
 
     void EmissiveLight::setAngle(float a) {

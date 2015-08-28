@@ -28,7 +28,7 @@ namespace LS {
 
     class Light {
         public:
-            Light(const sf::Vector2f& p, const sf::Color& c, bool iso = false);
+            Light(const sf::Vector2f& p, const sf::Color& c);
             virtual ~Light();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) = 0;
@@ -50,7 +50,8 @@ namespace LS {
             bool isIsometric() const;
             void setIsometric(bool i);
 
-            virtual bool isNegative() const = 0;
+            bool isNegative();
+            void setNegative(bool n);
 
             void setActive(bool a);
             bool isActive() const;
@@ -64,6 +65,19 @@ namespace LS {
             static const char LAS_PARAM_OUTLINE[];//used mainly for debug, don't mind it
             static const char LAS_PARAM_ISOMETRIC[];
 
+            enum Attributes {
+                ACTIVE      = 1,
+                NEGATIVE    = 1 << 1,
+                EMISSIVE    = 1 << 2,
+                ISOMETRIC   = 1 << 3,
+                STATIC      = 1 << 4,
+                MOVABLE     = 1 << 5,
+                DYNAMIC     = STATIC | MOVABLE
+            };
+
+            void _setAttribute(Light::Attributes a);
+            void _unsetAttribute(Light::Attributes a);
+
             sf::IntRect _aabb;
 
             sf::Vector2f _position;
@@ -72,8 +86,8 @@ namespace LS {
             sf::RenderTexture* _renderTexture;
             sf::Sprite _sprite;
 
-            bool _isometric;
-            bool _active;
+        private:
+            char _attributes;//do not allow user to modify it directly, use the set/unset functions
     };
 }
 }

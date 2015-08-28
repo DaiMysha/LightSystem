@@ -35,11 +35,11 @@ namespace LS {
     SpotLight::~SpotLight() {
 	}
 
-    SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, bool iso) : SpotLight(p,r,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f,iso) {
+    SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c) : SpotLight(p,r,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f) {
     }
 
-    SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf, bool iso) : Light(p,c,iso),
-     _radius(r), _directionAngle(DMUtils::maths::degToRad(da)), _spreadAngle(sa), _bleed(b), _linearity(lf), _negative(false), _resizeWhenIncrease(false) {
+    SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf) : Light(p,c),
+     _radius(r), _directionAngle(DMUtils::maths::degToRad(da)), _spreadAngle(sa), _bleed(b), _linearity(lf), _resizeWhenIncrease(false) {
         setSpreadAngle(sa);
         setIntensity(i);
         computeAABB();
@@ -53,7 +53,7 @@ namespace LS {
 
     void SpotLight::preRender(sf::Shader* shader) {
 
-        _negative = (_intensity<0.0f);
+       setNegative(_intensity<0.0f);
 
         if(shader==nullptr) return; //oopsie, can't work without the shader
 
@@ -169,10 +169,6 @@ namespace LS {
         }
     }
 
-    bool SpotLight::isNegative() const {
-        return _negative;
-    }
-
     void SpotLight::setRadius(float r) {
         _radius = r;
 	}
@@ -267,7 +263,8 @@ namespace LS {
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,_isometric);
+        //shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,isIsometric());
+        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,false);//cannot be for now
 
         sf::ConvexShape shape;
 

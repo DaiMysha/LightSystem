@@ -31,7 +31,7 @@ namespace LS {
     const char Light::LAS_PARAM_OUTLINE[] = "outline";
     const char Light::LAS_PARAM_ISOMETRIC[] = "iso";
 
-    Light::Light(const sf::Vector2f& p, const sf::Color& c, bool iso) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _isometric(iso), _active(true) {
+    Light::Light(const sf::Vector2f& p, const sf::Color& c) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _attributes(Light::ACTIVE) {
     }
 
     Light::~Light() {
@@ -55,7 +55,7 @@ namespace LS {
     }
 
     bool Light::isIsometric() const {
-        return _isometric;
+        return _attributes & ISOMETRIC;
     }
 
     sf::IntRect Light::getAABB() {
@@ -84,15 +84,36 @@ namespace LS {
 	}
 
     void Light::setIsometric(bool i) {
-        _isometric = false;
+        if(i) _setAttribute(ISOMETRIC);
+        else _unsetAttribute(ISOMETRIC);
+    }
+
+    bool Light::isNegative() {
+        return _attributes & NEGATIVE;
+    }
+
+    void Light::setNegative(bool n) {
+        if(n) _setAttribute(NEGATIVE);
+        else _unsetAttribute(NEGATIVE);
     }
 
     void Light::setActive(bool a) {
-        _active = a;
+        if(a) _setAttribute(ACTIVE);
+        else _unsetAttribute(ACTIVE);
     }
 
     bool Light::isActive() const {
-        return _active;
+        return _attributes & ACTIVE;
+    }
+
+    /// PROTECTED
+
+    void Light::_setAttribute(Light::Attributes a) {
+        _attributes |= a;
+    }
+
+    void Light::_unsetAttribute(Light::Attributes a) {
+        _attributes &= ~a;
     }
 
 }

@@ -39,8 +39,6 @@ namespace LS {
 
             virtual void computeAABB() override;
 
-            virtual bool isNegative() const override;//cannot be negative
-
             void setAngle(float a);
             float getAngle() const;
 

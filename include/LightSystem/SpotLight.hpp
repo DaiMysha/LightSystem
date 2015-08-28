@@ -36,8 +36,8 @@ namespace LS {
     **/
     class SpotLight : public Light {
         public:
-            SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, bool iso = false);
-            SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf, bool iso = false);
+            SpotLight(const sf::Vector2f& p, float r, const sf::Color& c);
+            SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf);
             virtual ~SpotLight();
 
             virtual void preRender(sf::Shader* shader) override;
@@ -45,8 +45,6 @@ namespace LS {
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
             virtual void computeAABB() override;
-
-            virtual bool isNegative() const override;
 
             void setRadius(float r);
             float getRadius() const;
@@ -84,7 +82,6 @@ namespace LS {
 
             int _precision;//number of arcs in the circle
 
-            bool _negative;
             bool _resizeWhenIncrease;//if set to true, the texture is reallocated only if the needed size increases (if new _radius is inferior to previous, it doesn't change)
 
     };
