@@ -36,9 +36,9 @@ namespace LS {
     class LightSystem {
         public:
             enum DebugFlags {
-                Default = 0,
-                Shader_off = 1,
-                LightMap_only = 2,
+                DEFAULT = 0,
+                SHADER_OFF = 1,
+                LIGHTMAP_ONLY = 2,
             };
 
             LightSystem();
@@ -63,7 +63,7 @@ namespace LS {
 
             //call this function to prepare the render
             void render(const sf::View& screenView, sf::RenderTarget& target);
-            void debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags = DebugFlags::Default);
+            void debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags = DebugFlags::DEFAULT);
             //call these to draw the light on the screen
             void draw(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::View& screenView, sf::RenderTarget& target);

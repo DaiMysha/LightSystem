@@ -306,8 +306,8 @@ int main(int argc, char** argv) {
             window.draw(p);
 
             int flags = 0;
-            if(debugLightMapOnly) flags |= DMGDVT::LS::LightSystem::DebugFlags::LightMap_only;
-            if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DebugFlags::Shader_off;
+            if(debugLightMapOnly) flags |= DMGDVT::LS::LightSystem::DebugFlags::LIGHTMAP_ONLY;
+            if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DebugFlags::SHADER_OFF;
 
             //use LightSystem::render if not using debug
             //if using debugRender, the flags allow you to modify the way the lights are drawn
@@ -335,7 +335,8 @@ int main(int argc, char** argv) {
 
             //also use this timer to alternate the negative light to a positive light
             //you can change the positivity of a light just by changing its intensity
-            //this however requires an update of the light
+            //this however requires you to remove the light and to add it again
+            //the addLight takes care of updating the light, no need to readd it
             ls.removeLight(negativeSpot);
             if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
             else negativeSpot->setIntensity(-1.0f);
