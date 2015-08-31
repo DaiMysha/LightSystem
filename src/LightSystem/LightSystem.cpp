@@ -57,8 +57,6 @@ namespace LS {
         l->setIsometric(_isometric);//ignore what user set before
         l->preRender(&_lightAttenuationShader);
 
-        std::cout << "addLight is negative : " << l->isNegative() << std::endl;
-
         if(l->isNegative()) _negativeLights.emplace_back(l);
         else _lights.emplace_back(l);
 
