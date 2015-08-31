@@ -26,6 +26,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
 
+    class LightSystem;
+
     class Light {
         public:
             Light(const sf::Vector2f& p, const sf::Color& c);
@@ -55,6 +57,11 @@ namespace LS {
 
             void setActive(bool a);
             bool isActive() const;
+
+            void removeFromSystem();
+            void setSystem(LightSystem* ls);
+            LightSystem* getSystem() const;
+
 
         protected:
             static const char LAS_PARAM_CENTER[];
@@ -88,6 +95,7 @@ namespace LS {
 
         private:
             char _attributes;//do not allow user to modify it directly, use the set/unset functions
+            LightSystem* _system;
     };
 }
 }

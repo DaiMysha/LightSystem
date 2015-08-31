@@ -20,6 +20,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/Light.hpp>
 
+#include <LightSystem/LightSystem.hpp>
+
 namespace DMGDVT {
 namespace LS {
 
@@ -31,10 +33,12 @@ namespace LS {
     const char Light::LAS_PARAM_OUTLINE[] = "outline";
     const char Light::LAS_PARAM_ISOMETRIC[] = "iso";
 
-    Light::Light(const sf::Vector2f& p, const sf::Color& c) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _attributes(Light::ACTIVE) {
+    Light::Light(const sf::Vector2f& p, const sf::Color& c) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _attributes(Light::ACTIVE), _system(nullptr) {
     }
 
     Light::~Light() {
+        //removes from the system if it exists
+        setSystem(nullptr);
         delete _renderTexture;
     }
 
@@ -104,6 +108,19 @@ namespace LS {
 
     bool Light::isActive() const {
         return _attributes & ACTIVE;
+    }
+
+    void Light::removeFromSystem() {
+        if(_system) _system->removeLight(this);
+        setSystem(nullptr);
+    }
+
+    void Light::setSystem(LightSystem* ls) {
+        _system = ls;
+    }
+
+    LightSystem* Light::getSystem() const {
+        return _system;
     }
 
     /// PROTECTED

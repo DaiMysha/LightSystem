@@ -60,6 +60,8 @@ namespace LS {
         if(l->isNegative()) _negativeLights.emplace_back(l);
         else _lights.emplace_back(l);
 
+        l->setSystem(this);
+
         _updateLightMapImage = true;
     }
 
@@ -79,7 +81,11 @@ namespace LS {
     }
 
     void LightSystem::reset() {
-        if(_autoDelete) for(Light* l : _lights) delete l;
+
+        for(Light* l : _lights) {
+            l->setSystem(nullptr);
+            if(_autoDelete) delete l;
+        }
 
         _lights.empty();
     }
