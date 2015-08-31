@@ -57,7 +57,8 @@ namespace LS {
         l->setIsometric(_isometric);//ignore what user set before
         l->preRender(&_lightAttenuationShader);
 
-        if(l->isNegative()) _negativeLights.emplace_back(l);
+        if(l->isEmissive()) _emissiveLights.emplace_back(l);
+        else if(l->isNegative()) _negativeLights.emplace_back(l);
         else _lights.emplace_back(l);
 
         l->setSystem(this);
@@ -65,24 +66,25 @@ namespace LS {
         _updateLightMapImage = true;
     }
 
-    void LightSystem::addLight(EmissiveLight* l) {
-        if(l==nullptr) return;
-
-        l->setIsometric(_isometric);//ignore what user set before
-        l->preRender(&_lightAttenuationShader);
-        _emissiveLights.emplace_back(l);
-    }
-
     void LightSystem::removeLight(Light* l) {
         if(l==nullptr) return;
 
-        if(l->isNegative()) _negativeLights.remove(l);
+        if(l->isEmissive()) _emissiveLights.remove(l);
+        else if(l->isNegative()) _negativeLights.remove(l);
         else _lights.remove(l);
     }
 
     void LightSystem::reset() {
 
         for(Light* l : _lights) {
+            l->setSystem(nullptr);
+            if(_autoDelete) delete l;
+        }
+        for(Light* l : _negativeLights) {
+            l->setSystem(nullptr);
+            if(_autoDelete) delete l;
+        }
+        for(Light* l : _emissiveLights) {
             l->setSystem(nullptr);
             if(_autoDelete) delete l;
         }
@@ -102,10 +104,12 @@ namespace LS {
         _renderTexture.clear(_ambiant);
         sf::RenderStates stAdd(_addState);
         sf::RenderStates stRm(_subtractState);
+
         sf::Transform t;
         t.translate(-_sprite.getPosition());
         stAdd.transform.combine(t);
         stRm.transform.combine(t);
+
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
@@ -128,7 +132,7 @@ namespace LS {
     void LightSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {
         sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
         target.draw(_sprite,_multiplyState);
-        for(EmissiveLight* l : _emissiveLights) {
+        for(Light* l : _emissiveLights) {
             if(l->getAABB().intersects(screen)) l->render(screen,target,nullptr);
         }
     }
@@ -144,7 +148,7 @@ namespace LS {
         for(Light* l : _negativeLights) {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
-        for(EmissiveLight* l : _emissiveLights) {
+        for(Light* l : _emissiveLights) {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
     }
@@ -152,6 +156,7 @@ namespace LS {
     void LightSystem::update() {
         for(Light* l : _lights) update(l);
         for(Light* l : _negativeLights) update(l);
+        for(Light* l : _emissiveLights) update(l);
     }
 
     void LightSystem::update(Light* l) {
@@ -160,7 +165,7 @@ namespace LS {
     }
 
     size_t LightSystem::getLightsCount() const {
-        return getNormalLightsCount() + getNegativeLightsCount();
+        return getNormalLightsCount() + getNegativeLightsCount() + getEmissiveLightsCount();
     }
 
     size_t LightSystem::getNormalLightsCount() const {
@@ -169,6 +174,10 @@ namespace LS {
 
     size_t LightSystem::getNegativeLightsCount() const {
         return _negativeLights.size();
+    }
+
+    size_t LightSystem::getEmissiveLightsCount() const {
+        return _emissiveLights.size();
     }
 
     sf::Image LightSystem::getLightMap() {

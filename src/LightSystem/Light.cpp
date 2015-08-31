@@ -97,6 +97,7 @@ namespace LS {
     }
 
     void Light::setNegative(bool n) {
+        if(isEmissive()) return;//an emissive light cannot be negative
         if(n) _setAttribute(NEGATIVE);
         else _unsetAttribute(NEGATIVE);
     }
@@ -108,6 +109,17 @@ namespace LS {
 
     bool Light::isActive() const {
         return _attributes & ACTIVE;
+    }
+
+    void Light::setEmissive(bool e) {
+        if(e) {
+            _setAttribute(EMISSIVE);
+            _unsetAttribute(NEGATIVE);//an emissive light cannot be negative
+        } else _unsetAttribute(EMISSIVE);
+    }
+
+    bool Light::isEmissive() const {
+        return _attributes & EMISSIVE;
     }
 
     void Light::removeFromSystem() {

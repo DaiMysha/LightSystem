@@ -58,6 +58,9 @@ namespace LS {
             void setActive(bool a);
             bool isActive() const;
 
+            void setEmissive(bool e);
+            bool isEmissive() const;
+
             void removeFromSystem();
             void setSystem(LightSystem* ls);
             LightSystem* getSystem() const;

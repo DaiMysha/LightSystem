@@ -28,7 +28,6 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <SFML/Graphics.hpp>
 
 #include <LightSystem/Light.hpp>
-#include <LightSystem/EmissiveLight.hpp>
 
 namespace DMGDVT {
 namespace LS {
@@ -50,7 +49,6 @@ namespace LS {
             ~LightSystem();
 
             void addLight(Light* l);
-            void addLight(EmissiveLight* l);
             template <typename T, typename ... Args>
             T* addLight(Args&& ... args) {
                 T *l = new T(std::forward<Args>(args)...);
@@ -75,6 +73,7 @@ namespace LS {
             size_t getLightsCount() const;
             size_t getNormalLightsCount() const;
             size_t getNegativeLightsCount() const;
+            size_t getEmissiveLightsCount() const;
 
             sf::Image getLightMap();//this function is expensive so don't call it too often
 
@@ -98,7 +97,7 @@ namespace LS {
 
             std::list<Light*> _lights;
             std::list<Light*> _negativeLights;
-            std::list<EmissiveLight*> _emissiveLights;
+            std::list<Light*> _emissiveLights;
             sf::Color _ambiant;
             sf::Shader _lightAttenuationShader;
             sf::RenderTexture _renderTexture;
