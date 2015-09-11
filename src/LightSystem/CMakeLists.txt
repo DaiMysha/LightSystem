@@ -6,7 +6,7 @@ set(FILES_HEADER
 	${INCROOT}/Light.hpp
 	${INCROOT}/SpotLight.hpp
 	${INCROOT}/LocalAmbiantLight.hpp
-	${INCROOT}/EmissiveLight.hpp
+	${INCROOT}/SpriteLight.hpp
 )
 
 set(FILES_SRC
@@ -14,7 +14,7 @@ set(FILES_SRC
 	${SRCROOT}/Light.cpp
 	${SRCROOT}/SpotLight.cpp
 	${SRCROOT}/LocalAmbiantLight.cpp
-	${SRCROOT}/EmissiveLight.cpp
+	${SRCROOT}/SpriteLight.cpp
 )
 	
 build_library(${PROJECT_NAME}

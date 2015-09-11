@@ -29,7 +29,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/LightSystem.hpp>
 #include <LightSystem/SpotLight.hpp>
 #include <LightSystem/LocalAmbiantLight.hpp>
-#include <LightSystem/EmissiveLight.hpp>
+#include <LightSystem/SpriteLight.hpp>
 
 #define WIDTH   640
 #define HEIGHT  480
@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
     //emissive lights CANNOT be negative
     //but they can be updated at any moment on any parameter without any cost
     //still need to call the LightSystem::update(Light*) on it
-    DMGDVT::LS::EmissiveLight* emissive = new DMGDVT::LS::EmissiveLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),180.0f/2.0f,emissiveSprite);
+    DMGDVT::LS::SpriteLight* emissive = new DMGDVT::LS::SpriteLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),180.0f/2.0f,emissiveSprite);
     emissive->setEmissive(true);
 
     //this parameter allows you to change the way textures are resized when a call to LightSystem::update(Light*) is done

@@ -21,26 +21,26 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 */
 #include <iostream>
 
-#include <LightSystem/EmissiveLight.hpp>
+#include <LightSystem/SpriteLight.hpp>
 
 #include <DMUtils/maths.hpp>
 
 namespace DMGDVT {
 namespace LS {
 
-    EmissiveLight::EmissiveLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr) : Light(p,c), _angle(DMUtils::maths::degToRad(a)) {
+    SpriteLight::SpriteLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr) : Light(p,c), _angle(DMUtils::maths::degToRad(a)) {
         _sprite = spr;
         preRender(nullptr);
 	}
 
-    EmissiveLight::~EmissiveLight() {
+    SpriteLight::~SpriteLight() {
 	}
 
-    void EmissiveLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
+    void SpriteLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
         target.draw(_sprite);
 	}
 
-    void EmissiveLight::preRender(sf::Shader* shader) {
+    void SpriteLight::preRender(sf::Shader* shader) {
         sf::Vector2u s = _sprite.getTexture()->getSize();
         _sprite.setColor(_color);
         _sprite.setOrigin(sf::Vector2f(s.x/2.0f,s.y/2.0f));
@@ -50,11 +50,11 @@ namespace LS {
         computeAABB();
 	}
 
-    void EmissiveLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
+    void SpriteLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
         render(target.getViewport(target.getView()),target,nullptr,states);
 	}
 
-    void EmissiveLight::computeAABB() {
+    void SpriteLight::computeAABB() {
         sf::FloatRect f(_sprite.getGlobalBounds());
         _aabb.left = f.left - _position.x;
         _aabb.top = f.top - _position.y;
@@ -62,15 +62,15 @@ namespace LS {
         _aabb.height = f.height;
 	}
 
-    void EmissiveLight::setAngle(float a) {
+    void SpriteLight::setAngle(float a) {
         _angle = DMUtils::maths::degToRad(a);
     }
 
-    float EmissiveLight::getAngle() const {
+    float SpriteLight::getAngle() const {
         return DMUtils::maths::radToDeg(_angle);
     }
 
-    void EmissiveLight::setSprite(const sf::Sprite& s) {
+    void SpriteLight::setSprite(const sf::Sprite& s) {
         _sprite = s;
     }
 

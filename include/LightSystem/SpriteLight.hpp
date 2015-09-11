@@ -28,10 +28,10 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
 
-    class EmissiveLight : public Light {
+    class SpriteLight : public Light {
         public:
-            EmissiveLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr);
-            virtual ~EmissiveLight();
+            SpriteLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr);
+            virtual ~SpriteLight();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
             virtual void preRender(sf::Shader* shader) override;
