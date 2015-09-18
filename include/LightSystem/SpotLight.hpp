@@ -73,6 +73,7 @@ namespace LS {
 
         protected:
             void _render(sf::RenderTarget& target, const sf::RenderStates& states, sf::Shader* shader, sf::Vector2f center, sf::Vector2f shapePosition = sf::Vector2f(0.0f,0.0f), sf::Vector2f shapeOrigin = sf::Vector2f(0.0f,0.0f), float shapeRotation = 0.0f);
+            virtual sf::ConvexShape _makeShape();
             float _radius;
             float _directionAngle; //angle light is pointing, rad
             float _spreadAngle; //how wide the light covers, rad

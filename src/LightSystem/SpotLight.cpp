@@ -266,8 +266,18 @@ namespace LS {
         //shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,isIsometric());
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,false);//cannot be for now
 
-        sf::ConvexShape shape;
+        sf::ConvexShape shape = _makeShape();
 
+        if(_spreadAngle != M_PIf*2.0f)
+            shape.setRotation(shapeRotation);
+
+        shape.setPosition(shapePosition);
+        shape.setOrigin(shapeOrigin);
+        target.draw(shape,st);
+	}
+
+    sf::ConvexShape SpotLight::_makeShape() {
+        sf::ConvexShape shape;
         if(_spreadAngle==M_PIf*2.0f) {
 
             float diam = _radius*2.0f;
@@ -289,13 +299,9 @@ namespace LS {
                 float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
                 shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
             }
-
-            shape.setRotation(shapeRotation);
         }
-        shape.setPosition(shapePosition);
-        shape.setOrigin(shapeOrigin);
-        target.draw(shape,st);
-	}
 
+        return shape;
+    }
 }
 }
