@@ -53,7 +53,7 @@ namespace LS {
 
     void SpotLight::preRender(sf::Shader* shader) {
 
-       setNegative(_intensity<0.0f);
+        setNegative(_intensity<0.0f);
 
         if(shader==nullptr) return; //oopsie, can't work without the shader
 
