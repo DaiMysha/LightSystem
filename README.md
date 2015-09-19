@@ -16,7 +16,7 @@ Every light has the following attributes :
 
 The system allows you to use the following lights :
 
-SpotLight :
+* SpotLight :
 	Representing a point that shines with a given direction and spread angle.
 	
 	This type of light exposes the following parameters :
@@ -30,19 +30,19 @@ SpotLight :
 	
 	All parameters except for the directionAngle and the resizeWhenIncrease option require an update of the light.
 
-FlashLight :
+* FlashLight :
 	A FlashLight is a SpotLight with a linear base. It exposes the same parameters as the SpotLight.
 	It also exposes the following parameter :
 	* width : how wide the base line is. Expressed in pixels.
 	
 	Modifying a FlashLight's width requires an update of the light.
 
-LocalAmbiantLight :
+* LocalAmbiantLight :
 	A LocalAmbiantLight represents an area where the basic lightning is different than the rest of the system.
 	A LocalAmbiantLight has the following extra parameters :
 	* shape : the shape of the area that has the specific lightning. Modifying this parameter requires an update of the light.
 
-SpriteLight :
+* SpriteLight :
 	A SpriteLight is a light in shape of a specific picture given in parameter. It is best to use images that are in grey shades to have the best result on this light.
 	Exposes the following parameter :
 	* Angle : the orientation of the Sprite according to the y-axis.
