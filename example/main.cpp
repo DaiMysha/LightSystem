@@ -28,6 +28,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/sfml.hpp>
 #include <LightSystem/LightSystem.hpp>
 #include <LightSystem/SpotLight.hpp>
+#include <LightSystem/FlashLight.hpp>
 #include <LightSystem/LocalAmbiantLight.hpp>
 #include <LightSystem/SpriteLight.hpp>
 
@@ -141,16 +142,18 @@ int main(int argc, char** argv) {
     DMGDVT::LS::SpotLight* firePit1 = new DMGDVT::LS::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
     DMGDVT::LS::SpotLight* firePit2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
 
+    //a flashlight is a spotlight with a line base instead of a point
+    DMGDVT::LS::SpotLight* flashLight = new DMGDVT::LS::FlashLight(sf::Vector2f(2845,1245),800,30,sf::Color::White,180.0f/2.0f,180.0f/10.0f,1.0f,0.0f,2.0f);
+
     //just some more lights to test a few things
     DMGDVT::LS::SpotLight* lamp = new DMGDVT::LS::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,180.0f*2.0f,1.0f,0.0f,0.50f);
-    DMGDVT::LS::SpotLight* hugeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2845,1245),800,sf::Color::White,180.0f/2.0f ,180.0f/10.0f,1.0f,0.0f,2.0f);
 
     //one negative spot in the room with the ceiling white light
     DMGDVT::LS::SpotLight* negativeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),180.0f/4.0f ,180.0f/4.0f,-1.0f,0.0f,2.0f);
 
     //template add example
     //also follows the player around, showing you don't need to update a light if you're just moving it around
-    DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
+    DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::FlashLight>(p.getPosition(),200,10,sf::Color::Yellow);
 
     //local ambiant lights are useful for example to make a difference between day and night
     DMGDVT::LS::LocalAmbiantLight* localAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(1535,1439),ambiantShape,sf::Color::Red);
@@ -185,7 +188,7 @@ int main(int argc, char** argv) {
     ls.addLight(firePit1);
     ls.addLight(firePit2);
     ls.addLight(lamp);
-    ls.addLight(hugeSpot);
+    ls.addLight(flashLight);
     ls.addLight(negativeSpot);
     ls.addLight(localAmbiant);
     ls.addLight(negativeAmbiant);
@@ -346,7 +349,7 @@ int main(int argc, char** argv) {
 
             //you can easily switch a light on and off with this function
             //and it doesn't require an update of the light
-            hugeSpot->setActive(!hugeSpot->isActive());
+            flashLight->setActive(!flashLight->isActive());
 
             //this light alternates between a few colors to show the effect of a negative light
             sf::Color c = negativeColors->getColor();

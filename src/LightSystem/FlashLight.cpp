@@ -112,8 +112,6 @@ namespace LS {
      /*** PROTECTED ***/
 
     sf::ConvexShape FlashLight::_makeShape() {
-        std::cout << "\nmakeshape" << std::endl;
-        std::cout << "precision : " << getPrecision() << std::endl;
         sf::ConvexShape shape;
 
         shape.setPointCount(4);
