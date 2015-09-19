@@ -1,30 +1,30 @@
 # LightSystem
 Implementation of a Light System in C++11 for SFML
 
-VERSION 0.1
-===========
+*** VERSION 0.1 ***
 
 LightSystem is a simple Light Library meant to be used with 2D games. It allows the user to create lightning effects using a variety of different lights.
 The version 0.1 is a beta and does not yet support light collisions (shadows)
 
-<img src="https://raw.githubusercontent.com/DaiMysha/LightSystem/dev/screens/introduction.png" alt="Introduction" height="250px">
+<img src="https://github.com/DaiMysha/LightSystem/blob/Dev/screens/introduction.png" alt="Introduction" height="250px">
 
 See the example/main.cpp file for an example on how to use the system and the different options.
 	
 REQUIREMENTS
 ------------
-	* C++11 compiler (prefer mingw)
-	* Depends on DMUtils : https://github.com/DaiMysha/DMUtils
-	* SFML : https://github.com/SFML/SFML
-		*NOTE : One of the requiirements for the negative light is still being discussed. For now the LightSystem uses an approximation.
+
+* C++11 compiler (prefer mingw)
+* Depends on DMUtils : https://github.com/DaiMysha/DMUtils
+* SFML : https://github.com/SFML/SFML
+	*NOTE : One of the requiirements for the negative light is still being discussed. For now the LightSystem uses an approximation.
 
 USAGE INFORMATIONS
 ------------------
 
 Every light has the following attributes :
 
-	* position : the position of the light on the whole world.
-	* color : the color of the light.
+* position : the position of the light on the whole world.
+* color : the color of the light.
 
 The system allows you to use the following lights :
 
