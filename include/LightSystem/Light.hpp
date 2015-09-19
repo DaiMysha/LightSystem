@@ -80,9 +80,9 @@ namespace LS {
                 NEGATIVE    = 1 << 1,
                 EMISSIVE    = 1 << 2,
                 ISOMETRIC   = 1 << 3,
-                STATIC      = 1 << 4,
+                POLYMORPH   = 1 << 4,
                 MOVABLE     = 1 << 5,
-                DYNAMIC     = STATIC | MOVABLE
+                DYNAMIC     = POLYMORPH | MOVABLE
             };
 
             void _setAttribute(Light::Attributes a);
