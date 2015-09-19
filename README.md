@@ -2,15 +2,27 @@
 Implementation of a Light System in C++11 for SFML
 
 VERSION 0.1
+===========
 
 LightSystem is a simple Light Library meant to be used with 2D games. It allows the user to create lightning effects using a variety of different lights.
 The version 0.1 is a beta and does not yet support light collisions (shadows)
 
-[pic of the light system]
+<img src="https://raw.githubusercontent.com/DaiMysha/LightSystem/dev/screens/introduction.png" alt="Introduction" height="250px">
 
 See the example/main.cpp file for an example on how to use the system and the different options.
+	
+REQUIREMENTS
+------------
+	* C++11 compiler (prefer mingw)
+	* Depends on DMUtils : https://github.com/DaiMysha/DMUtils
+	* SFML : https://github.com/SFML/SFML
+		*NOTE : One of the requiirements for the negative light is still being discussed. For now the LightSystem uses an approximation.
+
+USAGE INFORMATIONS
+------------------
 
 Every light has the following attributes :
+
 	* position : the position of the light on the whole world.
 	* color : the color of the light.
 
@@ -48,9 +60,8 @@ The system allows you to use the following lights :
 	* Angle : the orientation of the Sprite according to the y-axis.
 	* Sprite : the sprite that the light means to print. Modifying this parameter requires an update of the light.
 
-Others :
-
-If you need a specific light that isn't covered by the given classes, you can implement your own lights by inheriting the Light class.
+* Others :
+	If you need a specific light that isn't covered by the given classes, you can implement your own lights by inheriting the Light class.
 
 The lights can have the following properties :
 
@@ -73,11 +84,7 @@ The lights can have the following properties :
 	A movable light is a light whose position and direction can change. This does not require a recalculation of the light. Used for optimisations (tbi).
 	
 * DYNAMIC :
-	A dynamic light is a light that is both movable and polymorph. (this needs better name as a dynamic light actually is one that is either movable or polymorph.)
+	A dynamic light is a light that is both movable and polymorph.
+	
 	
 Modifying a parameter that requires an update and failing to update the light results in undefined behaviour.
-	
-
-Depends on DMUtils : https://github.com/DaiMysha/DMUtils
-
-Depends on SFML
