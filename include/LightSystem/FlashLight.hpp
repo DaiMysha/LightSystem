@@ -18,8 +18,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 */
 
-#ifndef HEADER_DMGDVT_LINELIGHT
-#define HEADER_DMGDVT_LINELIGHT
+#ifndef HEADER_DMGDVT_FlashLight
+#define HEADER_DMGDVT_FlashLight
 
 #include <SFML/Graphics.hpp>
 
@@ -29,10 +29,10 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
 
-    class LineLight : public SpotLight {
+    class FlashLight : public SpotLight {
         public:
-            LineLight(const sf::Vector2f& p, float r, float w, const sf::Color& c);
-            LineLight(const sf::Vector2f& p, float r, float w, const sf::Color& c, float da, float sa, float i, float b, float lf);
+            FlashLight(const sf::Vector2f& p, float r, float w, const sf::Color& c);
+            FlashLight(const sf::Vector2f& p, float r, float w, const sf::Color& c, float da, float sa, float i, float b, float lf);
 
             virtual void preRender(sf::Shader* shader) override;
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
@@ -51,4 +51,4 @@ namespace LS {
 }
 }
 
-#endif //HEADER_DMGDVT_LINELIGHT
+#endif //HEADER_DMGDVT_FlashLight

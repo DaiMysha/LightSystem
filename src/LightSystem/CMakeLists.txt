@@ -5,6 +5,7 @@ set(FILES_HEADER
 	${INCROOT}/LightSystem.hpp
 	${INCROOT}/Light.hpp
 	${INCROOT}/SpotLight.hpp
+	${INCROOT}/FlashLight.hpp
 	${INCROOT}/LocalAmbiantLight.hpp
 	${INCROOT}/SpriteLight.hpp
 )
@@ -13,6 +14,7 @@ set(FILES_SRC
 	${SRCROOT}/LightSystem.cpp
 	${SRCROOT}/Light.cpp
 	${SRCROOT}/SpotLight.cpp
+	${SRCROOT}/FlashLight.cpp
 	${SRCROOT}/LocalAmbiantLight.cpp
 	${SRCROOT}/SpriteLight.cpp
 )

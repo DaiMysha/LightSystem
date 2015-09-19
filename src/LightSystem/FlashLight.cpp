@@ -19,7 +19,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 */
 #include <iostream>
 
-#include <LightSystem/LineLight.hpp>
+#include <LightSystem/FlashLight.hpp>
 
 #include <DMUtils/maths.hpp>
 #include <DMUtils/sfml.hpp>
@@ -27,20 +27,20 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
 
-    LineLight::LineLight(const sf::Vector2f& p, float r, float w, const sf::Color& c) : LineLight(p,r,w,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f) {
+    FlashLight::FlashLight(const sf::Vector2f& p, float r, float w, const sf::Color& c) : FlashLight(p,r,w,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f) {
     }
 
-    LineLight::LineLight(const sf::Vector2f& p, float r, float w, const sf::Color& c, float da, float sa, float i, float b, float lf) : SpotLight(p,r,c,da,sa,i,b,lf), _width(w) {
+    FlashLight::FlashLight(const sf::Vector2f& p, float r, float w, const sf::Color& c, float da, float sa, float i, float b, float lf) : SpotLight(p,r,c,da,sa,i,b,lf), _width(w) {
         computeAABB();
     }
 
-    void LineLight::preRender(sf::Shader* shader) {
+    void FlashLight::preRender(sf::Shader* shader) {
 
         setNegative(_intensity<0.0f);
 
         if(shader==nullptr) return; //oopsie, can't work without the shader
 
-        const float diam = _radius*2.0f;
+        const float diam = DMUtils::maths::max(_width,_radius);
 
         if(_renderTexture==nullptr) _renderTexture = new sf::RenderTexture();
 
@@ -56,17 +56,18 @@ namespace LS {
         }
 
         _renderTexture->clear();
-        _render(*_renderTexture,sf::RenderStates::Default,shader,sf::Vector2f(0.0f,0.0f));
+        _render(*_renderTexture,sf::RenderStates::Default,shader,sf::Vector2f(_renderTexture->getSize().x/2.0f,_renderTexture->getSize().y),sf::Vector2f(_renderTexture->getSize().x/2.0f,0.0f));
         _renderTexture->display();
 
         _sprite.setPosition(_position);
+        _sprite.setOrigin(sf::Vector2f(_renderTexture->getSize().x/2.0f,0.0f));
         _sprite.setTexture(_renderTexture->getTexture());
         _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
 
         computeAABB();
     }
 
-    void LineLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
+    void FlashLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
         if(getIntensity() == 0.0f) return;
         if(!isActive()) return;
 
@@ -77,7 +78,7 @@ namespace LS {
         target.draw(shape,states);
     }
 
-    void LineLight::computeAABB() {
+    void FlashLight::computeAABB() {
         sf::ConvexShape shape = _makeShape();
         if(shape.getPointCount()==0) return;
 
@@ -100,17 +101,19 @@ namespace LS {
         _aabb.height = ymax - ymin;
      }
 
-    void LineLight::setWidth(float w) {
+    void FlashLight::setWidth(float w) {
         _width = w;
     }
 
-    float LineLight::getWidth() const {
+    float FlashLight::getWidth() const {
         return _width;
     }
 
      /*** PROTECTED ***/
 
-    sf::ConvexShape LineLight::_makeShape() {
+    sf::ConvexShape FlashLight::_makeShape() {
+        std::cout << "\nmakeshape" << std::endl;
+        std::cout << "precision : " << getPrecision() << std::endl;
         sf::ConvexShape shape;
 
         shape.setPointCount(4);
@@ -119,6 +122,19 @@ namespace LS {
 
         shape.setPoint(2,DMUtils::sfml::rotate(sf::Vector2f(_width/2.0f,getRadius()),-_spreadAngle,shape.getPoint(1)));
         shape.setPoint(3,DMUtils::sfml::rotate(sf::Vector2f(-_width/2.0f,getRadius()),_spreadAngle,shape.getPoint(0)));
+
+        shape.setPointCount(_precision+2);
+        shape.setPoint(_precision+1,sf::Vector2f(-_width/2.0f,0.0f));
+        shape.setPoint(0,sf::Vector2f(_width/2.0f,0.0f));
+
+        float deltaAngle = _spreadAngle / (float)(_precision-1);
+
+        for(int i=0;i<_precision;++i) {
+            float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
+            sf::Vector2f base(-_width/2.0f+(i+1)*_width/(float)(getPrecision()),0.0f);
+
+            shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius)+base,angle,base));
+        }
 
         return shape;
     }
