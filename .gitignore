@@ -74,9 +74,12 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-
 #custom
 *.exe
 *.save
 *.depend
 *.layout
+*.cbp
+*.dll
+build/
+lib/
