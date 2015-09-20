@@ -90,6 +90,8 @@ namespace LS {
         }
 
         _lights.empty();
+        _negativeLights.empty();
+        _emissiveLights.empty();
     }
 
     void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target) {
