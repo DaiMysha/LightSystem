@@ -6,7 +6,7 @@ Implementation of a Light System in C++11 for SFML
 LightSystem is a simple Light Library meant to be used with 2D games. It allows the user to create lightning effects using a variety of different lights.
 The version 0.1 is a beta and does not yet support light collisions (shadows)
 
-<img src="https://github.com/DaiMysha/LightSystem/blob/Dev/screens/introduction.png" alt="Introduction" height="250px">
+<img src="https://github.com/DaiMysha/LightSystem/blob/master/screens/introduction.png" alt="Introduction" height="250px">
 
 See the example/main.cpp file for an example on how to use the system and the different options.
 	
