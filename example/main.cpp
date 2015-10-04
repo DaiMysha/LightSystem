@@ -226,7 +226,7 @@ int main(int argc, char** argv) {
 
     //add them all to the LightSystem
     //except the playerLight, since it's been added by the template function
-    /*ls.addLight(spotRed);
+    ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
     ls.addLight(negativeColors);//you can add them anywhere, not just at the end
@@ -240,7 +240,7 @@ int main(int argc, char** argv) {
     ls.addLight(negativeSpot);
     ls.addLight(localAmbiant);
     ls.addLight(negativeAmbiant);
-    ls.addLight(emissive);*/
+    ls.addLight(emissive);
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated

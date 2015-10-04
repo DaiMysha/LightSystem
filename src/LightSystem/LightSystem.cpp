@@ -129,7 +129,10 @@ namespace LS {
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
-                else l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
+                else {
+                    l->calcShadow(_shadowSystem->getSegments());
+                    l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
+                }
             }
         }
         for(Light* l : _negativeLights) {
@@ -149,7 +152,9 @@ namespace LS {
         sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
         target.draw(_sprite,_multiplyState);
         for(Light* l : _emissiveLights) {
-            if(l->getAABB().intersects(screen)) l->render(screen,target,nullptr);
+            if(l->getAABB().intersects(screen)) {
+                l->render(screen,target,nullptr);
+            }
         }
     }
 

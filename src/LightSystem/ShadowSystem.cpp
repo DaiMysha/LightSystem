@@ -45,6 +45,10 @@ namespace LS {
         addSegment(shape.getPoint(shape.getPointCount()),shape.getPoint(0));
     }
 
+    const std::list<Segment>& ShadowSystem::getSegments() const {
+        return _segments;
+    }
+
     void ShadowSystem::clear() {
         _segments.clear();
     }
@@ -53,54 +57,6 @@ namespace LS {
         ///find a way to give it the list of the segments
         ///issue with end of screen
     void ShadowSystem::debugDraw(Light* l, const sf::View& screenView, sf::RenderTarget& target) {
-        const sf::Vector2f& origin(l->getPosition());
-
-        //castFromPoint(origin,_segments,points,box,collisionPoints);
-        std::list<sf::Vector2f> collisionPoints;
-        l->calcShadow(_segments,collisionPoints);
-
-        sf::Vertex line[2];
-        line[0].color = sf::Color(255,180,180);
-        line[1].color = line[0].color;
-            line[0].position = origin;
-
-
-        collisionPoints.sort([origin](const sf::Vector2f& a, const sf::Vector2f& b) {
-            sf::Vector2f o(1,0);
-            float angle_a = DMUtils::sfml::getAngleBetweenVectors(a-origin,o);
-            float angle_b = DMUtils::sfml::getAngleBetweenVectors(b-origin,o);
-            return angle_a < angle_b;
-        });
-
-        std::list<sf::ConvexShape> result;
-
-        sf::ConvexShape s;
-        s.setFillColor(sf::Color(255,255,255,127));
-        s.setPointCount(3);
-        s.setPoint(0,origin);
-        int iii=1;
-        result.clear();
-        for(sf::Vector2f p: collisionPoints) {
-            s.setPoint(iii,p);
-            ++iii;
-            if(iii==3) {
-                result.push_back(s);
-                s.setPoint(1,p);
-                iii=2;
-            }
-        }
-        s.setPoint(1,*collisionPoints.rbegin());
-        s.setPoint(2,*collisionPoints.begin());
-        result.push_back(s);
-
-        for(const sf::ConvexShape& s : result) {
-            target.draw(s);
-        }
-
-        for(const sf::Vector2f& p : collisionPoints) {
-            line[1].position = p;
-            //target.draw(line,2,sf::Lines);
-        }
     }
 
     void ShadowSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {

@@ -34,7 +34,7 @@ namespace LS {
     const char Light::LAS_PARAM_OUTLINE[] = "outline";
     const char Light::LAS_PARAM_ISOMETRIC[] = "iso";
 
-    Light::Light(const sf::Vector2f& p, const sf::Color& c) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _attributes(Light::ACTIVE), _system(nullptr) {
+    Light::Light(const sf::Vector2f& p, const sf::Color& c) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _shadowTexture(nullptr), _attributes(Light::ACTIVE), _system(nullptr) {
     }
 
     Light::~Light() {
@@ -59,7 +59,7 @@ namespace LS {
         target.draw(lines,5,sf::LinesStrip);
     }
 
-    void Light::calcShadow(const std::list<Segment>& segments, std::list<sf::Vector2f>& result) {
+    void Light::calcShadow(const std::list<Segment>& segments) {
     }
 
     bool Light::isIsometric() const {

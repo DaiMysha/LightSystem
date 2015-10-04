@@ -91,7 +91,19 @@ namespace LS {
         if(!isActive()) return;
 
         if(_renderTexture!=nullptr) {
-            target.draw(_sprite,states);
+            if(_shadowTexture!=nullptr) {
+                _sprite.setPosition(sf::Vector2f(_radius,_radius));
+                _sprite.setRotation(0);
+
+                _shadowTexture->draw(_sprite,sf::BlendMultiply);
+                _shadowTexture->display();
+                sf::Sprite spr;
+                spr.setTexture(_shadowTexture->getTexture());
+                spr.setPosition(getPosition()-sf::Vector2f(getRadius(),getRadius()));
+                target.draw(spr,states);
+            } else {
+                target.draw(_sprite,states);
+            }
         } else {
             sf::Vector2f newCenter = _position - sf::Vector2f(screen.left,screen.top);
             _render(target,states,shader,sf::Vector2f(newCenter.x,screen.height - newCenter.y),_position,sf::Vector2f(_radius,_radius),DMUtils::maths::radToDeg(_directionAngle));
@@ -132,9 +144,21 @@ namespace LS {
         }
 	}
 
-    void SpotLight::calcShadow(const std::list<Segment>& segments, std::list<sf::Vector2f>& result) {
+    void SpotLight::calcShadow(const std::list<Segment>& segments) {
         if(getSpreadAngle()!=360.0f) return;
-        const sf::IntRect aabb = getAABB();
+
+        if(_shadowTexture==nullptr) {
+            _shadowTexture = new sf::RenderTexture;
+            _shadowTexture->create(_radius*2,_radius*2);
+        }
+
+        const sf::Vector2f& origin(getPosition());
+
+        sf::IntRect aabb = getAABB();
+        if(getSpreadAngle()!=360.0f) {
+            aabb.width*=2;
+            aabb.height*=2;
+        }
 
         std::list<sf::Vector2f> points;
 
@@ -150,22 +174,58 @@ namespace LS {
 
         for(const Segment& s : segments) {
             if(aabb.contains(s.p1.x,s.p1.y) || aabb.contains(s.p2.x,s.p2.y)) {
-                sf::Vector2f p = s.p1 - getPosition();
+                sf::Vector2f p = s.p1 - origin;
                 points.emplace_back(p);
                 points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
                 points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
-                p = s.p2 - getPosition();
+                p = s.p2 - origin;
                 points.emplace_back(p);
                 points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
                 points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
             }
         }
         for(int i = 0;i<4;++i) {
-            points.emplace_back(box[i].p1-getPosition());
-            points.emplace_back(box[i].p2-getPosition());
+            points.emplace_back(box[i].p1-origin);
+            points.emplace_back(box[i].p2-origin);
         }
+        //castFromPoint(origin,_segments,points,box,collisionPoints);
+        std::list<sf::Vector2f> collisionPoints;
 
-        ShadowSystem::castFromPoint(getPosition(),segments,points,box,result);
+        ShadowSystem::castFromPoint(origin,segments,points,box,collisionPoints);
+
+        collisionPoints.sort([origin](const sf::Vector2f& a, const sf::Vector2f& b) {
+            sf::Vector2f o(1,0);
+            float angle_a = DMUtils::sfml::getAngleBetweenVectors(a-origin,o);
+            float angle_b = DMUtils::sfml::getAngleBetweenVectors(b-origin,o);
+            return angle_a < angle_b;
+        });
+
+        std::list<sf::ConvexShape> shapeResult;
+
+        sf::ConvexShape s;
+        s.setFillColor(sf::Color(255,255,255));
+        s.setPointCount(3);
+        s.setPoint(0,sf::Vector2f(_radius,_radius));
+        int iii=1;
+
+        for(sf::Vector2f p: collisionPoints) {
+            p = p-origin+sf::Vector2f(_radius,_radius);
+            s.setPoint(iii,p);
+            ++iii;
+            if(iii==3) {
+                shapeResult.push_back(s);
+                s.setPoint(1,p);
+                iii=2;
+            }
+        }
+        s.setPoint(1,*collisionPoints.begin()-origin+sf::Vector2f(_radius,_radius));
+        s.setPoint(2,*collisionPoints.rbegin()-origin+sf::Vector2f(_radius,_radius));
+        shapeResult.push_back(s);
+
+        _shadowTexture->clear();
+        for(const sf::ConvexShape& s : shapeResult) {
+            _shadowTexture->draw(s);
+        }
     }
 
     void SpotLight::computeAABB() {

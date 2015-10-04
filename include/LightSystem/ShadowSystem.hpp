@@ -44,6 +44,7 @@ namespace LS {
 
             void addSegment(const sf::Vector2f& p1, const sf::Vector2f& p2);
             void addSegment(const sf::ConvexShape& shape);
+            const std::list<Segment>& getSegments() const;
             void clear();
 
             void debugDraw(Light* l, const sf::View& screenView, sf::RenderTarget& target);

@@ -40,7 +40,7 @@ namespace LS {
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
-            virtual void calcShadow(const std::list<Segment>& segments, std::list<sf::Vector2f>& result);
+            virtual void calcShadow(const std::list<Segment>& segments);
 
             virtual void computeAABB() = 0;
 
@@ -98,6 +98,7 @@ namespace LS {
             sf::Color _color;
 
             sf::RenderTexture* _renderTexture;
+            sf::RenderTexture* _shadowTexture;
             sf::Sprite _sprite;
 
         private:
