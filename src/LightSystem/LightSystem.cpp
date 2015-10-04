@@ -26,6 +26,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/LightSystem.hpp>
 #include <LightSystem/staticData/staticData.hpp>
+#include <LightSystem/ShadowSystem.hpp>
 
 namespace DMGDVT {
 namespace LS {
@@ -45,10 +46,13 @@ namespace LS {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }
 
+        _shadowSystem = new ShadowSystem();
+
     }
 
     LightSystem::~LightSystem() {
         reset();
+        delete _shadowSystem;
     }
 
     void LightSystem::addLight(Light* l) {
@@ -92,6 +96,16 @@ namespace LS {
         _lights.empty();
         _negativeLights.empty();
         _emissiveLights.empty();
+
+        if(_shadowSystem) _shadowSystem->clear();
+    }
+
+    void LightSystem::addWall(const sf::Vector2f& p1, const sf::Vector2f& p2) {
+        if(_shadowSystem) _shadowSystem->addSegment(p1,p2);
+    }
+
+    void LightSystem::addWall(const sf::ConvexShape& s) {
+        if(_shadowSystem) _shadowSystem->addSegment(s);
     }
 
     void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target) {
@@ -152,6 +166,15 @@ namespace LS {
         }
         for(Light* l : _emissiveLights) {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
+        }
+    }
+
+    void LightSystem::drawWalls(const sf::View& screenView, sf::RenderTarget& target) {
+        sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
+        if(_shadowSystem) {
+            for(Light* l : _lights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
+            for(Light* l : _negativeLights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
+            _shadowSystem->draw(screenView,target);
         }
     }
 

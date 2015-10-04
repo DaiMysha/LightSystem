@@ -32,6 +32,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
     ///this class is not meant to be inherited
+    class ShadowSystem;
+
     class LightSystem {
         public:
             enum DebugFlags {
@@ -59,6 +61,9 @@ namespace LS {
 
             void reset();//empties the lights
 
+            void addWall(const sf::Vector2f& p1, const sf::Vector2f& p2);
+            void addWall(const sf::ConvexShape& s);
+
             //call this function to prepare the render
             void render(const sf::View& screenView, sf::RenderTarget& target);
             void debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags = DebugFlags::DEFAULT);
@@ -66,6 +71,7 @@ namespace LS {
             void draw(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
+            void drawWalls(const sf::View& screenView, sf::RenderTarget& target);
 
             void update();
             void update(Light* l);
@@ -108,6 +114,8 @@ namespace LS {
 
             bool _updateLightMapImage;
             sf::Image _lightMapImage;
+
+            ShadowSystem* _shadowSystem;
 
     };
 }

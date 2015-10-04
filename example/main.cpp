@@ -46,6 +46,7 @@ int main(int argc, char** argv) {
     bool aabb = false;
     bool debugUseShader = true;
     bool debugDrawLights = true;
+    bool debugDrawWalls = true;
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png")) exit(-1);
@@ -120,6 +121,47 @@ int main(int argc, char** argv) {
     //the lightSystem needs to be aware of the view you're using to properly draw the lights
     ls.setView(view);
 
+    //Create walls that block the light
+    ls.addWall(sf::Vector2f(1470,1728),sf::Vector2f(1664,1728));
+    ls.addWall(sf::Vector2f(1664,1728),sf::Vector2f(1664,1791));
+    ls.addWall(sf::Vector2f(1664,1791),sf::Vector2f(1470,1791));
+    ls.addWall(sf::Vector2f(1470,1791),sf::Vector2f(1470,1728));
+
+    ls.addWall(sf::Vector2f(1696,1728),sf::Vector2f(1888,1728));
+    ls.addWall(sf::Vector2f(1888,1728),sf::Vector2f(1888,1791));
+    ls.addWall(sf::Vector2f(1888,1791),sf::Vector2f(1696,1791));
+    ls.addWall(sf::Vector2f(1696,1791),sf::Vector2f(1696,1728));
+
+    ls.addWall(sf::Vector2f(1632,2064),sf::Vector2f(1663,2064));
+    ls.addWall(sf::Vector2f(1663,2064),sf::Vector2f(1663,2114));
+    ls.addWall(sf::Vector2f(1663,2114),sf::Vector2f(1632,2114));
+    ls.addWall(sf::Vector2f(1632,2114),sf::Vector2f(1632,2064));
+
+    ls.addWall(sf::Vector2f(1696,2064),sf::Vector2f(1727,2064));
+    ls.addWall(sf::Vector2f(1727,2064),sf::Vector2f(1727,2114));
+    ls.addWall(sf::Vector2f(1727,2114),sf::Vector2f(1696,2114));
+    ls.addWall(sf::Vector2f(1696,2114),sf::Vector2f(1696,2064));
+
+    ls.addWall(sf::Vector2f(1470,2080),sf::Vector2f(1631,2080));
+    ls.addWall(sf::Vector2f(1631,2080),sf::Vector2f(1631,2114));
+    ls.addWall(sf::Vector2f(1631,2114),sf::Vector2f(1470,2114));
+    ls.addWall(sf::Vector2f(1470,2114),sf::Vector2f(1470,2080));
+
+    ls.addWall(sf::Vector2f(1728,2080),sf::Vector2f(1888,2080));
+    ls.addWall(sf::Vector2f(1888,2080),sf::Vector2f(1888,2114));
+    ls.addWall(sf::Vector2f(1888,2114),sf::Vector2f(1728,2114));
+    ls.addWall(sf::Vector2f(1728,2114),sf::Vector2f(1728,2080));
+
+    ls.addWall(sf::Vector2f(1437,1728),sf::Vector2f(1469,1728));
+    ls.addWall(sf::Vector2f(1469,1728),sf::Vector2f(1469,2114));
+    ls.addWall(sf::Vector2f(1469,2114),sf::Vector2f(1437,2114));
+    ls.addWall(sf::Vector2f(1437,2114),sf::Vector2f(1437,1728));
+
+    ls.addWall(sf::Vector2f(1889,1728),sf::Vector2f(1922,1728));
+    ls.addWall(sf::Vector2f(1922,1728),sf::Vector2f(1922,2114));
+    ls.addWall(sf::Vector2f(1922,2114),sf::Vector2f(1889,2114));
+    ls.addWall(sf::Vector2f(1889,2114),sf::Vector2f(1889,1728));
+
     //Let's create a bunch of lights now
     //the lights HAVE to be dynamically allocated. The LightSystem destroys them for you when it's destroyed
     //you can change that using LightSystem::setAutoDelete
@@ -153,7 +195,7 @@ int main(int argc, char** argv) {
 
     //template add example
     //also follows the player around, showing you don't need to update a light if you're just moving it around
-    DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::FlashLight>(p.getPosition(),200,10,sf::Color::Yellow);
+    DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
 
     //local ambiant lights are useful for example to make a difference between day and night
     DMGDVT::LS::LocalAmbiantLight* localAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(1535,1439),ambiantShape,sf::Color::Red);
@@ -178,7 +220,7 @@ int main(int argc, char** argv) {
 
     //add them all to the LightSystem
     //except the playerLight, since it's been added by the template function
-    ls.addLight(spotRed);
+    /*ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
     ls.addLight(negativeColors);//you can add them anywhere, not just at the end
@@ -192,7 +234,7 @@ int main(int argc, char** argv) {
     ls.addLight(negativeSpot);
     ls.addLight(localAmbiant);
     ls.addLight(negativeAmbiant);
-    ls.addLight(emissive);
+    ls.addLight(emissive);*/
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated
@@ -202,8 +244,10 @@ int main(int argc, char** argv) {
     //basically any parameter except for directionAngle and position
     playerLight->setLinearity(2.0f);
     playerLight->setBleed(0.0f);
-    playerLight->setSpreadAngle(180.0f/3.0f);
-    playerLight->setColor(sf::Color::White);
+    ///playerLight->setSpreadAngle(180.0f/3.0f);
+    playerLight->setSpreadAngle(2.0*180.0f);
+    ///playerLight->setColor(sf::Color::White);
+    playerLight->setColor(sf::Color(255,175,0));
     playerLight->setIntensity(1.0f);
     playerLight->setRadius(200);
     ls.update(playerLight);
@@ -251,6 +295,10 @@ int main(int argc, char** argv) {
                     case sf::Keyboard::F4 :
                     {
                         debugDrawLights = !debugDrawLights;
+                    } break;
+                    case sf::Keyboard::F5 :
+                    {
+                        debugDrawWalls = !debugDrawWalls;
                     } break;
                     case sf::Keyboard::F:
                     {
@@ -319,6 +367,7 @@ int main(int argc, char** argv) {
             if(debugDrawLights) ls.draw(view,window);
             //draws the light's AABB
             if(aabb) ls.drawAABB(view,window);
+            if(debugDrawWalls) ls.drawWalls(view,window);
 
         window.setView(baseView);
 
@@ -344,7 +393,7 @@ int main(int argc, char** argv) {
             ls.removeLight(negativeSpot);
             if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
             else negativeSpot->setIntensity(-1.0f);
-            ls.addLight(negativeSpot);
+            ///ls.addLight(negativeSpot);
 
 
             //you can easily switch a light on and off with this function
