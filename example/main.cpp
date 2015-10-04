@@ -122,6 +122,12 @@ int main(int argc, char** argv) {
     ls.setView(view);
 
     //Create walls that block the light
+    //first is screen
+    ls.addWall(sf::Vector2f(0,0),sf::Vector2f(WIDTH,0));
+    ls.addWall(sf::Vector2f(WIDTH,0),sf::Vector2f(WIDTH,HEIGHT));
+    ls.addWall(sf::Vector2f(WIDTH,HEIGHT),sf::Vector2f(0,HEIGHT));
+    ls.addWall(sf::Vector2f(0,HEIGHT),sf::Vector2f(0,0));
+
     ls.addWall(sf::Vector2f(1470,1728),sf::Vector2f(1664,1728));
     ls.addWall(sf::Vector2f(1664,1728),sf::Vector2f(1664,1791));
     ls.addWall(sf::Vector2f(1664,1791),sf::Vector2f(1470,1791));

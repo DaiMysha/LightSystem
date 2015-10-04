@@ -72,17 +72,19 @@ namespace LS {
 
         for(const Segment& s : _segments) {
             if(aabb.contains(s.p1.x,s.p1.y) || aabb.contains(s.p2.x,s.p2.y)) {
-                points.emplace_back(s.p1);
-                points.emplace_back(DMUtils::sfml::rotate(s.p1,0.0001));
-                points.emplace_back(DMUtils::sfml::rotate(s.p1,-0.0001));
-                points.emplace_back(s.p2);
-                points.emplace_back(DMUtils::sfml::rotate(s.p2,0.0001));
-                points.emplace_back(DMUtils::sfml::rotate(s.p2,-0.0001));
+                sf::Vector2f p = s.p1 - origin;
+                points.emplace_back(p);
+                points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
+                points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
+                p = s.p2 - origin;
+                points.emplace_back(p);
+                points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
+                points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
             }
         }
         for(int i = 0;i<4;++i) {
-            points.emplace_back(box[i].p1);
-            points.emplace_back(box[i].p2);
+            points.emplace_back(box[i].p1-origin);
+            points.emplace_back(box[i].p2-origin);
         }
 
         castFromPoint(origin,points,box,collisionPoints);
@@ -151,7 +153,6 @@ namespace LS {
         sf::Vector2f r_p,r_d;
 
         for(sf::Vector2f p : points) {
-            p = p - origin;
             t = findClosestIntersect(origin,p,tmp,box);
             if(t != 0.0f) {
                 result.push_back(tmp);
