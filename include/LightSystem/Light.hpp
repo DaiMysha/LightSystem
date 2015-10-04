@@ -22,11 +22,13 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #define HEADER_DMGDVT_LIGHT
 
 #include <SFML/Graphics.hpp>
+#include <list>
 
 namespace DMGDVT {
 namespace LS {
 
     class LightSystem;
+    struct Segment;
 
     class Light {
         public:
@@ -37,6 +39,8 @@ namespace LS {
             virtual void preRender(sf::Shader* shader) = 0;//for light manager mainly
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
+
+            virtual void calcShadow(const std::list<Segment>& segments, std::list<sf::Vector2f>& result);
 
             virtual void computeAABB() = 0;
 

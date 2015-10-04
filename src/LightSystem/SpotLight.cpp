@@ -27,7 +27,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/sfml.hpp>
 
 #include <Lightsystem/SpotLight.hpp>
-
+#include <LightSystem/ShadowSystem.hpp>
 
 namespace DMGDVT {
 namespace LS {
@@ -129,21 +129,44 @@ namespace LS {
             }
 
             target.draw(shape,states);
-
-            /*//draws the target angle
-            sf::Vertex line[2];
-            line[0].position = _position + sf::Vector2f(0.0f,0.0f);
-            line[0].color = _color;
-            line[1].position = _position +  DMUtils::sfml::rotate(v,_directionAngle);
-            line[1].color = _color;
-
-            if(isIsometric()) {
-                line[1].position.y -= (line[1].position.y-_position.y)/2.0f;
-            }
-
-            target.draw(line,2,sf::Lines, states);*/
         }
 	}
+
+    void SpotLight::calcShadow(const std::list<Segment>& segments, std::list<sf::Vector2f>& result) {
+        if(getSpreadAngle()!=360.0f) return;
+        const sf::IntRect aabb = getAABB();
+
+        std::list<sf::Vector2f> points;
+
+        Segment box[4];
+        box[0].p1 = sf::Vector2f(aabb.left,aabb.top);
+        box[0].p2 = sf::Vector2f(aabb.left+aabb.width,aabb.top);
+        box[1].p1 = sf::Vector2f(aabb.left+aabb.width,aabb.top);
+        box[1].p2 = sf::Vector2f(aabb.left+aabb.width,aabb.top+aabb.height);
+        box[2].p1 = sf::Vector2f(aabb.left+aabb.width,aabb.top+aabb.height);
+        box[2].p2 = sf::Vector2f(aabb.left,aabb.top+aabb.height);
+        box[3].p1 = sf::Vector2f(aabb.left,aabb.top+aabb.height);
+        box[3].p2 = sf::Vector2f(aabb.left,aabb.top);
+
+        for(const Segment& s : segments) {
+            if(aabb.contains(s.p1.x,s.p1.y) || aabb.contains(s.p2.x,s.p2.y)) {
+                sf::Vector2f p = s.p1 - getPosition();
+                points.emplace_back(p);
+                points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
+                points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
+                p = s.p2 - getPosition();
+                points.emplace_back(p);
+                points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
+                points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
+            }
+        }
+        for(int i = 0;i<4;++i) {
+            points.emplace_back(box[i].p1-getPosition());
+            points.emplace_back(box[i].p2-getPosition());
+        }
+
+        ShadowSystem::castFromPoint(getPosition(),segments,points,box,result);
+    }
 
     void SpotLight::computeAABB() {
 

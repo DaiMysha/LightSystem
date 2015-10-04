@@ -28,10 +28,10 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
 
-    ShadowSystem::Segment::Segment() {
+    Segment::Segment() {
     }
 
-    ShadowSystem::Segment::Segment(const sf::Vector2f& pp1, const sf::Vector2f& pp2) : p1(pp1), p2(pp2) {
+    Segment::Segment(const sf::Vector2f& pp1, const sf::Vector2f& pp2) : p1(pp1), p2(pp2) {
     }
 
     void ShadowSystem::addSegment(const sf::Vector2f& p1, const sf::Vector2f& p2) {
@@ -55,39 +55,9 @@ namespace LS {
     void ShadowSystem::debugDraw(Light* l, const sf::View& screenView, sf::RenderTarget& target) {
         const sf::Vector2f& origin(l->getPosition());
 
-        const sf::IntRect aabb = l->getAABB();
-
+        //castFromPoint(origin,_segments,points,box,collisionPoints);
         std::list<sf::Vector2f> collisionPoints;
-        std::list<sf::Vector2f> points;
-
-        Segment box[4];
-        box[0].p1 = sf::Vector2f(aabb.left,aabb.top);
-        box[0].p2 = sf::Vector2f(aabb.left+aabb.width,aabb.top);
-        box[1].p1 = sf::Vector2f(aabb.left+aabb.width,aabb.top);
-        box[1].p2 = sf::Vector2f(aabb.left+aabb.width,aabb.top+aabb.height);
-        box[2].p1 = sf::Vector2f(aabb.left+aabb.width,aabb.top+aabb.height);
-        box[2].p2 = sf::Vector2f(aabb.left,aabb.top+aabb.height);
-        box[3].p1 = sf::Vector2f(aabb.left,aabb.top+aabb.height);
-        box[3].p2 = sf::Vector2f(aabb.left,aabb.top);
-
-        for(const Segment& s : _segments) {
-            if(aabb.contains(s.p1.x,s.p1.y) || aabb.contains(s.p2.x,s.p2.y)) {
-                sf::Vector2f p = s.p1 - origin;
-                points.emplace_back(p);
-                points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
-                points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
-                p = s.p2 - origin;
-                points.emplace_back(p);
-                points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
-                points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
-            }
-        }
-        for(int i = 0;i<4;++i) {
-            points.emplace_back(box[i].p1-origin);
-            points.emplace_back(box[i].p2-origin);
-        }
-
-        castFromPoint(origin,points,box,collisionPoints);
+        l->calcShadow(_segments,collisionPoints);
 
         sf::Vertex line[2];
         line[0].color = sf::Color(255,180,180);
@@ -147,25 +117,25 @@ namespace LS {
 
     /*********** PRIVATE ***********/
 
-    void ShadowSystem::castFromPoint(const sf::Vector2f& origin, const std::list<sf::Vector2f>& points, Segment box[4], std::list<sf::Vector2f>& result) {
+    void ShadowSystem::castFromPoint(const sf::Vector2f& origin, const std::list<Segment>& segments, const std::list<sf::Vector2f>& points, Segment box[4], std::list<sf::Vector2f>& result) {
         float t = 0.0f;
         sf::Vector2f tmp, tmpClosest;
         sf::Vector2f r_p,r_d;
 
         for(sf::Vector2f p : points) {
-            t = findClosestIntersect(origin,p,tmp,box);
+            t = findClosestIntersect(origin,p,segments,tmp,box);
             if(t != 0.0f) {
                 result.push_back(tmp);
             }
         }
     }
 
-    float ShadowSystem::findClosestIntersect(const sf::Vector2f& r_p, const sf::Vector2f& r_d, sf::Vector2f& result, Segment box[4]) {
+    float ShadowSystem::findClosestIntersect(const sf::Vector2f& r_p, const sf::Vector2f& r_d, const std::list<Segment>& segments, sf::Vector2f& result, Segment box[4]) {
         sf::Vector2f s_p,s_d;
         float t1 = 0.0f;
         float t;
         sf::Vector2f tmp;
-        for(const Segment& s : _segments) {
+        for(const Segment& s : segments) {
             s_p = s.p1;
             s_d = s.p2 - s_p;
             t = findIntersect(r_p,r_d,s_p,s_d,tmp);

@@ -21,6 +21,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/Light.hpp>
 
 #include <LightSystem/LightSystem.hpp>
+#include <LightSystem/ShadowSystem.hpp>
 
 namespace DMGDVT {
 namespace LS {
@@ -56,6 +57,9 @@ namespace LS {
         };
 
         target.draw(lines,5,sf::LinesStrip);
+    }
+
+    void Light::calcShadow(const std::list<Segment>& segments, std::list<sf::Vector2f>& result) {
     }
 
     bool Light::isIsometric() const {
