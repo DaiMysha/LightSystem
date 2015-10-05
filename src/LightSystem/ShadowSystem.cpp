@@ -75,35 +75,32 @@ namespace LS {
 
     void ShadowSystem::castFromPoint(const sf::Vector2f& origin, const std::list<Segment>& segments, const std::list<sf::Vector2f>& points, Segment box[4], std::list<sf::Vector2f>& result) {
         float t = 0.0f;
-        sf::Vector2f tmp, tmpClosest;
-        sf::Vector2f r_p,r_d;
+        sf::Vector2f tmp;
 
         for(sf::Vector2f p : points) {
             t = findClosestIntersect(origin,p,segments,tmp,box);
             if(t != 0.0f) {
-                result.push_back(tmp);
+                result.emplace_back(tmp);
             }
         }
     }
 
     float ShadowSystem::findClosestIntersect(const sf::Vector2f& r_p, const sf::Vector2f& r_d, const std::list<Segment>& segments, sf::Vector2f& result, Segment box[4]) {
-        sf::Vector2f s_p,s_d;
+        sf::Vector2f s_d;
         float t1 = 0.0f;
         float t;
         sf::Vector2f tmp;
         for(const Segment& s : segments) {
-            s_p = s.p1;
-            s_d = s.p2 - s_p;
-            t = findIntersect(r_p,r_d,s_p,s_d,tmp);
+            s_d = s.p2 - s.p1;
+            t = findIntersect(r_p,r_d,s.p1,s_d,tmp);
             if(t1 == 0.0f || (t != 0.0f && t < t1)) {
                 t1 = t;
                 result = tmp;
             }
         }
         for(int i=0;i<4;++i) {
-            s_p = box[i].p1;
-            s_d = box[i].p2 - s_p;
-            t = findIntersect(r_p,r_d,s_p,s_d,tmp);
+            s_d = box[i].p2 - box[i].p1;
+            t = findIntersect(r_p,r_d,box[i].p1,s_d,tmp);
             if(t1 == 0.0f || (t != 0.0f && t < t1)) {
                 t1 = t;
                 result = tmp;
@@ -129,7 +126,8 @@ namespace LS {
             return 0.0f;
         }
 
-        result = sf::Vector2f(r_p.x + t1*r_d.x, r_p.y + t1*r_d.y);
+        result.x = r_p.x + t1*r_d.x;
+        result.y = r_p.y + t1*r_d.y;
         return t1;
     }
 

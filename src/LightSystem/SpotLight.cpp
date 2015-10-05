@@ -92,10 +92,10 @@ namespace LS {
 
         if(_renderTexture!=nullptr) {
             if(_shadowTexture!=nullptr) {
-                _sprite.setPosition(sf::Vector2f(_radius,_radius));
-                _sprite.setRotation(0);
+                sf::Sprite tmp;
+                tmp.setTexture(_renderTexture->getTexture());
 
-                _shadowTexture->draw(_sprite,sf::BlendMultiply);
+                _shadowTexture->draw(tmp,sf::BlendMultiply);
                 _shadowTexture->display();
                 sf::Sprite spr;
                 spr.setTexture(_shadowTexture->getTexture());
@@ -145,11 +145,12 @@ namespace LS {
 	}
 
     void SpotLight::calcShadow(const std::list<Segment>& segments) {
+        if(!_renderTexture) return;
         if(getSpreadAngle()!=360.0f) return;
 
         if(_shadowTexture==nullptr) {
             _shadowTexture = new sf::RenderTexture;
-            _shadowTexture->create(_radius*2,_radius*2);
+            _shadowTexture->create(_renderTexture->getSize().x,_renderTexture->getSize().y);
         }
 
         const sf::Vector2f& origin(getPosition());
