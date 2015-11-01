@@ -100,7 +100,7 @@ namespace LS {
                 ///std::cout << "center : " << center.x << ";" << center.y << std::endl;
                 if(!initd) {
                     buffer.create(_renderTexture->getSize().x,_renderTexture->getSize().y);
-                    //initd = true;
+                    initd = true;
                 }
                 buffer.clear();
 
@@ -177,15 +177,17 @@ namespace LS {
             _shadowTexture->create(_renderTexture->getSize().x,_renderTexture->getSize().y);
         }
 
-        const sf::Vector2f& origin(getPosition());
+        const sf::Vector2f origin(getPosition());
+        const sf::Vector2f screenDelta(-screenRect.left,-screenRect.top);
 
+        std::list<sf::ConvexShape> wallsShifted;
         std::list<sf::ConvexShape> shapeResult;
 
         ShadowSystem::castShadowsFromPoint(origin,walls,screenRect,shapeResult);
 
         _shadowTexture->clear(sf::Color::White);
         for(sf::ConvexShape& s : shapeResult) {
-            s.setPosition(-origin);
+            s.setPosition(screenDelta);
             _shadowTexture->draw(s);
         }
     }
