@@ -61,7 +61,6 @@ namespace LS {
 
             void reset();//empties the lights
 
-            void addWall(const sf::Vector2f& p1, const sf::Vector2f& p2);
             void addWall(const sf::ConvexShape& s);
 
             //call this function to prepare the render

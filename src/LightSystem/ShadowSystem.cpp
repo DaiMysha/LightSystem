@@ -28,35 +28,16 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 namespace DMGDVT {
 namespace LS {
 
-    Segment::Segment() {
+    void ShadowSystem::addWall(const sf::ConvexShape& shape) {
+        _walls.emplace_back(shape);
     }
 
-    Segment::Segment(const sf::Vector2f& pp1, const sf::Vector2f& pp2) : p1(pp1), p2(pp2) {
-    }
-
-    void ShadowSystem::addSegment(const sf::Vector2f& p1, const sf::Vector2f& p2) {
-        _segments.emplace_back(Segment(p1,p2));
-    }
-
-    void ShadowSystem::addSegment(const sf::ConvexShape& shape) {
-        for(size_t i=0;i<shape.getPointCount()-1;++i) {
-            addSegment(shape.getPoint(i),shape.getPoint(i+1));
-        }
-        addSegment(shape.getPoint(shape.getPointCount()),shape.getPoint(0));
-    }
-
-    const std::list<Segment>& ShadowSystem::getSegments() const {
-        return _segments;
+    const std::list<sf::ConvexShape> ShadowSystem::getWalls() const {
+        return _walls;
     }
 
     void ShadowSystem::clear() {
-        _segments.clear();
-    }
-
-        ///forward that to the actual light
-        ///find a way to give it the list of the segments
-        ///issue with end of screen
-    void ShadowSystem::debugDraw(Light* l, const sf::View& screenView, sf::RenderTarget& target) {
+        _walls.clear();
     }
 
     void ShadowSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {
@@ -64,72 +45,16 @@ namespace LS {
         points[0].color = sf::Color(180,180,180);
         points[1].color = points[0].color;
 
-        for(const Segment& s : _segments) {
-            points[0].position = s.p1;
-            points[1].position = s.p2;
-            target.draw(points,2,sf::Lines);
+        for(const sf::ConvexShape& s : _walls) {
+            for(int i = 0;i<s.getPointCount();++i) {
+                points[0].position = s.getPoint(i);
+                points[1].position = s.getPoint((i+1)%s.getPointCount());
+                target.draw(points,2,sf::Lines);
+            }
         }
     }
 
     /*********** PRIVATE ***********/
-
-    void ShadowSystem::castFromPoint(const sf::Vector2f& origin, const std::list<Segment>& segments, const std::list<sf::Vector2f>& points, Segment box[4], std::list<sf::Vector2f>& result) {
-        float t = 0.0f;
-        sf::Vector2f tmp;
-
-        for(sf::Vector2f p : points) {
-            t = findClosestIntersect(origin,p,segments,tmp,box);
-            if(t != 0.0f) {
-                result.emplace_back(tmp);
-            }
-        }
-    }
-
-    float ShadowSystem::findClosestIntersect(const sf::Vector2f& r_p, const sf::Vector2f& r_d, const std::list<Segment>& segments, sf::Vector2f& result, Segment box[4]) {
-        sf::Vector2f s_d;
-        float t1 = 0.0f;
-        float t;
-        sf::Vector2f tmp;
-        for(const Segment& s : segments) {
-            s_d = s.p2 - s.p1;
-            t = findIntersect(r_p,r_d,s.p1,s_d,tmp);
-            if(t1 == 0.0f || (t != 0.0f && t < t1)) {
-                t1 = t;
-                result = tmp;
-            }
-        }
-        for(int i=0;i<4;++i) {
-            s_d = box[i].p2 - box[i].p1;
-            t = findIntersect(r_p,r_d,box[i].p1,s_d,tmp);
-            if(t1 == 0.0f || (t != 0.0f && t < t1)) {
-                t1 = t;
-                result = tmp;
-            }
-        }
-
-        return t1;
-    }
-
-    float ShadowSystem::findIntersect(const sf::Vector2f& r_p, const sf::Vector2f& r_d, const sf::Vector2f& s_p, const sf::Vector2f& s_d, sf::Vector2f& result) {
-        if(r_d == s_d) {
-            return 0.0f;
-        }
-
-        float t1, t2;
-        t2 = (r_d.x*(s_p.y-r_p.y) + r_d.y*(r_p.x-s_p.x))/(s_d.x*r_d.y - s_d.y*r_d.x);
-        t1 = (s_p.x+s_d.x*t2-r_p.x)/r_d.x;
-        //*
-        if(t1<=0 || t2<0 || t2>1) {
-        /*/
-        if(t1<0 || t2<=0 || t2>=1 ) {
-        //*/
-            return 0.0f;
-        }
-
-        result.x = r_p.x + t1*r_d.x;
-        result.y = r_p.y + t1*r_d.y;
-        return t1;
-    }
 
 }
 }

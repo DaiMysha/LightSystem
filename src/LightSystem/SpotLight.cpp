@@ -90,17 +90,41 @@ namespace LS {
         if(_intensity == 0.0f) return;
         if(!isActive()) return;
 
+        //see with a 3rd texture ?
         if(_renderTexture!=nullptr) {
             if(_shadowTexture!=nullptr) {
+                //temporary, move to class after, maybe move to lightsystem and pass as parameter ?
+                static sf::RenderTexture buffer;
+                static bool initd = false;
+                sf::Vector2f center(_renderTexture->getSize().x/2.0f,_renderTexture->getSize().y/2.0f);
+                ///std::cout << "center : " << center.x << ";" << center.y << std::endl;
+                if(!initd) {
+                    buffer.create(_renderTexture->getSize().x,_renderTexture->getSize().y);
+                    //initd = true;
+                }
+                buffer.clear();
+
                 sf::Sprite tmp;
                 tmp.setTexture(_renderTexture->getTexture());
+                tmp.setOrigin(center);
+                tmp.setPosition(center.x,center.y);
+                tmp.setRotation(getDirectionAngle());
+                buffer.draw(tmp);
 
-                _shadowTexture->draw(tmp,sf::BlendMultiply);
-                _shadowTexture->display();
+                tmp.setRotation(0);
+                tmp.setTexture(_shadowTexture->getTexture());
+                buffer.draw(tmp,sf::BlendMultiply);
+
                 sf::Sprite spr;
-                spr.setTexture(_shadowTexture->getTexture());
-                spr.setPosition(getPosition()-sf::Vector2f(getRadius(),getRadius()));
+                spr.setTexture(buffer.getTexture());
+                ///std::cout << "Position : " << _position.x << ";" << _position.y << std::endl;
+                ///std::cout << "Radius : " << getRadius() << std::endl;
+                ///spr.setPosition(getPosition()-sf::Vector2f(getRadius(),getRadius()));
+                spr.setPosition(getPosition()-center);
+                ///std::cout << "Sprite position : " << spr.getPosition().x << ";" << spr.getPosition().y << std::endl;
+
                 target.draw(spr,states);
+                ///std::cout << std::endl;
             } else {
                 target.draw(_sprite,states);
             }
@@ -144,22 +168,23 @@ namespace LS {
         }
 	}
 
-    void SpotLight::calcShadow(const std::list<Segment>& segments) {
+    void SpotLight::calcShadow(const std::list<sf::ConvexShape>& walls) {
         if(!_renderTexture) return;
-        if(getSpreadAngle()!=360.0f) return;
+        //if(getSpreadAngle()!=360.0f) return;
 
-        if(_shadowTexture==nullptr) {
+        /*if(_shadowTexture==nullptr) {
             _shadowTexture = new sf::RenderTexture;
             _shadowTexture->create(_renderTexture->getSize().x,_renderTexture->getSize().y);
         }
 
         const sf::Vector2f& origin(getPosition());
 
-        sf::IntRect aabb = getAABB();
-        if(getSpreadAngle()!=360.0f) {
-            aabb.width*=2;
-            aabb.height*=2;
-        }
+        sf::IntRect aabb;
+        //force it to be the full circle's AABB
+        aabb.left = _position.x - _radius;
+        aabb.top = _position.y - _radius;
+        aabb.width = _radius * 2.0f;
+        aabb.height = aabb.width;
 
         std::list<sf::Vector2f> points;
 
@@ -226,7 +251,7 @@ namespace LS {
         _shadowTexture->clear();
         for(const sf::ConvexShape& s : shapeResult) {
             _shadowTexture->draw(s);
-        }
+        }*/
     }
 
     void SpotLight::computeAABB() {

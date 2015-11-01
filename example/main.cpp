@@ -33,7 +33,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/SpriteLight.hpp>
 
 #define WIDTH   640
-#define HEIGHT  480
+#define HEIGHT  600
 
 //font taken from http://www.fontspace.com/melifonts/sweet-cheeks
 int main(int argc, char** argv) {
@@ -123,50 +123,61 @@ int main(int argc, char** argv) {
 
     //Create walls that block the light
     //first is screen
-    ls.addWall(sf::Vector2f(0,0),sf::Vector2f(WIDTH,0));
-    ls.addWall(sf::Vector2f(WIDTH,0),sf::Vector2f(WIDTH,HEIGHT));
-    ls.addWall(sf::Vector2f(WIDTH,HEIGHT),sf::Vector2f(0,HEIGHT));
-    ls.addWall(sf::Vector2f(0,HEIGHT),sf::Vector2f(0,0));
+    sf::ConvexShape wallShape;
+    wallShape.setPointCount(4);
+    wallShape.setPoint(0,sf::Vector2f(0,0));
+    wallShape.setPoint(1,sf::Vector2f(WIDTH,0));
+    wallShape.setPoint(2,sf::Vector2f(WIDTH,HEIGHT));
+    wallShape.setPoint(3,sf::Vector2f(0,HEIGHT));
+    ls.addWall(wallShape);
 
-    ls.addWall(sf::Vector2f(1470,1728),sf::Vector2f(1664,1728));
-    ls.addWall(sf::Vector2f(1664,1728),sf::Vector2f(1664,1791));
-    ls.addWall(sf::Vector2f(1664,1791),sf::Vector2f(1470,1791));
-    ls.addWall(sf::Vector2f(1470,1791),sf::Vector2f(1470,1728));
+    wallShape.setPoint(0,sf::Vector2f(1470,1728));
+    wallShape.setPoint(1,sf::Vector2f(1664,1728));
+    wallShape.setPoint(2,sf::Vector2f(1664,1791));
+    wallShape.setPoint(3,sf::Vector2f(1470,1791));
+    ls.addWall(wallShape);
 
-    ls.addWall(sf::Vector2f(1696,1728),sf::Vector2f(1888,1728));
-    ls.addWall(sf::Vector2f(1888,1728),sf::Vector2f(1888,1791));
-    ls.addWall(sf::Vector2f(1888,1791),sf::Vector2f(1696,1791));
-    ls.addWall(sf::Vector2f(1696,1791),sf::Vector2f(1696,1728));
+    wallShape.setPoint(0,sf::Vector2f(1696,1728));
+    wallShape.setPoint(1,sf::Vector2f(1888,1728));
+    wallShape.setPoint(2,sf::Vector2f(1888,1791));
+    wallShape.setPoint(3,sf::Vector2f(1696,1791));
+    ls.addWall(wallShape);
 
-    ls.addWall(sf::Vector2f(1632,2064),sf::Vector2f(1663,2064));
-    ls.addWall(sf::Vector2f(1663,2064),sf::Vector2f(1663,2114));
-    ls.addWall(sf::Vector2f(1663,2114),sf::Vector2f(1632,2114));
-    ls.addWall(sf::Vector2f(1632,2114),sf::Vector2f(1632,2064));
+    wallShape.setPoint(0,sf::Vector2f(1632,2064));
+    wallShape.setPoint(1,sf::Vector2f(1663,2064));
+    wallShape.setPoint(2,sf::Vector2f(1663,2114));
+    wallShape.setPoint(3,sf::Vector2f(1632,2114));
+    ls.addWall(wallShape);
 
-    ls.addWall(sf::Vector2f(1696,2064),sf::Vector2f(1727,2064));
-    ls.addWall(sf::Vector2f(1727,2064),sf::Vector2f(1727,2114));
-    ls.addWall(sf::Vector2f(1727,2114),sf::Vector2f(1696,2114));
-    ls.addWall(sf::Vector2f(1696,2114),sf::Vector2f(1696,2064));
+    wallShape.setPoint(0,sf::Vector2f(1696,2064));
+    wallShape.setPoint(1,sf::Vector2f(1727,2064));
+    wallShape.setPoint(2,sf::Vector2f(1727,2114));
+    wallShape.setPoint(3,sf::Vector2f(1696,2114));
+    ls.addWall(wallShape);
 
-    ls.addWall(sf::Vector2f(1470,2080),sf::Vector2f(1631,2080));
-    ls.addWall(sf::Vector2f(1631,2080),sf::Vector2f(1631,2114));
-    ls.addWall(sf::Vector2f(1631,2114),sf::Vector2f(1470,2114));
-    ls.addWall(sf::Vector2f(1470,2114),sf::Vector2f(1470,2080));
+    wallShape.setPoint(0,sf::Vector2f(1470,2080));
+    wallShape.setPoint(1,sf::Vector2f(1631,2080));
+    wallShape.setPoint(2,sf::Vector2f(1631,2114));
+    wallShape.setPoint(3,sf::Vector2f(1470,2114));
+    ls.addWall(wallShape);
 
-    ls.addWall(sf::Vector2f(1728,2080),sf::Vector2f(1888,2080));
-    ls.addWall(sf::Vector2f(1888,2080),sf::Vector2f(1888,2114));
-    ls.addWall(sf::Vector2f(1888,2114),sf::Vector2f(1728,2114));
-    ls.addWall(sf::Vector2f(1728,2114),sf::Vector2f(1728,2080));
+    wallShape.setPoint(0,sf::Vector2f(1728,2080));
+    wallShape.setPoint(1,sf::Vector2f(1888,2080));
+    wallShape.setPoint(2,sf::Vector2f(1888,2114));
+    wallShape.setPoint(3,sf::Vector2f(1728,2114));
+    ls.addWall(wallShape);
 
-    ls.addWall(sf::Vector2f(1437,1728),sf::Vector2f(1469,1728));
-    ls.addWall(sf::Vector2f(1469,1728),sf::Vector2f(1469,2114));
-    ls.addWall(sf::Vector2f(1469,2114),sf::Vector2f(1437,2114));
-    ls.addWall(sf::Vector2f(1437,2114),sf::Vector2f(1437,1728));
+    wallShape.setPoint(0,sf::Vector2f(1437,1728));
+    wallShape.setPoint(1,sf::Vector2f(1469,1728));
+    wallShape.setPoint(2,sf::Vector2f(1469,2114));
+    wallShape.setPoint(3,sf::Vector2f(1437,2114));
+    ls.addWall(wallShape);
 
-    ls.addWall(sf::Vector2f(1889,1728),sf::Vector2f(1922,1728));
-    ls.addWall(sf::Vector2f(1922,1728),sf::Vector2f(1922,2114));
-    ls.addWall(sf::Vector2f(1922,2114),sf::Vector2f(1889,2114));
-    ls.addWall(sf::Vector2f(1889,2114),sf::Vector2f(1889,1728));
+    wallShape.setPoint(0,sf::Vector2f(1889,1728));
+    wallShape.setPoint(1,sf::Vector2f(1922,1728));
+    wallShape.setPoint(2,sf::Vector2f(1922,2114));
+    wallShape.setPoint(3,sf::Vector2f(1889,2114));
+    ls.addWall(wallShape);
 
     //Let's create a bunch of lights now
     //the lights HAVE to be dynamically allocated. The LightSystem destroys them for you when it's destroyed
@@ -226,7 +237,7 @@ int main(int argc, char** argv) {
 
     //add them all to the LightSystem
     //except the playerLight, since it's been added by the template function
-    ls.addLight(spotRed);
+    /*ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
     ls.addLight(negativeColors);//you can add them anywhere, not just at the end
@@ -240,7 +251,7 @@ int main(int argc, char** argv) {
     ls.addLight(negativeSpot);
     ls.addLight(localAmbiant);
     ls.addLight(negativeAmbiant);
-    ls.addLight(emissive);
+    ls.addLight(emissive);*/
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated
@@ -255,7 +266,7 @@ int main(int argc, char** argv) {
     ///playerLight->setColor(sf::Color::White);
     playerLight->setColor(sf::Color(255,175,0));
     playerLight->setIntensity(1.0f);
-    playerLight->setRadius(200);
+    playerLight->setRadius(250);
     ls.update(playerLight);
 
     //the loop
@@ -426,8 +437,8 @@ int main(int argc, char** argv) {
                 firePit1->setRadius(200);
                 firePit2->setRadius(200);
             }
-            ls.update(firePit1);
-            ls.update(firePit2);
+            //ls.update(firePit1);
+            //ls.update(firePit2);
         }
     }
 

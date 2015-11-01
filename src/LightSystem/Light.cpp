@@ -59,7 +59,7 @@ namespace LS {
         target.draw(lines,5,sf::LinesStrip);
     }
 
-    void Light::calcShadow(const std::list<Segment>& segments) {
+    void Light::calcShadow(const std::list<sf::ConvexShape>& walls) {
     }
 
     bool Light::isIsometric() const {

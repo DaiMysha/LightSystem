@@ -44,7 +44,7 @@ namespace LS {
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
-            virtual void calcShadow(const std::list<Segment>& segments) override;
+            virtual void calcShadow(const std::list<sf::ConvexShape>& walls) override;
 
             virtual void computeAABB() override;
 

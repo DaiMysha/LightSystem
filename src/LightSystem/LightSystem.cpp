@@ -100,12 +100,8 @@ namespace LS {
         if(_shadowSystem) _shadowSystem->clear();
     }
 
-    void LightSystem::addWall(const sf::Vector2f& p1, const sf::Vector2f& p2) {
-        if(_shadowSystem) _shadowSystem->addSegment(p1,p2);
-    }
-
     void LightSystem::addWall(const sf::ConvexShape& s) {
-        if(_shadowSystem) _shadowSystem->addSegment(s);
+        if(_shadowSystem) _shadowSystem->addWall(s);
     }
 
     void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target) {
@@ -130,7 +126,7 @@ namespace LS {
             if(l->getAABB().intersects(screen)) {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
                 else {
-                    l->calcShadow(_shadowSystem->getSegments());
+                    l->calcShadow(_shadowSystem->getWalls());
                     l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
                 }
             }
@@ -177,8 +173,8 @@ namespace LS {
     void LightSystem::drawWalls(const sf::View& screenView, sf::RenderTarget& target) {
         sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
         if(_shadowSystem) {
-            for(Light* l : _lights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
-            for(Light* l : _negativeLights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
+            //for(Light* l : _lights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
+            //for(Light* l : _negativeLights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
             _shadowSystem->draw(screenView,target);
         }
     }
