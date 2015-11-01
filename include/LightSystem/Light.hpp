@@ -39,7 +39,7 @@ namespace LS {
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
-            virtual void calcShadow(const std::list<sf::ConvexShape>& walls);
+            virtual void calcShadow(const sf::FloatRect& screenRect, const std::list<sf::ConvexShape>& walls);
 
             virtual void computeAABB() = 0;
 

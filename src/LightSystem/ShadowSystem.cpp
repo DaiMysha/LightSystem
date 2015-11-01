@@ -46,7 +46,7 @@ namespace LS {
         points[1].color = points[0].color;
 
         for(const sf::ConvexShape& s : _walls) {
-            for(int i = 0;i<s.getPointCount();++i) {
+            for(size_t i = 0;i<s.getPointCount();++i) {
                 points[0].position = s.getPoint(i);
                 points[1].position = s.getPoint((i+1)%s.getPointCount());
                 target.draw(points,2,sf::Lines);

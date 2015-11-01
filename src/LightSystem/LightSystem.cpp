@@ -122,11 +122,13 @@ namespace LS {
         stAdd.transform.combine(t);
         stRm.transform.combine(t);
 
+        sf::FloatRect screenRect(screen);
+
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
                 else {
-                    l->calcShadow(_shadowSystem->getWalls());
+                    l->calcShadow(screenRect,_shadowSystem->getWalls());
                     l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
                 }
             }

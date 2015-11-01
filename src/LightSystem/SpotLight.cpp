@@ -168,90 +168,26 @@ namespace LS {
         }
 	}
 
-    void SpotLight::calcShadow(const std::list<sf::ConvexShape>& walls) {
+    void SpotLight::calcShadow(const sf::FloatRect& screenRect, const std::list<sf::ConvexShape>& walls) {
         if(!_renderTexture) return;
         //if(getSpreadAngle()!=360.0f) return;
 
-        /*if(_shadowTexture==nullptr) {
+        if(_shadowTexture==nullptr) {
             _shadowTexture = new sf::RenderTexture;
             _shadowTexture->create(_renderTexture->getSize().x,_renderTexture->getSize().y);
         }
 
         const sf::Vector2f& origin(getPosition());
 
-        sf::IntRect aabb;
-        //force it to be the full circle's AABB
-        aabb.left = _position.x - _radius;
-        aabb.top = _position.y - _radius;
-        aabb.width = _radius * 2.0f;
-        aabb.height = aabb.width;
-
-        std::list<sf::Vector2f> points;
-
-        Segment box[4];
-        box[0].p1 = sf::Vector2f(aabb.left,aabb.top);
-        box[0].p2 = sf::Vector2f(aabb.left+aabb.width,aabb.top);
-        box[1].p1 = sf::Vector2f(aabb.left+aabb.width,aabb.top);
-        box[1].p2 = sf::Vector2f(aabb.left+aabb.width,aabb.top+aabb.height);
-        box[2].p1 = sf::Vector2f(aabb.left+aabb.width,aabb.top+aabb.height);
-        box[2].p2 = sf::Vector2f(aabb.left,aabb.top+aabb.height);
-        box[3].p1 = sf::Vector2f(aabb.left,aabb.top+aabb.height);
-        box[3].p2 = sf::Vector2f(aabb.left,aabb.top);
-
-        for(const Segment& s : segments) {
-            if(aabb.contains(s.p1.x,s.p1.y) || aabb.contains(s.p2.x,s.p2.y)) {
-                sf::Vector2f p = s.p1 - origin;
-                points.emplace_back(p);
-                points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
-                points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
-                p = s.p2 - origin;
-                points.emplace_back(p);
-                points.emplace_back(DMUtils::sfml::rotate(p,0.0001));
-                points.emplace_back(DMUtils::sfml::rotate(p,-0.0001));
-            }
-        }
-        for(int i = 0;i<4;++i) {
-            points.emplace_back(box[i].p1-origin);
-            points.emplace_back(box[i].p2-origin);
-        }
-        //castFromPoint(origin,_segments,points,box,collisionPoints);
-        std::list<sf::Vector2f> collisionPoints;
-
-        ShadowSystem::castFromPoint(origin,segments,points,box,collisionPoints);
-
-        collisionPoints.sort([origin](const sf::Vector2f& a, const sf::Vector2f& b) {
-            sf::Vector2f o(1,0);
-            float angle_a = DMUtils::sfml::getAngleBetweenVectors(a-origin,o);
-            float angle_b = DMUtils::sfml::getAngleBetweenVectors(b-origin,o);
-            return angle_a < angle_b;
-        });
-
         std::list<sf::ConvexShape> shapeResult;
 
-        sf::ConvexShape s;
-        s.setFillColor(sf::Color(255,255,255));
-        s.setPointCount(3);
-        s.setPoint(0,sf::Vector2f(_radius,_radius));
-        int iii=1;
+        ShadowSystem::castShadowsFromPoint(origin,walls,screenRect,shapeResult);
 
-        for(sf::Vector2f p: collisionPoints) {
-            p = p-origin+sf::Vector2f(_radius,_radius);
-            s.setPoint(iii,p);
-            ++iii;
-            if(iii==3) {
-                shapeResult.push_back(s);
-                s.setPoint(1,p);
-                iii=2;
-            }
-        }
-        s.setPoint(1,*collisionPoints.begin()-origin+sf::Vector2f(_radius,_radius));
-        s.setPoint(2,*collisionPoints.rbegin()-origin+sf::Vector2f(_radius,_radius));
-        shapeResult.push_back(s);
-
-        _shadowTexture->clear();
-        for(const sf::ConvexShape& s : shapeResult) {
+        _shadowTexture->clear(sf::Color::White);
+        for(sf::ConvexShape& s : shapeResult) {
+            s.setPosition(-origin);
             _shadowTexture->draw(s);
-        }*/
+        }
     }
 
     void SpotLight::computeAABB() {
