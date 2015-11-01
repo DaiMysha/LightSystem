@@ -39,7 +39,13 @@ namespace LS {
 
             void draw(const sf::View& screenView, sf::RenderTarget& target);
 
+            static void castShadowsFromPoint(const sf::Vector2f& origin, const std::list<sf::ConvexShape>& walls, const sf::FloatRect& screenRect, std::list<sf::ConvexShape>& result);
+
         private:
+            static float dist(const sf::Vector2f& a, const sf::Vector2f& b);
+            static bool isVisibleFrom(const sf::Vector2f& origin, const sf::Vector2f& target, const sf::Vector2f& s1, const sf::Vector2f& s2, sf::Vector2f& tmp);
+            static float intersect(const sf::Vector2f& c, const sf::Vector2f& u, const sf::Vector2f& a, const sf::Vector2f& b, sf::Vector2f& result);
+
             std::list<sf::ConvexShape> _walls;
     };
 
