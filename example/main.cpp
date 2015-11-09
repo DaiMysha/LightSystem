@@ -19,6 +19,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 */
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 
 #include <SFML/Graphics.hpp>
@@ -70,7 +71,7 @@ int main(int argc, char** argv) {
     sf::Text text;
     text.setFont(font);
     text.setCharacterSize(18);
-    text.setPosition(580,10);
+    text.setPosition(560,10);
     text.setString("0");
     text.setColor(sf::Color::White);
 
@@ -237,7 +238,7 @@ int main(int argc, char** argv) {
 
     //add them all to the LightSystem
     //except the playerLight, since it's been added by the template function
-    /*ls.addLight(spotRed);
+    ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
     ls.addLight(negativeColors);//you can add them anywhere, not just at the end
@@ -251,7 +252,7 @@ int main(int argc, char** argv) {
     ls.addLight(negativeSpot);
     ls.addLight(localAmbiant);
     ls.addLight(negativeAmbiant);
-    ls.addLight(emissive);*/
+    ls.addLight(emissive);
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated
@@ -268,6 +269,8 @@ int main(int argc, char** argv) {
     playerLight->setIntensity(1.0f);
     playerLight->setRadius(250);
     ls.update(playerLight);
+
+    clock_t oneRender, totalTime = 0;
 
     //the loop
     while (window.isOpen()) {
@@ -370,6 +373,7 @@ int main(int argc, char** argv) {
         view.setCenter(p.getPosition());
 
         //it is EXTREMELY IMPORTANT that you use the LightSystem::draw INSIDE your view
+        oneRender = ::clock();
         window.setView(view);
             window.draw(bgSpr);
             window.draw(p);
@@ -390,6 +394,7 @@ int main(int argc, char** argv) {
 
         window.draw(text);
         window.display();
+        totalTime += ::clock() - oneRender;
 
         //sf::sleep(sf::milliseconds(16));
         ++elapsedFrames;
@@ -399,8 +404,9 @@ int main(int argc, char** argv) {
             clock.restart();
             //for some reason my compiler doesn't find to_string so..
             std::ostringstream str;
-            str << (fps*2);
+            str << (fps*2) << "\n" << std::setprecision(3) << (float)totalTime/(float)fps << " ms";
             text.setString(str.str());
+            totalTime = 0;
 
 
             //also use this timer to alternate the negative light to a positive light
