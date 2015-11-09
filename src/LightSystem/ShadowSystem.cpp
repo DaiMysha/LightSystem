@@ -115,7 +115,7 @@ namespace LS {
 
             if(shapeSize) {
                 sf::ConvexShape resultShape;
-                resultShape.setFillColor(sf::Color(0,0,255,127));
+                resultShape.setFillColor(sf::Color::Black);
                 resultShape.setPointCount(shapeSize+2);
 
                 int id = 1;
