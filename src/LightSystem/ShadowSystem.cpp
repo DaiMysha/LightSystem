@@ -56,6 +56,7 @@ namespace LS {
 
     void ShadowSystem::castShadowsFromPoint(const sf::Vector2f& origin, const std::list<sf::ConvexShape>& walls, const sf::FloatRect& screenRect, std::list<sf::ConvexShape>& result) {
         sf::ConvexShape screen;
+
         screen.setPointCount(5);
         screen.setPoint(0,sf::Vector2f(screenRect.left,screenRect.top));
         screen.setPoint(1,sf::Vector2f(screenRect.left + screenRect.width,screenRect.top));
@@ -63,212 +64,108 @@ namespace LS {
         screen.setPoint(3,sf::Vector2f(screenRect.left,screenRect.top+screenRect.height));
         screen.setPoint(4,screen.getPoint(0));
 
+        sf::Vector2f tmp;
+
         for(const sf::ConvexShape& s : walls) {
-            std::list<int> resultPointsList;
-            std::vector<bool> visiblePoints;
-            int size = s.getPointCount();
-            if(size < 3) continue;
-            visiblePoints.resize(size,false);
-            int closest = 0;
-            float distClosest = dist(origin,s.getPoint(closest));
-            for(int i=1;i<size;++i) {
-                float d = dist(origin,s.getPoint(i));
-                if(d < distClosest) {
-                    distClosest = d;
-                    closest = i;
-                }
-            }
-            resultPointsList.emplace_back(closest);
-            visiblePoints[closest] = true;
+            const int size = s.getPointCount();
 
-            bool visible = true;
-            sf::Vector2f tmp;
-            bool goRight = true;
-            bool goLeft = true;
+            std::vector<bool> backFacing(size);
 
-            int id = (closest - 1 + size)%size;
-            int id2 = (closest + 1) % size;
-            if(id >= 0) {
-                visible = isVisibleFrom(origin,s.getPoint(id2),s.getPoint(closest),s.getPoint(id),tmp);
-                if(visible) {
-                    resultPointsList.emplace_back(id2);
-                    visiblePoints[id2] = true;
-                }
-                goRight = visible;
-            }
-            if(id2 < size) {
-                visible = isVisibleFrom(origin,s.getPoint(id),s.getPoint(closest),s.getPoint(id2),tmp);
-                if(visible) {
-                    resultPointsList.emplace_front(id);
-                    visiblePoints[id] = true;
-                }
-                goLeft = visible;
+            for (int i = 0; i < size; i++) {
+                sf::Vector2f firstVertex(s.getPoint(i).x, s.getPoint(i).y);
+                int secondIndex = (i + 1) % size;
+                sf::Vector2f secondVertex(s.getPoint(secondIndex).x, s.getPoint(secondIndex).y);
+                sf::Vector2f middle = (firstVertex + secondVertex);
+                middle.x /= 2;
+                middle.y /= 2;
+
+                sf::Vector2f u = origin - middle;
+
+                sf::Vector2f normal;
+                normal.x = - (secondVertex.y - firstVertex.y);
+                normal.y = secondVertex.x - firstVertex.x;
+
+                if (DMUtils::sfml::dot(normal,u) > 0)
+                    backFacing[i] = false;
+                else
+                    backFacing[i] = true;
             }
 
+            int firstBoundaryIndex = 0;
+            int secondBoundaryIndex = 0;
 
-            if(goLeft) {
-                id = (closest - 2 + size)%size;
-                visible = true;
-                while(visible && id >= 0) {
-                    auto it = resultPointsList.begin();
-                    auto it2 = it++;
-                    while(it != resultPointsList.end() && visible) {
-                        if(id == *it || id == *it2) visible = false;
-                        else visible = isVisibleFrom(origin,s.getPoint(id),s.getPoint(*it),s.getPoint(*it2),tmp);
-                        if(visible) {
-                            it2 = it++;
-                        }
-                    }
-                    if(visible) {
-                        visiblePoints[id] = true;
-                        resultPointsList.emplace_front(id);
-                    } else if(DMUtils::maths::abs(closest-id)<=1) {
-                        visiblePoints[id] = false;
-                        if(id != *it && id != *it2) {
-                            resultPointsList.remove(id);
-                        }
-                    }
-                    --id;
-                }
+            for (int i = 0; i < size; i++)
+            {
+                int currentEdge = i;
+                int nextEdge = (i + 1) % size;
+
+                if (backFacing[currentEdge] && !backFacing[nextEdge])
+                    firstBoundaryIndex = nextEdge;
+
+                if (!backFacing[currentEdge] && backFacing[nextEdge])
+                    secondBoundaryIndex = nextEdge;
             }
 
-            if(goRight) {
-                int id = (closest + 2) % size;
-                visible = true;
-                while(visible && id < size) {
-                    auto it = resultPointsList.begin();
-                    auto it2 = it++;
-                    while(it != resultPointsList.end() && visible) {
-                        if(id == *it || id == *it2) visible = false;
-                        else visible = isVisibleFrom(origin,s.getPoint(id),s.getPoint(*it),s.getPoint(*it2),tmp);
-                        if(visible) {
-                            it2 = it++;
-                        }
-                    }
-                    if(visible) {
-                        visiblePoints[id] = true;
-                        resultPointsList.emplace_back(id);
-                    } else if(DMUtils::maths::abs(closest-id)<=1) {
-                        visiblePoints[id] = false;
-                        if(id != *it && id != *it2) {
-                            resultPointsList.remove(id);
-                        }
-                    }
-                    ++id;
-                }
+            int shapeSize = 0;
+            if(secondBoundaryIndex < firstBoundaryIndex) {
+                shapeSize = DMUtils::maths::abs(secondBoundaryIndex - firstBoundaryIndex) + 1;
+            } else {
+                shapeSize = DMUtils::maths::abs(size - secondBoundaryIndex + firstBoundaryIndex) + 1;
             }
 
-            auto it = resultPointsList.begin();
-            auto it_prev = resultPointsList.end();
-            while(it != resultPointsList.end()) {
-                auto it2 = it;
-                ++it2;
-                if(it2==resultPointsList.end()) it2 = resultPointsList.begin();
-                visible = true;
-                while(visible && it2 != resultPointsList.end()) {
-                    auto it3 = it2++;
-                    if(it2 == resultPointsList.end()) {
-                        it2 = resultPointsList.begin();
+            if(shapeSize) {
+                sf::ConvexShape resultShape;
+                resultShape.setFillColor(sf::Color(0,0,255,127));
+                resultShape.setPointCount(shapeSize+2);
+
+                int id = 1;
+                int i = firstBoundaryIndex;
+                while(i != secondBoundaryIndex) {
+                    resultShape.setPoint(id++,s.getPoint(i));
+                    --i;
+                    if(i<0) i+=size;
+                    else if(i>size) i-=size;
+                }
+                resultShape.setPoint(id++,s.getPoint(secondBoundaryIndex));
+
+                int closestToLeft=0;
+
+                for(int i=0;i<5;++i) {
+                    if(intersect(origin,s.getPoint(firstBoundaryIndex)-origin,screen.getPoint(i),screen.getPoint(i+1),tmp)) {
+                        resultShape.setPoint(0,tmp);
+                        closestToLeft = i+1;
                     }
-                    if(DMUtils::maths::abs(*it2 - *it3) != 1 && !(*it2==0&&*it3==size-1) && !(*it3==0&&*it2==size-1)) {
-                        continue;
-                    }
-                    if(it3 == it || it2 == it) {
-                        break;
-                    }
-                    if(!isVisibleFrom(origin,s.getPoint(*it),s.getPoint(*it2),s.getPoint(*it3),tmp)) {
-                        //found a collision, the thiing isn't visible
-                        visible = false;
-                        visiblePoints[*it] = false;
+                    if(intersect(origin,s.getPoint(secondBoundaryIndex)-origin,screen.getPoint(i),screen.getPoint(i+1),tmp)) {
+                        resultShape.setPoint(resultShape.getPointCount()-1,tmp);
                     }
                 }
-                if(!visible) {
-                    visiblePoints[*it] = false;
-                    if(it_prev==resultPointsList.end()) {
-                        resultPointsList.pop_front();
-                        it = resultPointsList.begin();
-                    } else {
-                        resultPointsList.erase(it);
-                        it = it_prev;
-                    }
-                }
-                it_prev = it++;
-            }
-
-            //pushes edges
-            it = resultPointsList.begin();
-            while(it!=resultPointsList.end()) {
-                if(!visiblePoints[(*it+1)%size]) {
-                    resultPointsList.erase(it);
-                    resultPointsList.emplace_back(*it);
-                    break;
-                }
-                ++it;
-            }
-            it = resultPointsList.begin();
-            while(it!=resultPointsList.end()) {
-                if(!visiblePoints[(*it-1+size)%size]) {
-                    resultPointsList.erase(it);
-                    resultPointsList.emplace_front(*it);
-                    break;
-                }
-                ++it;
-            }
-
-            sf::Vector2f furtherLeft = s.getPoint(*resultPointsList.begin());
-            sf::Vector2f furtherRight = s.getPoint(*resultPointsList.rbegin());
-
-            sf::ConvexShape shapeResult;
-            //shapeResult.setFillColor(sf::Color(0,0,255,127));
-            shapeResult.setFillColor(sf::Color::Black);
-            shapeResult.setPointCount(resultPointsList.size()+2);
-            int shapeResult_vid = 0;
-            for(auto vid : resultPointsList) {
-                shapeResult.setPoint(1+shapeResult_vid++,s.getPoint(vid));
-            }
-
-            int closestToLeft=0;
-            int closestToRight=0;
-
-            //extrapolations
-            for(int i=0;i<5;++i) {
-                if(intersect(origin,furtherLeft-origin,screen.getPoint(i),screen.getPoint(i+1),tmp)) {
-                    shapeResult.setPoint(0,tmp);
-                    closestToLeft = i+1;
-                }
-                if(intersect(origin,furtherRight-origin,screen.getPoint(i),screen.getPoint(i+1),tmp)) {
-                    shapeResult.setPoint(shapeResult.getPointCount()-1,tmp);
-                    closestToRight = i+1;
-                }
-            }
-
-            //corners
-            if(!(furtherLeft.x <= screenRect.left && furtherRight.x <= screenRect.left) || (furtherLeft.x <= screenRect.left + screenRect.width && furtherRight.x <= screenRect.left + screenRect.width) ||
-               !(furtherLeft.y <= screenRect.top && furtherRight.y <= screenRect.top) || (furtherLeft.y <= screenRect.top + screenRect.height && furtherRight.y <= screenRect.top + screenRect.height)) {
-
-                closest = 0;
 
                 std::list<int> cornerList;
 
                 id = closestToLeft;
-                int i = 0;
+                i = 0;
+                sf::Vector2f furtherLeft = resultShape.getPoint(0);
+                sf::Vector2f furtherRight = resultShape.getPoint(resultShape.getPointCount()-1);
                 while(i < 4) {
                     if(intersect(origin,screen.getPoint(id)-origin,furtherLeft,furtherRight,tmp)) {
-                        cornerList.emplace_back(id);
+                        cornerList.emplace_front(id);
                     }
                     id = (id+1)%4;
                     ++i;
                 }
 
                 if(cornerList.size()) {
-                    int ind = shapeResult.getPointCount();
-                    shapeResult.setPointCount(shapeResult.getPointCount()+cornerList.size());
+                    int ind = resultShape.getPointCount();
+                    resultShape.setPointCount(resultShape.getPointCount()+cornerList.size());
                     for(auto i : cornerList) {
-                        shapeResult.setPoint(ind++,screen.getPoint(i));
+                        resultShape.setPoint(ind++,screen.getPoint(i));
                     }
                 }
+
+                result.emplace_back(resultShape);
+            } else {
+                std::cout << "Step = 0" << std::endl;
             }
-            result.emplace_back(shapeResult);
         }
     }
 
