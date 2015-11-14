@@ -35,7 +35,7 @@ namespace LS {
     SpotLight::~SpotLight() {
 	}
 
-    SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c) : SpotLight(p,r,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f) {
+    SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c) : SpotLight(p,r,c,0.0f,360.0f,1.0f,0.0f,1.0f) {
     }
 
     SpotLight::SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf) : Light(p,c),
