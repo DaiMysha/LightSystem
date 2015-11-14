@@ -80,7 +80,7 @@ namespace LS {
 
         _sprite.setOrigin(center);
         _sprite.setPosition(_position);
-        _sprite.setTexture(_renderTexture->getTexture());
+        _sprite.setTexture(_renderTexture->getTexture(),true);
         _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
 
         computeAABB();
