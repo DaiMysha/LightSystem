@@ -116,20 +116,30 @@ namespace LS {
         _renderTexture.clear(_ambiant);
         sf::RenderStates stAdd(_addState);
         sf::RenderStates stRm(_subtractState);
+        sf::RenderStates stMp(_multiplyState);
 
         sf::Transform t;
         t.translate(-_sprite.getPosition());
         stAdd.transform.combine(t);
         stRm.transform.combine(t);
+        stMp.transform.combine(t);
 
         sf::FloatRect screenRect(screen);
+
+        sf::RenderTexture tmp;
+        tmp.create(screen.width,screen.height);
+        sf::Sprite spr(tmp.getTexture());
 
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
                 else {
+                    tmp.clear(sf::Color::Black);
                     l->calcShadow(screenRect,_shadowSystem->getWalls());
-                    l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
+                    //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
+                    l->render(screen,tmp,&_lightAttenuationShader,stMp);
+                    tmp.display();
+                    _renderTexture.draw(spr,_addState);
                 }
             }
         }
@@ -173,7 +183,7 @@ namespace LS {
     }
 
     void LightSystem::drawWalls(const sf::View& screenView, sf::RenderTarget& target) {
-        sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
+        //sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
         if(_shadowSystem) {
             //for(Light* l : _lights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
             //for(Light* l : _negativeLights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);

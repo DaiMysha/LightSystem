@@ -238,7 +238,7 @@ int main(int argc, char** argv) {
 
     //add them all to the LightSystem
     //except the playerLight, since it's been added by the template function
-    ls.addLight(spotRed);
+    /*ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
     ls.addLight(negativeColors);//you can add them anywhere, not just at the end
@@ -252,7 +252,7 @@ int main(int argc, char** argv) {
     ls.addLight(negativeSpot);
     ls.addLight(localAmbiant);
     ls.addLight(negativeAmbiant);
-    ls.addLight(emissive);
+    ls.addLight(emissive);*/
 
     //Modify a light
     //if you change its direcionAngle or its position, it doesn't need to be updated
@@ -430,7 +430,7 @@ int main(int argc, char** argv) {
             if(c==sf::Color::Blue) negativeColors->setColor(sf::Color(127,127,127));
             if(c==sf::Color(127,127,127)) negativeColors->setColor(sf::Color::Black);
             if(c==sf::Color::Black) negativeColors->setColor(sf::Color::Red);
-            ls.update(negativeColors);
+            ///ls.update(negativeColors);
             c = negativeColors->getColor();
         }
         //this is an example of how to make a light flicker
@@ -443,8 +443,8 @@ int main(int argc, char** argv) {
                 firePit1->setRadius(200);
                 firePit2->setRadius(200);
             }
-            //ls.update(firePit1);
-            //ls.update(firePit2);
+            ls.update(firePit1);
+            ls.update(firePit2);
         }
     }
 

@@ -60,16 +60,24 @@ namespace LS {
         const float diam = _radius*2.0f;
 
         if(_renderTexture==nullptr) _renderTexture = new sf::RenderTexture();
+        if(_shadowTexture==nullptr) _shadowTexture = new sf::RenderTexture;
 
         bool resizeTexture = false;
 
         if(_resizeWhenIncrease && _renderTexture->getSize().x < diam) resizeTexture = true;
         else if(_renderTexture->getSize().x != diam) resizeTexture = true;
 
-        if(resizeTexture && !_renderTexture->create(diam,diam)) {
-            delete _renderTexture;
-            _renderTexture=nullptr;
-            return; //somehow texture failed, maybe too big, abort
+        if(resizeTexture) {
+            if(!_renderTexture->create(diam,diam)) {
+                delete _renderTexture;
+                _renderTexture=nullptr;
+                return; //somehow texture failed, maybe too big, abort
+            }
+            if(!_shadowTexture->create(diam,diam)) {
+                delete _shadowTexture;
+                _shadowTexture=nullptr;
+                return; //somehow texture failed, maybe too big, abort
+            }
         }
 
         sf::Vector2f center(_renderTexture->getSize().x/2.0f,_renderTexture->getSize().y/2.0f);
@@ -92,42 +100,16 @@ namespace LS {
 
         //see with a 3rd texture ?
         if(_renderTexture!=nullptr) {
-            if(_shadowTexture!=nullptr) {
-                //temporary, move to class after, maybe move to lightsystem and pass as parameter ?
-                static sf::RenderTexture buffer;
-                static bool initd = false;
-                sf::Vector2f center(_renderTexture->getSize().x/2.0f,_renderTexture->getSize().y/2.0f);
-                ///std::cout << "center : " << center.x << ";" << center.y << std::endl;
-                if(!initd) {
-                    buffer.create(_renderTexture->getSize().x,_renderTexture->getSize().y);
-                    initd = true;
-                }
-                buffer.clear();
+            sf::Vector2f center(_shadowTexture->getSize().x/2.0f,_shadowTexture->getSize().y/2.0f);
+            sf::Sprite spr(_shadowTexture->getTexture());
+            spr.setOrigin(center);
+            spr.setPosition(_position);
 
-                sf::Sprite tmp;
-                tmp.setTexture(_renderTexture->getTexture());
-                tmp.setOrigin(center);
-                tmp.setPosition(center.x,center.y);
-                tmp.setRotation(getDirectionAngle());
-                buffer.draw(tmp);
+            sf::RenderStates st(states);
+            st.blendMode = sf::BlendAdd;
 
-                tmp.setRotation(0);
-                tmp.setTexture(_shadowTexture->getTexture());
-                buffer.draw(tmp,sf::BlendMultiply);
-
-                sf::Sprite spr;
-                spr.setTexture(buffer.getTexture());
-                ///std::cout << "Position : " << _position.x << ";" << _position.y << std::endl;
-                ///std::cout << "Radius : " << getRadius() << std::endl;
-                ///spr.setPosition(getPosition()-sf::Vector2f(getRadius(),getRadius()));
-                spr.setPosition(getPosition()-center);
-                ///std::cout << "Sprite position : " << spr.getPosition().x << ";" << spr.getPosition().y << std::endl;
-
-                target.draw(spr,states);
-                ///std::cout << std::endl;
-            } else {
-                target.draw(_sprite,states);
-            }
+            //target.draw(_sprite,st);
+            target.draw(spr,st);
         } else {
             sf::Vector2f newCenter = _position - sf::Vector2f(screen.left,screen.top);
             _render(target,states,shader,sf::Vector2f(newCenter.x,screen.height - newCenter.y),_position,sf::Vector2f(_radius,_radius),DMUtils::maths::radToDeg(_directionAngle));
@@ -169,18 +151,12 @@ namespace LS {
 	}
 
     void SpotLight::calcShadow(const sf::FloatRect& screenRect, const std::list<sf::ConvexShape>& walls) {
-        if(!_renderTexture) return;
+        if(!_renderTexture || !_shadowTexture) return;
         //if(getSpreadAngle()!=360.0f) return;
-
-        if(_shadowTexture==nullptr) {
-            _shadowTexture = new sf::RenderTexture;
-            _shadowTexture->create(_renderTexture->getSize().x,_renderTexture->getSize().y);
-        }
 
         const sf::Vector2f origin(getPosition());
         const sf::Vector2f screenDelta(-screenRect.left,-screenRect.top);
 
-        std::list<sf::ConvexShape> wallsShifted;
         std::list<sf::ConvexShape> shapeResult;
 
         ShadowSystem::castShadowsFromPoint(origin,walls,screenRect,shapeResult);
@@ -190,6 +166,7 @@ namespace LS {
             s.setPosition(screenDelta);
             _shadowTexture->draw(s);
         }
+        _shadowTexture->display();
     }
 
     void SpotLight::computeAABB() {
