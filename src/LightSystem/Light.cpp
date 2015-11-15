@@ -59,7 +59,7 @@ namespace LS {
         target.draw(lines,5,sf::LinesStrip);
     }
 
-    void Light::calcShadow(const sf::FloatRect& screenRect, const std::list<sf::ConvexShape>& walls) {
+    void Light::calcShadow(const std::list<sf::ConvexShape>& walls) {
     }
 
     bool Light::isIsometric() const {
@@ -68,6 +68,11 @@ namespace LS {
 
     sf::IntRect Light::getAABB() {
         return sf::IntRect(sf::Vector2i(_aabb.left+static_cast<int>(_position.x),_aabb.top+static_cast<int>(_position.y)),sf::Vector2i(_aabb.width,_aabb.height));
+    }
+
+    sf::FloatRect Light::getBoundaries() {
+        const sf::IntRect rect = getAABB();
+        return sf::FloatRect(rect.left,rect.top,rect.width,rect.height);
     }
 
     void Light::setPosition(const sf::Vector2f& c) {

@@ -39,11 +39,12 @@ namespace LS {
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
-            virtual void calcShadow(const sf::FloatRect& screenRect, const std::list<sf::ConvexShape>& walls);
+            virtual void calcShadow(const std::list<sf::ConvexShape>& walls);
 
             virtual void computeAABB() = 0;
 
             sf::IntRect getAABB();//returns the AABB according to the whole map
+            virtual sf::FloatRect getBoundaries();
 
             void setPosition(const sf::Vector2f& c);
             sf::Vector2f getPosition() const;

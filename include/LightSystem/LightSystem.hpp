@@ -106,7 +106,9 @@ namespace LS {
             sf::Color _ambiant;
             sf::Shader _lightAttenuationShader;
             sf::RenderTexture _renderTexture;
+            sf::RenderTexture _buffer;
             sf::Sprite _sprite;
+            sf::Sprite _bufferSprite;
 
             bool _isometric;
             bool _autoDelete;

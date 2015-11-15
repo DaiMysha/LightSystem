@@ -126,27 +126,32 @@ namespace LS {
 
         sf::FloatRect screenRect(screen);
 
-        sf::RenderTexture tmp;
-        tmp.create(screen.width,screen.height);
-        sf::Sprite spr(tmp.getTexture());
-
         for(Light* l : _lights) {
             if(l->getAABB().intersects(screen)) {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
                 else {
-                    tmp.clear(sf::Color::Black);
-                    l->calcShadow(screenRect,_shadowSystem->getWalls());
+                    _buffer.clear(sf::Color::Black);
+                    //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
+                    l->calcShadow(_shadowSystem->getWalls());
                     //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
-                    l->render(screen,tmp,&_lightAttenuationShader,stMp);
-                    tmp.display();
-                    _renderTexture.draw(spr,_addState);
+                    l->render(screen,_buffer,&_lightAttenuationShader,stMp);
+                    _buffer.display();
+                    _renderTexture.draw(_bufferSprite,_addState);
                 }
             }
         }
         for(Light* l : _negativeLights) {
             if(l->getAABB().intersects(screen)) {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stRm);
-                else l->render(screen,_renderTexture,&_lightAttenuationShader,stRm);
+                else {
+                    _buffer.clear(sf::Color::Black);
+                    //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
+                    l->calcShadow(_shadowSystem->getWalls());
+                    //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
+                    l->render(screen,_buffer,&_lightAttenuationShader,stMp);
+                    _buffer.display();
+                    _renderTexture.draw(_bufferSprite,_subtractState);
+                }
             }
         }
 
@@ -261,7 +266,10 @@ namespace LS {
 
     void LightSystem::setView(const sf::View& view) {
         _renderTexture.create(view.getSize().x,view.getSize().y);
-        _sprite.setTexture(_renderTexture.getTexture());
+        _buffer.create(view.getSize().x,view.getSize().y);
+
+        _sprite.setTexture(_renderTexture.getTexture(),true);
+        _bufferSprite.setTexture(_buffer.getTexture(),true);
     }
 }
 }

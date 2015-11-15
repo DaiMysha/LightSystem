@@ -108,8 +108,8 @@ namespace LS {
             sf::RenderStates st(states);
             st.blendMode = sf::BlendAdd;
 
-            //target.draw(_sprite,st);
-            target.draw(spr,st);
+            target.draw(_sprite,st);
+            target.draw(spr,states);
         } else {
             sf::Vector2f newCenter = _position - sf::Vector2f(screen.left,screen.top);
             _render(target,states,shader,sf::Vector2f(newCenter.x,screen.height - newCenter.y),_position,sf::Vector2f(_radius,_radius),DMUtils::maths::radToDeg(_directionAngle));
@@ -150,18 +150,30 @@ namespace LS {
         }
 	}
 
-    void SpotLight::calcShadow(const sf::FloatRect& screenRect, const std::list<sf::ConvexShape>& walls) {
+	void drawLine(sf::RenderTarget& target, const sf::Vector2f& a, const sf::Vector2f& b, const sf::Color& c) {
+        sf::Vertex line[] = {
+            sf::Vertex(a,c),
+            sf::Vertex(b,c)
+        };
+        target.draw(line,2,sf::Lines);
+    }
+
+    void SpotLight::calcShadow(const std::list<sf::ConvexShape>& walls) {
         if(!_renderTexture || !_shadowTexture) return;
         //if(getSpreadAngle()!=360.0f) return;
+        _shadowTexture->clear(sf::Color::White);
 
         const sf::Vector2f origin(getPosition());
-        const sf::Vector2f screenDelta(-screenRect.left,-screenRect.top);
+        sf::FloatRect bounds = getBoundaries();
+        //this is good if spreadAngle = 360 && boundaries is light->getAABB()
+        sf::Vector2f screenDelta(-bounds.left,-bounds.top);
 
         std::list<sf::ConvexShape> shapeResult;
 
-        ShadowSystem::castShadowsFromPoint(origin,walls,screenRect,shapeResult);
+        ShadowSystem::castShadowsFromPoint(origin,walls,bounds,shapeResult);
 
-        _shadowTexture->clear(sf::Color::White);
+        sf::Vector2f tmp;
+
         for(sf::ConvexShape& s : shapeResult) {
             s.setPosition(screenDelta);
             _shadowTexture->draw(s);
@@ -170,7 +182,6 @@ namespace LS {
     }
 
     void SpotLight::computeAABB() {
-
         if(_spreadAngle == M_PIf*2.0f) {
             _aabb.left = -_radius;
             _aabb.top = -_radius;
@@ -191,6 +202,14 @@ namespace LS {
             _aabb.width = xmax - xmin;
             _aabb.height = ymax - ymin;
         }
+    }
+
+    sf::FloatRect SpotLight::getBoundaries() {
+        if(_spreadAngle == M_PIf*2.0f) {
+            const sf::IntRect rect = getAABB();
+            return sf::FloatRect(rect.left,rect.top,rect.width,rect.height);
+        }
+        return sf::FloatRect(_position.x - _radius, _position.y - _radius, _radius*2.0f, _radius*2.0f);
     }
 
     void SpotLight::setRadius(float r) {
