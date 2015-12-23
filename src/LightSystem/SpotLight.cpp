@@ -100,16 +100,19 @@ namespace LS {
 
         //see with a 3rd texture ?
         if(_renderTexture!=nullptr) {
-            sf::Vector2f center(_shadowTexture->getSize().x/2.0f,_shadowTexture->getSize().y/2.0f);
-            sf::Sprite spr(_shadowTexture->getTexture());
-            spr.setOrigin(center);
-            spr.setPosition(_position);
-
             sf::RenderStates st(states);
             st.blendMode = sf::BlendAdd;
+            if(_shadowTexture!=nullptr) {
+                sf::Vector2f center(_shadowTexture->getSize().x/2.0f,_shadowTexture->getSize().y/2.0f);
+                sf::Sprite spr(_shadowTexture->getTexture());
+                spr.setOrigin(center);
+                spr.setPosition(_position);
 
-            target.draw(_sprite,st);
-            target.draw(spr,states);
+                target.draw(_sprite,st);
+                target.draw(spr,states);
+            } else {
+                target.draw(_sprite,st);
+            }
         } else {
             sf::Vector2f newCenter = _position - sf::Vector2f(screen.left,screen.top);
             _render(target,states,shader,sf::Vector2f(newCenter.x,screen.height - newCenter.y),_position,sf::Vector2f(_radius,_radius),DMUtils::maths::radToDeg(_directionAngle));

@@ -157,27 +157,27 @@ int main(int argc, char** argv) {
     ls.addWall(wallShape);
 
     wallShape.setPoint(0,sf::Vector2f(1470,2080));
-    wallShape.setPoint(1,sf::Vector2f(1631,2080));
-    wallShape.setPoint(2,sf::Vector2f(1631,2114));
+    wallShape.setPoint(1,sf::Vector2f(1632,2080));
+    wallShape.setPoint(2,sf::Vector2f(1632,2114));
     wallShape.setPoint(3,sf::Vector2f(1470,2114));
     ls.addWall(wallShape);
 
-    wallShape.setPoint(0,sf::Vector2f(1728,2080));
+    wallShape.setPoint(0,sf::Vector2f(1727,2080));
     wallShape.setPoint(1,sf::Vector2f(1888,2080));
     wallShape.setPoint(2,sf::Vector2f(1888,2114));
-    wallShape.setPoint(3,sf::Vector2f(1728,2114));
+    wallShape.setPoint(3,sf::Vector2f(1727,2114));
     ls.addWall(wallShape);
 
     wallShape.setPoint(0,sf::Vector2f(1437,1728));
-    wallShape.setPoint(1,sf::Vector2f(1469,1728));
-    wallShape.setPoint(2,sf::Vector2f(1469,2114));
+    wallShape.setPoint(1,sf::Vector2f(1470,1728));
+    wallShape.setPoint(2,sf::Vector2f(1470,2114));
     wallShape.setPoint(3,sf::Vector2f(1437,2114));
     ls.addWall(wallShape);
 
-    wallShape.setPoint(0,sf::Vector2f(1889,1728));
+    wallShape.setPoint(0,sf::Vector2f(1888,1728));
     wallShape.setPoint(1,sf::Vector2f(1922,1728));
     wallShape.setPoint(2,sf::Vector2f(1922,2114));
-    wallShape.setPoint(3,sf::Vector2f(1889,2114));
+    wallShape.setPoint(3,sf::Vector2f(1888,2114));
     ls.addWall(wallShape);
 
     //Let's create a bunch of lights now
