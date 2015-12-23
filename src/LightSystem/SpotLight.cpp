@@ -26,7 +26,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/maths.hpp>
 #include <DMUtils/sfml.hpp>
 
-#include <Lightsystem/SpotLight.hpp>
+#include <LightSystem/SpotLight.hpp>
 #include <LightSystem/ShadowSystem.hpp>
 
 namespace DMGDVT {
