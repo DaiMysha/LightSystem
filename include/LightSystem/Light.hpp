@@ -76,8 +76,6 @@ namespace LS {
             static const char LAS_PARAM_COLOR[];
             static const char LAS_PARAM_BLEED[];
             static const char LAS_PARAM_LINEARITY[];
-            static const char LAS_PARAM_OUTLINE[];//used mainly for debug, don't mind it
-            static const char LAS_PARAM_ISOMETRIC[];
 
             enum Attributes {
                 ACTIVE      = 1,

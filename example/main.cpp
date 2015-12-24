@@ -416,7 +416,7 @@ int main(int argc, char** argv) {
             ls.removeLight(negativeSpot);
             if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
             else negativeSpot->setIntensity(-1.0f);
-            ///ls.addLight(negativeSpot);
+            ls.addLight(negativeSpot);
 
 
             //you can easily switch a light on and off with this function
@@ -430,7 +430,7 @@ int main(int argc, char** argv) {
             if(c==sf::Color::Blue) negativeColors->setColor(sf::Color(127,127,127));
             if(c==sf::Color(127,127,127)) negativeColors->setColor(sf::Color::Black);
             if(c==sf::Color::Black) negativeColors->setColor(sf::Color::Red);
-            ///ls.update(negativeColors);
+            ls.update(negativeColors);
             c = negativeColors->getColor();
         }
         //this is an example of how to make a light flicker

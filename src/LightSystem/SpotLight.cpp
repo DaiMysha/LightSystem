@@ -309,8 +309,6 @@ namespace LS {
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
         shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
-        //shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,isIsometric());
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_ISOMETRIC,false);//cannot be for now
 
         sf::ConvexShape shape = _makeShape();
 
