@@ -147,7 +147,7 @@ namespace LS {
                 sf::Vector2f furtherLeft = resultShape.getPoint(0);
                 sf::Vector2f furtherRight = resultShape.getPoint(resultShape.getPointCount()-1);
                 while(i < 4) {
-                    if(screen.getPoint(i) != furtherLeft && screen.getPoint(i) != furtherRight && intersect(origin,screen.getPoint(id)-origin,furtherLeft,furtherRight,tmp)) {
+                    if(screen.getPoint(id) != furtherLeft && screen.getPoint(id) != furtherRight && intersect(origin,screen.getPoint(id)-origin,furtherLeft,furtherRight,tmp)) {
                         cornerList.emplace_front(id);
                     }
                     id = (id+1)%4;
