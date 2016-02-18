@@ -18,8 +18,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 */
 
-#ifndef HEADER_DMGDVT_FlashLight
-#define HEADER_DMGDVT_FlashLight
+#ifndef HEADER_DMGDVT_FLASHLIGHT
+#define HEADER_DMGDVT_FLASHLIGHT
 
 #include <SFML/Graphics.hpp>
 
@@ -51,4 +51,4 @@ namespace LS {
 }
 }
 
-#endif //HEADER_DMGDVT_FlashLight
+#endif //HEADER_DMGDVT_FLASHLIGHT
