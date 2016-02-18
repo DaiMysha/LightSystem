@@ -111,6 +111,7 @@ namespace LS {
 
      /*** PROTECTED ***/
 
+    //This can be optimised with a cached shape that's updated when the flaslight parameters change
     sf::ConvexShape FlashLight::_makeShape() {
         sf::ConvexShape shape;
 
@@ -131,7 +132,7 @@ namespace LS {
             float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
             sf::Vector2f base(-_width/2.0f+(i+1)*_width/(float)(getPrecision()),0.0f);
 
-            shape.setPoint(i+1,DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius)+base,angle,base));
+            shape.setPoint(i+1,DMUtils::sfml::rotate(sf::Vector2f(0.0f,_radius*1.1)+base,angle,base));
         }
 
         return shape;
