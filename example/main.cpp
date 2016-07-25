@@ -203,7 +203,7 @@ int main(int argc, char** argv) {
     DMGDVT::LS::SpotLight* firePit2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
 
     //a flashlight is a spotlight with a line base instead of a point
-    DMGDVT::LS::SpotLight* flashLight = new DMGDVT::LS::FlashLight(sf::Vector2f(2845,1245),800,30,sf::Color::White,180.0f/2.0f,180.0f/10.0f,1.0f,0.0f,2.0f);
+    DMGDVT::LS::SpotLight* flashLight = new DMGDVT::LS::FlashLight(sf::Vector2f(2845,1245),800,50,sf::Color::White,180.0f/2.0f,180.0f/10.0f,1.0f,0.0f,2.0f);
 
     //just some more lights to test a few things
     DMGDVT::LS::SpotLight* lamp = new DMGDVT::LS::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,180.0f*2.0f,1.0f,0.0f,0.50f);
@@ -262,9 +262,7 @@ int main(int argc, char** argv) {
     //basically any parameter except for directionAngle and position
     playerLight->setLinearity(2.0f);
     playerLight->setBleed(0.0f);
-    ///playerLight->setSpreadAngle(180.0f/3.0f);
-    playerLight->setSpreadAngle(2.0*180.0f);
-    ///playerLight->setColor(sf::Color::White);
+    playerLight->setSpreadAngle(70.0f);
     playerLight->setColor(sf::Color(255,175,0));
     playerLight->setIntensity(1.0f);
     playerLight->setRadius(250);
@@ -408,7 +406,6 @@ int main(int argc, char** argv) {
             text.setString(str.str());
             totalTime = 0;
 
-
             //also use this timer to alternate the negative light to a positive light
             //you can change the positivity of a light just by changing its intensity
             //this however requires you to remove the light and to add it again
@@ -417,7 +414,6 @@ int main(int argc, char** argv) {
             if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
             else negativeSpot->setIntensity(-1.0f);
             ls.addLight(negativeSpot);
-
 
             //you can easily switch a light on and off with this function
             //and it doesn't require an update of the light
