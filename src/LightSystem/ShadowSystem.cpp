@@ -25,8 +25,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <DMUtils/sfml.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     void ShadowSystem::addWall(const sf::ConvexShape& shape) {
         _walls.emplace_back(shape);

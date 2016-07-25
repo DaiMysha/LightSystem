@@ -25,8 +25,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <DMUtils/maths.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     SpriteLight::SpriteLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr) : Light(p,c), _angle(DMUtils::maths::degToRad(a)) {
         _sprite = spr;

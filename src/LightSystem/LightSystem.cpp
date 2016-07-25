@@ -28,8 +28,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/staticData/staticData.hpp>
 #include <LightSystem/ShadowSystem.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     const sf::RenderStates LightSystem::_multiplyState(sf::BlendMultiply);
     const sf::RenderStates LightSystem::_addState(sf::BlendAdd);
@@ -42,7 +42,7 @@ namespace LS {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }*/
 
-        if(!_lightAttenuationShader.loadFromMemory(DMGDVT::LS::StaticData::LIGHT_ATTENUATION_SHADER,sf::Shader::Fragment)) {
+        if(!_lightAttenuationShader.loadFromMemory(dm::ls::StaticData::LIGHT_ATTENUATION_SHADER,sf::Shader::Fragment)) {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }
 

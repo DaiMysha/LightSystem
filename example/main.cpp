@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
 
     //create your LightSystem
     //one per game is usually enough
-    DMGDVT::LS::LightSystem ls;
+    dm::ls::LightSystem ls;
     //change ambiant light
     ls.setAmbiantLight(sf::Color(15,0,60));
     //the lightSystem needs to be aware of the view you're using to properly draw the lights
@@ -187,45 +187,45 @@ int main(int argc, char** argv) {
     //do NOT destroy a light that hasn't been removed yet, it will cause a segfault
 
     //to ensure R + G + B = W
-    DMGDVT::LS::SpotLight* spotRed =  new DMGDVT::LS::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spotBlue = new DMGDVT::LS::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spotGreen = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green,0.0f      ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* negativeColors = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,0.0f      ,180.0f*2.0f,-1.0f,5.0f,5.0f);
+    dm::ls::SpotLight* spotRed =  new dm::ls::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
+    dm::ls::SpotLight* spotBlue = new dm::ls::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
+    dm::ls::SpotLight* spotGreen = new dm::ls::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green,0.0f      ,180.0f*2.0f,1.0f,0.5f,1.0f);
+    dm::ls::SpotLight* negativeColors = new dm::ls::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,0.0f      ,180.0f*2.0f,-1.0f,5.0f,5.0f);
 
     //looks at the player, shows that you don't need to update a light if you're just rotating it around
-    DMGDVT::LS::SpotLight* eyeSpotLeft = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
-    DMGDVT::LS::SpotLight* eyeSpotRight = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
+    dm::ls::SpotLight* eyeSpotLeft = new dm::ls::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
+    dm::ls::SpotLight* eyeSpotRight = new dm::ls::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
 
-    DMGDVT::LS::SpotLight* sunRise = new DMGDVT::LS::SpotLight(sf::Vector2f(1679,2200),500,sf::Color(245,125,20),180.0f ,180.0f/3.0f,1.0f,0.0f,2.0f);
+    dm::ls::SpotLight* sunRise = new dm::ls::SpotLight(sf::Vector2f(1679,2200),500,sf::Color(245,125,20),180.0f ,180.0f/3.0f,1.0f,0.0f,2.0f);
 
     //flickering light. Something for dynamic lights is planned for later, but for now the code later shows how to do it
-    DMGDVT::LS::SpotLight* firePit1 = new DMGDVT::LS::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
-    DMGDVT::LS::SpotLight* firePit2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
+    dm::ls::SpotLight* firePit1 = new dm::ls::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
+    dm::ls::SpotLight* firePit2 = new dm::ls::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
 
     //a flashlight is a spotlight with a line base instead of a point
-    DMGDVT::LS::SpotLight* flashLight = new DMGDVT::LS::FlashLight(sf::Vector2f(2845,1245),800,50,sf::Color::White,180.0f/2.0f,180.0f/10.0f,1.0f,0.0f,2.0f);
+    dm::ls::SpotLight* flashLight = new dm::ls::FlashLight(sf::Vector2f(2845,1245),800,50,sf::Color::White,180.0f/2.0f,180.0f/10.0f,1.0f,0.0f,2.0f);
 
     //just some more lights to test a few things
-    DMGDVT::LS::SpotLight* lamp = new DMGDVT::LS::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,180.0f*2.0f,1.0f,0.0f,0.50f);
+    dm::ls::SpotLight* lamp = new dm::ls::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,180.0f*2.0f,1.0f,0.0f,0.50f);
 
     //one negative spot in the room with the ceiling white light
-    DMGDVT::LS::SpotLight* negativeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),180.0f/4.0f ,180.0f/4.0f,-1.0f,0.0f,2.0f);
+    dm::ls::SpotLight* negativeSpot = new dm::ls::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),180.0f/4.0f ,180.0f/4.0f,-1.0f,0.0f,2.0f);
 
     //template add example
     //also follows the player around, showing you don't need to update a light if you're just moving it around
-    DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
+    dm::ls::SpotLight* playerLight = ls.addLight<dm::ls::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
 
     //local ambiant lights are useful for example to make a difference between day and night
-    DMGDVT::LS::LocalAmbiantLight* localAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(1535,1439),ambiantShape,sf::Color::Red);
+    dm::ls::LocalAmbiantLight* localAmbiant = new dm::ls::LocalAmbiantLight(sf::Vector2f(1535,1439),ambiantShape,sf::Color::Red);
     //they can also be negative
-    DMGDVT::LS::LocalAmbiantLight* negativeAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(991,1087),negativeShape,sf::Color::Green,true);
+    dm::ls::LocalAmbiantLight* negativeAmbiant = new dm::ls::LocalAmbiantLight(sf::Vector2f(991,1087),negativeShape,sf::Color::Green,true);
 
     //Example of emissive lights. Emissive lights are just a white sprite on a transparent background that are drawn with a different color above everything else
     //the sprite is copied and stored locally
     //emissive lights CANNOT be negative
     //but they can be updated at any moment on any parameter without any cost
     //still need to call the LightSystem::update(Light*) on it
-    DMGDVT::LS::SpriteLight* emissive = new DMGDVT::LS::SpriteLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),180.0f/2.0f,emissiveSprite);
+    dm::ls::SpriteLight* emissive = new dm::ls::SpriteLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),180.0f/2.0f,emissiveSprite);
     emissive->setEmissive(true);
 
     //this parameter allows you to change the way textures are resized when a call to LightSystem::update(Light*) is done
@@ -377,8 +377,8 @@ int main(int argc, char** argv) {
             window.draw(p);
 
             int flags = 0;
-            if(debugLightMapOnly) flags |= DMGDVT::LS::LightSystem::DebugFlags::LIGHTMAP_ONLY;
-            if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DebugFlags::SHADER_OFF;
+            if(debugLightMapOnly) flags |= dm::ls::LightSystem::DebugFlags::LIGHTMAP_ONLY;
+            if(!debugUseShader) flags |= dm::ls::LightSystem::DebugFlags::SHADER_OFF;
 
             //use LightSystem::render if not using debug
             //if using debugRender, the flags allow you to modify the way the lights are drawn

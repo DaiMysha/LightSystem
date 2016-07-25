@@ -25,8 +25,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/Light.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     class LocalAmbiantLight : public Light {
         public:

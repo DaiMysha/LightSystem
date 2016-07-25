@@ -26,8 +26,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/maths.hpp>
 #include <DMUtils/sfml.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     LocalAmbiantLight::~LocalAmbiantLight() {
     }

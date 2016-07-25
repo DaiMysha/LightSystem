@@ -23,8 +23,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/LightSystem.hpp>
 #include <LightSystem/ShadowSystem.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     const char Light::LAS_PARAM_CENTER[] = "center";
     const char Light::LAS_PARAM_RADIUS[] = "radius";

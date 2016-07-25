@@ -26,8 +26,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/Light.hpp>
 #include <LightSystem/SpotLight.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     class FlashLight : public SpotLight {
         public:

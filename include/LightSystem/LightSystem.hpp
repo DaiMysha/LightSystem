@@ -29,8 +29,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/Light.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
     ///this class is not meant to be inherited
     class ShadowSystem;
 

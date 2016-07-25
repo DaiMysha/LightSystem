@@ -29,8 +29,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/SpotLight.hpp>
 #include <LightSystem/ShadowSystem.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     SpotLight::~SpotLight() {
 	}
@@ -191,7 +191,7 @@ namespace LS {
             _aabb.top = -_radius;
             _aabb.width = _aabb.height = _radius*2.0f;
         } else {
-            // @TODO : move the rotation function to a real good DMGDVT::sfUtils folder
+            // @TODO : move the rotation function to a real good dm::sfUtils folder
             sf::Vector2f v = DMUtils::sfml::rotate<float>(sf::Vector2f(0.0,_radius),_directionAngle);
             sf::Vector2f left = DMUtils::sfml::rotate<float>(v,-_spreadAngle/2.0f,_directionAngle);
             sf::Vector2f right = DMUtils::sfml::rotate<float>(v,_spreadAngle/2.0f,_directionAngle);
@@ -304,11 +304,11 @@ namespace LS {
         sf::RenderStates st(states);
         st.shader = shader;
 
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_CENTER,center);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_RADIUS,_radius);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_COLOR,c);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_BLEED,_bleed);
-        shader->setParameter(DMGDVT::LS::Light::LAS_PARAM_LINEARITY,_linearity);
+        shader->setParameter(dm::ls::Light::LAS_PARAM_CENTER,center);
+        shader->setParameter(dm::ls::Light::LAS_PARAM_RADIUS,_radius);
+        shader->setParameter(dm::ls::Light::LAS_PARAM_COLOR,c);
+        shader->setParameter(dm::ls::Light::LAS_PARAM_BLEED,_bleed);
+        shader->setParameter(dm::ls::Light::LAS_PARAM_LINEARITY,_linearity);
 
         sf::ConvexShape shape = _makeShape();
 

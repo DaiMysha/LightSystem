@@ -25,8 +25,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/maths.hpp>
 #include <DMUtils/sfml.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm {
+namespace ls {
 
     FlashLight::FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c) : FlashLight(p,r,l,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f) {
     }
