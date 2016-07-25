@@ -54,7 +54,7 @@ namespace LS {
             float getRadius() const;
 
             void setDirectionAngle(float da);
-            float getDirectionAngle() const;
+            float getDirectionAngle() const; //returns the angle IN DEGREES
             void rotate(float delta);
 
             void setSpreadAngle(float sa);

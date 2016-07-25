@@ -31,21 +31,19 @@ namespace LS {
 
     class FlashLight : public SpotLight {
         public:
-            FlashLight(const sf::Vector2f& p, float r, float w, const sf::Color& c);
-            FlashLight(const sf::Vector2f& p, float r, float w, const sf::Color& c, float da, float sa, float i, float b, float lf);
+            FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c);
+            FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c, float da, float sa, float i, float b, float lf);
 
             virtual void preRender(sf::Shader* shader) override;
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
-            virtual void computeAABB() override;
-
-            void setWidth(float w);
-            float getWidth() const;
+            void setLength(float l);
+            float getLength() const;
 
         protected:
-            virtual sf::ConvexShape _makeShape();
+            sf::ConvexShape _makeShape() override;
 
-            float _width;//width of the base line
+            float _length; //length from origin to start of light
 
     };
 }

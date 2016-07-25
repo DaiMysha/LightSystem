@@ -60,7 +60,7 @@ namespace LS {
         const float diam = _radius*2.0f;
 
         if(_renderTexture==nullptr) _renderTexture = new sf::RenderTexture();
-        if(_shadowTexture==nullptr) _shadowTexture = new sf::RenderTexture;
+        if(_shadowTexture==nullptr) _shadowTexture = new sf::RenderTexture();
 
         bool resizeTexture = false;
 
@@ -178,6 +178,7 @@ namespace LS {
         sf::Vector2f tmp;
 
         for(sf::ConvexShape& s : shapeResult) {
+            s.setFillColor(sf::Color::Black);
             s.setPosition(screenDelta);
             _shadowTexture->draw(s);
         }
@@ -295,7 +296,6 @@ namespace LS {
 	/*** PROTECTED ***/
 
 	void SpotLight::_render(sf::RenderTarget& target, const sf::RenderStates& states, sf::Shader* shader, sf::Vector2f center, sf::Vector2f shapePosition, sf::Vector2f shapeOrigin, float shapeRotation) {
-
         float r = _color.r * DMUtils::maths::abs(_intensity);
         float g = _color.g * DMUtils::maths::abs(_intensity);
         float b = _color.b * DMUtils::maths::abs(_intensity);
