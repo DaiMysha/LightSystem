@@ -36,6 +36,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #define WIDTH   640
 #define HEIGHT  600
 
+void addWalls(dm::ls::LightSystem& ls);
+
 //font taken from http://www.fontspace.com/melifonts/sweet-cheeks
 int main(int argc, char** argv) {
 
@@ -123,62 +125,7 @@ int main(int argc, char** argv) {
     ls.setView(view);
 
     //Create walls that block the light
-    //first is screen
-    sf::ConvexShape wallShape;
-    wallShape.setPointCount(4);
-    wallShape.setPoint(0,sf::Vector2f(0,0));
-    wallShape.setPoint(1,sf::Vector2f(WIDTH,0));
-    wallShape.setPoint(2,sf::Vector2f(WIDTH,HEIGHT));
-    wallShape.setPoint(3,sf::Vector2f(0,HEIGHT));
-    ls.addWall(wallShape);
-
-    wallShape.setPoint(0,sf::Vector2f(1470,1728));
-    wallShape.setPoint(1,sf::Vector2f(1664,1728));
-    wallShape.setPoint(2,sf::Vector2f(1664,1791));
-    wallShape.setPoint(3,sf::Vector2f(1470,1791));
-    ls.addWall(wallShape);
-
-    wallShape.setPoint(0,sf::Vector2f(1696,1728));
-    wallShape.setPoint(1,sf::Vector2f(1888,1728));
-    wallShape.setPoint(2,sf::Vector2f(1888,1791));
-    wallShape.setPoint(3,sf::Vector2f(1696,1791));
-    ls.addWall(wallShape);
-
-    wallShape.setPoint(0,sf::Vector2f(1632,2064));
-    wallShape.setPoint(1,sf::Vector2f(1663,2064));
-    wallShape.setPoint(2,sf::Vector2f(1663,2114));
-    wallShape.setPoint(3,sf::Vector2f(1632,2114));
-    ls.addWall(wallShape);
-
-    wallShape.setPoint(0,sf::Vector2f(1696,2064));
-    wallShape.setPoint(1,sf::Vector2f(1727,2064));
-    wallShape.setPoint(2,sf::Vector2f(1727,2114));
-    wallShape.setPoint(3,sf::Vector2f(1696,2114));
-    ls.addWall(wallShape);
-
-    wallShape.setPoint(0,sf::Vector2f(1470,2080));
-    wallShape.setPoint(1,sf::Vector2f(1632,2080));
-    wallShape.setPoint(2,sf::Vector2f(1632,2114));
-    wallShape.setPoint(3,sf::Vector2f(1470,2114));
-    ls.addWall(wallShape);
-
-    wallShape.setPoint(0,sf::Vector2f(1727,2080));
-    wallShape.setPoint(1,sf::Vector2f(1888,2080));
-    wallShape.setPoint(2,sf::Vector2f(1888,2114));
-    wallShape.setPoint(3,sf::Vector2f(1727,2114));
-    ls.addWall(wallShape);
-
-    wallShape.setPoint(0,sf::Vector2f(1437,1728));
-    wallShape.setPoint(1,sf::Vector2f(1470,1728));
-    wallShape.setPoint(2,sf::Vector2f(1470,2114));
-    wallShape.setPoint(3,sf::Vector2f(1437,2114));
-    ls.addWall(wallShape);
-
-    wallShape.setPoint(0,sf::Vector2f(1888,1728));
-    wallShape.setPoint(1,sf::Vector2f(1922,1728));
-    wallShape.setPoint(2,sf::Vector2f(1922,2114));
-    wallShape.setPoint(3,sf::Vector2f(1888,2114));
-    ls.addWall(wallShape);
+    addWalls(ls);
 
     //Let's create a bunch of lights now
     //the lights HAVE to be dynamically allocated. The LightSystem destroys them for you when it's destroyed
@@ -446,4 +393,64 @@ int main(int argc, char** argv) {
 
 
     return 0;
+}
+
+void addWalls(dm::ls::LightSystem& ls)
+{
+    //first is screen
+    sf::ConvexShape wallShape;
+    wallShape.setPointCount(4);
+    wallShape.setPoint(0,sf::Vector2f(0,0));
+    wallShape.setPoint(1,sf::Vector2f(WIDTH,0));
+    wallShape.setPoint(2,sf::Vector2f(WIDTH,HEIGHT));
+    wallShape.setPoint(3,sf::Vector2f(0,HEIGHT));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1470,1728));
+    wallShape.setPoint(1,sf::Vector2f(1664,1728));
+    wallShape.setPoint(2,sf::Vector2f(1664,1791));
+    wallShape.setPoint(3,sf::Vector2f(1470,1791));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1696,1728));
+    wallShape.setPoint(1,sf::Vector2f(1888,1728));
+    wallShape.setPoint(2,sf::Vector2f(1888,1791));
+    wallShape.setPoint(3,sf::Vector2f(1696,1791));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1632,2064));
+    wallShape.setPoint(1,sf::Vector2f(1663,2064));
+    wallShape.setPoint(2,sf::Vector2f(1663,2114));
+    wallShape.setPoint(3,sf::Vector2f(1632,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1696,2064));
+    wallShape.setPoint(1,sf::Vector2f(1727,2064));
+    wallShape.setPoint(2,sf::Vector2f(1727,2114));
+    wallShape.setPoint(3,sf::Vector2f(1696,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1470,2080));
+    wallShape.setPoint(1,sf::Vector2f(1632,2080));
+    wallShape.setPoint(2,sf::Vector2f(1632,2114));
+    wallShape.setPoint(3,sf::Vector2f(1470,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1727,2080));
+    wallShape.setPoint(1,sf::Vector2f(1888,2080));
+    wallShape.setPoint(2,sf::Vector2f(1888,2114));
+    wallShape.setPoint(3,sf::Vector2f(1727,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1437,1728));
+    wallShape.setPoint(1,sf::Vector2f(1470,1728));
+    wallShape.setPoint(2,sf::Vector2f(1470,2114));
+    wallShape.setPoint(3,sf::Vector2f(1437,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1888,1728));
+    wallShape.setPoint(1,sf::Vector2f(1922,1728));
+    wallShape.setPoint(2,sf::Vector2f(1922,2114));
+    wallShape.setPoint(3,sf::Vector2f(1888,2114));
+    ls.addWall(wallShape);
 }
