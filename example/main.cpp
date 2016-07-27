@@ -36,6 +36,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #define WIDTH   640
 #define HEIGHT  600
 
+//moved to bottom of file for easy reading of the main light handling code
 void addWalls(dm::ls::LightSystem& ls);
 
 //font taken from http://www.fontspace.com/melifonts/sweet-cheeks
@@ -52,10 +53,16 @@ int main(int argc, char** argv) {
     bool debugDrawWalls = true;
     //bg
     sf::Texture bg;
-    if(!bg.loadFromFile("data/map.png")) exit(-1);
+    if(!bg.loadFromFile("data/map.png")) {
+        std::cerr << "Missing 'data/map.png'" << std::endl;
+        exit(-1);
+    }
 
     sf::Texture emissiveSpriteTexture;
-    if(!emissiveSpriteTexture.loadFromFile("data/emissive.png")) exit(-2);
+    if(!emissiveSpriteTexture.loadFromFile("data/emissive.png")) {
+        std::cerr << "Missing 'data/emissive.png'" << std::endl;
+        exit(-2);
+    }
 
     sf::Sprite bgSpr(bg,sf::IntRect(0,0,WIDTH,HEIGHT));
     bgSpr.setOrigin(sf::Vector2f(WIDTH/2,HEIGHT/2));
@@ -68,7 +75,10 @@ int main(int argc, char** argv) {
 
     sf::Font font;
 
-    if(!font.loadFromFile("data/Sweet Cheeks.ttf")) exit(-1); //because yes
+    if(!font.loadFromFile("data/Sweet Cheeks.ttf")) {
+        std::cerr << "Missing 'data/Sweet Cheeks.ttf'" << std::endl;
+        exit(-1); //because yes
+    }
 
     sf::Text text;
     text.setFont(font);
@@ -80,6 +90,7 @@ int main(int argc, char** argv) {
     sf::View view;
     view.setSize(sf::Vector2f(WIDTH,HEIGHT));
 
+    //Small rectangle representing player position
     sf::RectangleShape p(sf::Vector2f(10,10));
     p.setFillColor(sf::Color::Blue);
     p.setPosition(sf::Vector2f(1680,2090));
@@ -92,8 +103,7 @@ int main(int argc, char** argv) {
 
     sf::ConvexShape ambiantShape;
     ambiantShape.setPointCount(12);
-    //position : 1440,1408
-    //480,350
+
     ambiantShape.setPoint(0,sf::Vector2f(0.0f,0.0f));
     ambiantShape.setPoint(1,sf::Vector2f(289.0f,0.0f));
     ambiantShape.setPoint(2,sf::Vector2f(289.0f,63.0f));
@@ -118,8 +128,13 @@ int main(int argc, char** argv) {
 
     //create your LightSystem
     //one per game is usually enough
+    //you can create more than one if needed
+    //for example you have several layers appearing (first floor and second floor for example)
     dm::ls::LightSystem ls;
     //change ambiant light
+    //the ambiant light is the default light that will appear when no other light is added to the light system
+    //an ambiant light set to White will show everything normally and an ambiant light set to black will hide everything
+    //here we're trying to replicate night ambiant color
     ls.setAmbiantLight(sf::Color(15,0,60));
     //the lightSystem needs to be aware of the view you're using to properly draw the lights
     ls.setView(view);
@@ -133,11 +148,14 @@ int main(int argc, char** argv) {
     //if you do that you have to take care of the deletion yourself so be careful
     //do NOT destroy a light that hasn't been removed yet, it will cause a segfault
 
+    //here we use the constructor with all the parameters but it's probably easier to read if you use the setters
+    //the result is the same as long as you set all parameters before adding the light to your LightSystem
+
     //to ensure R + G + B = W
-    dm::ls::SpotLight* spotRed =  new dm::ls::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    dm::ls::SpotLight* spotBlue = new dm::ls::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    dm::ls::SpotLight* spotGreen = new dm::ls::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green,0.0f      ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    dm::ls::SpotLight* negativeColors = new dm::ls::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,0.0f      ,180.0f*2.0f,-1.0f,5.0f,5.0f);
+    dm::ls::SpotLight* spotRed =        new dm::ls::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red,   0.0f, 180.0f*2.0f,  1.0f, 0.5f, 1.0f);
+    dm::ls::SpotLight* spotBlue =       new dm::ls::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,  0.0f, 180.0f*2.0f,  1.0f, 0.5f, 1.0f);
+    dm::ls::SpotLight* spotGreen =      new dm::ls::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green, 0.0f, 180.0f*2.0f,  1.0f, 0.5f, 1.0f);
+    dm::ls::SpotLight* negativeColors = new dm::ls::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,   0.0f, 180.0f*2.0f, -1.0f, 5.0f, 5.0f);
 
     //looks at the player, shows that you don't need to update a light if you're just rotating it around
     dm::ls::SpotLight* eyeSpotLeft = new dm::ls::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
@@ -169,7 +187,7 @@ int main(int argc, char** argv) {
 
     //Example of emissive lights. Emissive lights are just a white sprite on a transparent background that are drawn with a different color above everything else
     //the sprite is copied and stored locally
-    //emissive lights CANNOT be negative
+    //emissive lights CANNOT be negative (this will need to change)
     //but they can be updated at any moment on any parameter without any cost
     //still need to call the LightSystem::update(Light*) on it
     dm::ls::SpriteLight* emissive = new dm::ls::SpriteLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),180.0f/2.0f,emissiveSprite);
@@ -184,11 +202,11 @@ int main(int argc, char** argv) {
     firePit1->setResizeWhenIncrease(true);
 
     //add them all to the LightSystem
-    //except the playerLight, since it's been added by the template function
+    //except the playerLight, since it's already been added by the template function
     ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
-    ls.addLight(negativeColors);//you can add them anywhere, not just at the end
+    ls.addLight(negativeColors);//you can add them anywhere, not just at the end. They are stored in a different list
     ls.addLight(eyeSpotLeft);
     ls.addLight(eyeSpotRight);
     ls.addLight(sunRise);
@@ -205,7 +223,7 @@ int main(int argc, char** argv) {
     //if you change its direcionAngle or its position, it doesn't need to be updated
     playerLight->setDirectionAngle(180.0f);
     //if you modify ANY of the parameters below, you have to update the light's texture using ls.update(Light*);
-    //otherwise the update won't be taken into account
+    //otherwise the update won't be taken into account and the behaviour is undefined
     //basically any parameter except for directionAngle and position
     playerLight->setLinearity(2.0f);
     playerLight->setBleed(0.0f);
