@@ -33,8 +33,7 @@ namespace ls {
 
     const sf::RenderStates LightSystem::_multiplyState(sf::BlendMultiply);
     const sf::RenderStates LightSystem::_addState(sf::BlendAdd);
-    //const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::One, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
-    const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::Zero, sf::BlendMode::OneMinusSrcColor, sf::BlendMode::Add));
+    const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::One, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
 
     LightSystem::LightSystem() : _ambiant(sf::Color::Black), _isometric(false), _autoDelete(true), _updateLightMapImage(true) {
 
