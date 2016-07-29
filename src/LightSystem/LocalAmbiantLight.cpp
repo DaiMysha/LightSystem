@@ -40,7 +40,10 @@ namespace ls {
     void LocalAmbiantLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
         if(!isActive()) return;
 
-        target.draw(_shape,states);
+        sf::RenderStates st(states);
+        st.blendMode = sf::BlendAdd;
+
+        target.draw(_shape,st);
     }
 
     void LocalAmbiantLight::preRender(sf::Shader* shader) {
