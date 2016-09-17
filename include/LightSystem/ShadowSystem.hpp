@@ -25,12 +25,15 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <SFML/Graphics.hpp>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
 
     class Light;
 
-    class ShadowSystem {
+    class ShadowSystem
+    {
         public:
             void addWall(const sf::ConvexShape& shape);
             const std::list<sf::ConvexShape> getWalls() const;

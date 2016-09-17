@@ -26,10 +26,13 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/Light.hpp>
 #include <LightSystem/SpotLight.hpp>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
 
-    class FlashLight : public SpotLight {
+    class FlashLight : public SpotLight
+    {
         public:
             FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c);
             FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c, float da, float sa, float i, float b, float lf);

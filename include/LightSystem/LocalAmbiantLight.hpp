@@ -25,10 +25,13 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/Light.hpp>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
 
-    class LocalAmbiantLight : public Light {
+    class LocalAmbiantLight : public Light
+    {
         public:
             LocalAmbiantLight(const sf::Vector2f& p, const sf::ConvexShape& s, const sf::Color& c, bool negative = false);
             virtual ~LocalAmbiantLight();

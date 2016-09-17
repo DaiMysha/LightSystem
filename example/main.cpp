@@ -40,7 +40,8 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 void addWalls(dm::ls::LightSystem& ls);
 
 //font taken from http://www.fontspace.com/melifonts/sweet-cheeks
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
 
     /** SFML STUFF **/
 
@@ -53,13 +54,15 @@ int main(int argc, char** argv) {
     bool debugDrawWalls = true;
     //bg
     sf::Texture bg;
-    if(!bg.loadFromFile("data/map.png")) {
+    if(!bg.loadFromFile("data/map.png"))
+    {
         std::cerr << "Missing 'data/map.png'" << std::endl;
         exit(-1);
     }
 
     sf::Texture emissiveSpriteTexture;
-    if(!emissiveSpriteTexture.loadFromFile("data/emissive.png")) {
+    if(!emissiveSpriteTexture.loadFromFile("data/emissive.png"))
+    {
         std::cerr << "Missing 'data/emissive.png'" << std::endl;
         exit(-2);
     }
@@ -75,7 +78,8 @@ int main(int argc, char** argv) {
 
     sf::Font font;
 
-    if(!font.loadFromFile("data/Sweet Cheeks.ttf")) {
+    if(!font.loadFromFile("data/Sweet Cheeks.ttf"))
+    {
         std::cerr << "Missing 'data/Sweet Cheeks.ttf'" << std::endl;
         exit(-1); //because yes
     }
@@ -236,75 +240,95 @@ int main(int argc, char** argv) {
     clock_t oneRender, totalTime = 0;
 
     //the loop
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event))
+        {
             if (event.type == sf::Event::Closed)
                 window.close();
-            else if(event.type == sf::Event::KeyPressed){
-                switch(event.key.code) {
+            else if(event.type == sf::Event::KeyPressed)
+            {
+                switch(event.key.code)
+                {
                     case sf::Keyboard::Escape:
-                    {
-                        window.close();
-                    } break;
-                    case sf::Keyboard::Up :
-                    {
-                        p.move(0,-speed);
-                    } break;
-                    case sf::Keyboard::Down :
-                    {
-                        p.move(0,speed);
-                    } break;
-                    case sf::Keyboard::Left :
-                    {
-                        p.move(-speed,0);
-                    } break;
-                    case sf::Keyboard::Right :
-                    {
-                        p.move(speed,0);
-                    } break;
-                    case sf::Keyboard::F1 :
-                    {
-                        aabb = !aabb;
-                    } break;
-                    case sf::Keyboard::F2 :
-                    {
-                        debugLightMapOnly = !debugLightMapOnly;
-                    } break;
-                    case sf::Keyboard::F3 :
-                    {
-                        debugUseShader = !debugUseShader;
-                    } break;
-                    case sf::Keyboard::F4 :
-                    {
-                        debugDrawLights = !debugDrawLights;
-                    } break;
-                    case sf::Keyboard::F5 :
-                    {
-                        debugDrawWalls = !debugDrawWalls;
-                    } break;
-                    case sf::Keyboard::F:
-                    {
-                        //see above, this parameter requires an update of the light's internal texture
-                        //shows you how to turn a light ON and OFF easily
-                        //in this particular case, you wouldn't need to update the texture
-                        //since the lights aren't drawn if their intensity is 0
-                        playerLight->setIntensity(1.0f - playerLight->getIntensity());
-                        ls.update(playerLight);
-                    } break;
-                    case sf::Keyboard::S:
-                    {
-                        //this parameter requires an update
-                        if(playerLight->getSpreadAngle()==2.0f*180.0f) {
-                            playerLight->setSpreadAngle(180.0f/3.0f);
-                            playerLight->setRadius(200);
-                        } else {
-                            playerLight->setSpreadAngle(2.0*180.0f);
-                            playerLight->setRadius(100);
+                        {
+                            window.close();
                         }
-                        ls.update(playerLight);
-                    } break;
-                    default: break;
+                        break;
+                    case sf::Keyboard::Up :
+                        {
+                            p.move(0,-speed);
+                        }
+                        break;
+                    case sf::Keyboard::Down :
+                        {
+                            p.move(0,speed);
+                        }
+                        break;
+                    case sf::Keyboard::Left :
+                        {
+                            p.move(-speed,0);
+                        }
+                        break;
+                    case sf::Keyboard::Right :
+                        {
+                            p.move(speed,0);
+                        }
+                        break;
+                    case sf::Keyboard::F1 :
+                        {
+                            aabb = !aabb;
+                        }
+                        break;
+                    case sf::Keyboard::F2 :
+                        {
+                            debugLightMapOnly = !debugLightMapOnly;
+                        }
+                        break;
+                    case sf::Keyboard::F3 :
+                        {
+                            debugUseShader = !debugUseShader;
+                        }
+                        break;
+                    case sf::Keyboard::F4 :
+                        {
+                            debugDrawLights = !debugDrawLights;
+                        }
+                        break;
+                    case sf::Keyboard::F5 :
+                        {
+                            debugDrawWalls = !debugDrawWalls;
+                        }
+                        break;
+                    case sf::Keyboard::F:
+                        {
+                            //see above, this parameter requires an update of the light's internal texture
+                            //shows you how to turn a light ON and OFF easily
+                            //in this particular case, you wouldn't need to update the texture
+                            //since the lights aren't drawn if their intensity is 0
+                            playerLight->setIntensity(1.0f - playerLight->getIntensity());
+                            ls.update(playerLight);
+                        }
+                        break;
+                    case sf::Keyboard::S:
+                        {
+                            //this parameter requires an update
+                            if(playerLight->getSpreadAngle()==2.0f*180.0f)
+                            {
+                                playerLight->setSpreadAngle(180.0f/3.0f);
+                                playerLight->setRadius(200);
+                            }
+                            else
+                            {
+                                playerLight->setSpreadAngle(2.0*180.0f);
+                                playerLight->setRadius(100);
+                            }
+                            ls.update(playerLight);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -338,20 +362,20 @@ int main(int argc, char** argv) {
         //it is EXTREMELY IMPORTANT that you use the LightSystem::draw INSIDE your view
         oneRender = ::clock();
         window.setView(view);
-            window.draw(bgSpr);
-            window.draw(p);
+        window.draw(bgSpr);
+        window.draw(p);
 
-            int flags = 0;
-            if(debugLightMapOnly) flags |= dm::ls::LightSystem::DebugFlags::LIGHTMAP_ONLY;
-            if(!debugUseShader) flags |= dm::ls::LightSystem::DebugFlags::SHADER_OFF;
+        int flags = 0;
+        if(debugLightMapOnly) flags |= dm::ls::LightSystem::DebugFlags::LIGHTMAP_ONLY;
+        if(!debugUseShader) flags |= dm::ls::LightSystem::DebugFlags::SHADER_OFF;
 
-            //use LightSystem::render if not using debug
-            //if using debugRender, the flags allow you to modify the way the lights are drawn
-            ls.debugRender(view,window,flags);
-            if(debugDrawLights) ls.draw(view,window);
-            //draws the light's AABB
-            if(aabb) ls.drawAABB(view,window);
-            if(debugDrawWalls) ls.drawWalls(view,window);
+        //use LightSystem::render if not using debug
+        //if using debugRender, the flags allow you to modify the way the lights are drawn
+        ls.debugRender(view,window,flags);
+        if(debugDrawLights) ls.draw(view,window);
+        //draws the light's AABB
+        if(aabb) ls.drawAABB(view,window);
+        if(debugDrawWalls) ls.drawWalls(view,window);
 
         window.setView(baseView);
 
@@ -361,7 +385,8 @@ int main(int argc, char** argv) {
 
         //sf::sleep(sf::milliseconds(16));
         ++elapsedFrames;
-        if(clock.getElapsedTime().asMilliseconds() > 500) {
+        if(clock.getElapsedTime().asMilliseconds() > 500)
+        {
             fps = elapsedFrames;
             elapsedFrames = 0;
             clock.restart();
@@ -395,12 +420,16 @@ int main(int argc, char** argv) {
             c = negativeColors->getColor();
         }
         //this is an example of how to make a light flicker
-        if(flickerClock.getElapsedTime().asMilliseconds() > 100) {
+        if(flickerClock.getElapsedTime().asMilliseconds() > 100)
+        {
             flickerClock.restart();
-            if(firePit1->getRadius() == 200) {
+            if(firePit1->getRadius() == 200)
+            {
                 firePit1->setRadius(180);
                 firePit2->setRadius(180);
-            } else {
+            }
+            else
+            {
                 firePit1->setRadius(200);
                 firePit2->setRadius(200);
             }

@@ -24,12 +24,15 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <SFML/Graphics.hpp>
 #include <list>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
 
     class LightSystem;
 
-    class Light {
+    class Light
+    {
         public:
             Light(const sf::Vector2f& p, const sf::Color& c);
             virtual ~Light();
@@ -77,7 +80,8 @@ namespace ls {
             static const char LAS_PARAM_BLEED[];
             static const char LAS_PARAM_LINEARITY[];
 
-            enum Attributes {
+            enum Attributes
+            {
                 ACTIVE      = 1,
                 NEGATIVE    = 1 << 1,
                 EMISSIVE    = 1 << 2,

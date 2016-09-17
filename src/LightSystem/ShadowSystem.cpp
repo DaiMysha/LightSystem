@@ -25,28 +25,36 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <DMUtils/sfml.hpp>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
 
-    void ShadowSystem::addWall(const sf::ConvexShape& shape) {
+    void ShadowSystem::addWall(const sf::ConvexShape& shape)
+    {
         _walls.emplace_back(shape);
     }
 
-    const std::list<sf::ConvexShape> ShadowSystem::getWalls() const {
+    const std::list<sf::ConvexShape> ShadowSystem::getWalls() const
+    {
         return _walls;
     }
 
-    void ShadowSystem::clear() {
+    void ShadowSystem::clear()
+    {
         _walls.clear();
     }
 
-    void ShadowSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {
+    void ShadowSystem::draw(const sf::View& screenView, sf::RenderTarget& target)
+    {
         sf::Vertex points[2];
         points[0].color = sf::Color(180,180,180);
         points[1].color = points[0].color;
 
-        for(const sf::ConvexShape& s : _walls) {
-            for(size_t i = 0;i<s.getPointCount();++i) {
+        for(const sf::ConvexShape& s : _walls)
+        {
+            for(size_t i = 0; i<s.getPointCount(); ++i)
+            {
                 points[0].position = s.getPoint(i);
                 points[1].position = s.getPoint((i+1)%s.getPointCount());
                 target.draw(points,2,sf::Lines);
@@ -54,7 +62,8 @@ namespace ls {
         }
     }
 
-    void ShadowSystem::castShadowsFromPoint(const sf::Vector2f& origin, const std::list<sf::ConvexShape>& walls, const sf::FloatRect& screenRect, std::list<sf::ConvexShape>& result) {
+    void ShadowSystem::castShadowsFromPoint(const sf::Vector2f& origin, const std::list<sf::ConvexShape>& walls, const sf::FloatRect& screenRect, std::list<sf::ConvexShape>& result)
+    {
         sf::ConvexShape screen;
 
         screen.setPointCount(5);
@@ -66,12 +75,14 @@ namespace ls {
 
         sf::Vector2f tmp;
 
-        for(const sf::ConvexShape& s : walls) {
+        for(const sf::ConvexShape& s : walls)
+        {
             const int size = s.getPointCount();
 
             std::vector<bool> backFacing(size);
 
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++)
+            {
                 sf::Vector2f firstVertex(s.getPoint(i).x, s.getPoint(i).y);
                 int secondIndex = (i + 1) % size;
                 sf::Vector2f secondVertex(s.getPoint(secondIndex).x, s.getPoint(secondIndex).y);
@@ -107,20 +118,25 @@ namespace ls {
             }
 
             int shapeSize = 0;
-            if(secondBoundaryIndex < firstBoundaryIndex) {
+            if(secondBoundaryIndex < firstBoundaryIndex)
+            {
                 shapeSize = DMUtils::maths::abs(secondBoundaryIndex - firstBoundaryIndex) + 1;
-            } else {
+            }
+            else
+            {
                 shapeSize = DMUtils::maths::abs(size - secondBoundaryIndex + firstBoundaryIndex) + 1;
             }
 
-            if(shapeSize) {
+            if(shapeSize)
+            {
                 sf::ConvexShape resultShape;
                 resultShape.setFillColor(sf::Color::Black);
                 resultShape.setPointCount(shapeSize+2);
 
                 int id = 1;
                 int i = firstBoundaryIndex;
-                while(i != secondBoundaryIndex) {
+                while(i != secondBoundaryIndex)
+                {
                     resultShape.setPoint(id++,s.getPoint(i));
                     --i;
                     if(i<0) i+=size;
@@ -130,12 +146,15 @@ namespace ls {
 
                 int closestToLeft=0;
 
-                for(int i=0;i<5;++i) {
-                    if(intersect(origin,s.getPoint(firstBoundaryIndex)-origin,screen.getPoint(i),screen.getPoint(i+1),tmp)) {
+                for(int i=0; i<5; ++i)
+                {
+                    if(intersect(origin,s.getPoint(firstBoundaryIndex)-origin,screen.getPoint(i),screen.getPoint(i+1),tmp))
+                    {
                         resultShape.setPoint(0,tmp);
                         closestToLeft = i+1;
                     }
-                    if(intersect(origin,s.getPoint(secondBoundaryIndex)-origin,screen.getPoint(i),screen.getPoint(i+1),tmp)) {
+                    if(intersect(origin,s.getPoint(secondBoundaryIndex)-origin,screen.getPoint(i),screen.getPoint(i+1),tmp))
+                    {
                         resultShape.setPoint(resultShape.getPointCount()-1,tmp);
                     }
                 }
@@ -146,18 +165,22 @@ namespace ls {
                 i = 0;
                 sf::Vector2f furtherLeft = resultShape.getPoint(0);
                 sf::Vector2f furtherRight = resultShape.getPoint(resultShape.getPointCount()-1);
-                while(i < 4) {
-                    if(screen.getPoint(id) != furtherLeft && screen.getPoint(id) != furtherRight && intersect(origin,screen.getPoint(id)-origin,furtherLeft,furtherRight,tmp)) {
+                while(i < 4)
+                {
+                    if(screen.getPoint(id) != furtherLeft && screen.getPoint(id) != furtherRight && intersect(origin,screen.getPoint(id)-origin,furtherLeft,furtherRight,tmp))
+                    {
                         cornerList.emplace_front(id);
                     }
                     id = (id+1)%4;
                     ++i;
                 }
 
-                if(cornerList.size()) {
+                if(cornerList.size())
+                {
                     int ind = resultShape.getPointCount();
                     resultShape.setPointCount(resultShape.getPointCount()+cornerList.size());
-                    for(auto i : cornerList) {
+                    for(auto i : cornerList)
+                    {
                         resultShape.setPoint(ind++,screen.getPoint(i));
                     }
                 }
@@ -169,11 +192,13 @@ namespace ls {
 
     /*********** PRIVATE ***********/
 
-    float ShadowSystem::dist(const sf::Vector2f& a, const sf::Vector2f& b) {
+    float ShadowSystem::dist(const sf::Vector2f& a, const sf::Vector2f& b)
+    {
         return DMUtils::sfml::norm2(b-a);
     }
 
-    bool ShadowSystem::isVisibleFrom(const sf::Vector2f& origin, const sf::Vector2f& target, const sf::Vector2f& s1, const sf::Vector2f& s2, sf::Vector2f& tmp) {
+    bool ShadowSystem::isVisibleFrom(const sf::Vector2f& origin, const sf::Vector2f& target, const sf::Vector2f& s1, const sf::Vector2f& s2, sf::Vector2f& tmp)
+    {
         float d = intersect(origin,target-origin,s1,s2,tmp);
         if(d==0.0f) return true;
         d = DMUtils::sfml::norm2(target-origin)*d*d;
@@ -181,15 +206,19 @@ namespace ls {
         return d > d2;
     }
 
-    float ShadowSystem::intersect(const sf::Vector2f& c, const sf::Vector2f& u, const sf::Vector2f& a, const sf::Vector2f& b, sf::Vector2f& result) {
+    float ShadowSystem::intersect(const sf::Vector2f& c, const sf::Vector2f& u, const sf::Vector2f& a, const sf::Vector2f& b, sf::Vector2f& result)
+    {
         float k1, k2;
-        if(u.x == 0.0f) {
+        if(u.x == 0.0f)
+        {
             float med = DMUtils::maths::abs(b.y + a.y) / 2.0f;
-            if(u.y * (med - c.y) < 0) {
+            if(u.y * (med - c.y) < 0)
+            {
                 return 0.0f;
             }
 
-            if(c.x < DMUtils::maths::min(a.x,b.x) || c.x > DMUtils::maths::max(a.x,b.x)) {
+            if(c.x < DMUtils::maths::min(a.x,b.x) || c.x > DMUtils::maths::max(a.x,b.x))
+            {
                 return 0.0f;
             }
 

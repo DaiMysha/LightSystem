@@ -29,14 +29,18 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/Light.hpp>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
     ///this class is not meant to be inherited
     class ShadowSystem;
 
-    class LightSystem {
+    class LightSystem
+    {
         public:
-            enum DebugFlags {
+            enum DebugFlags
+            {
                 DEFAULT = 0,
                 SHADER_OFF = 1,
                 LIGHTMAP_ONLY = 2,
@@ -52,7 +56,8 @@ namespace ls {
 
             void addLight(Light* l);
             template <typename T, typename ... Args>
-            T* addLight(Args&& ... args) {
+            T* addLight(Args&& ... args)
+            {
                 T *l = new T(std::forward<Args>(args)...);
                 addLight(l);
                 return l;

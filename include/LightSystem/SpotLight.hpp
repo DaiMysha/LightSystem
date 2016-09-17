@@ -25,8 +25,10 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/Light.hpp>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
 
     /**
     * Would have preferred to do that with something like
@@ -34,7 +36,8 @@ namespace ls {
     * to have simply PointLight define as typedef SpotLight<M_PIf*2.0f> PointLight
     * but ah well :<
     **/
-    class SpotLight : public Light {
+    class SpotLight : public Light
+    {
         public:
             SpotLight(const sf::Vector2f& p, float r, const sf::Color& c);
             SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf);
@@ -91,6 +94,7 @@ namespace ls {
             bool _resizeWhenIncrease;//if set to true, the texture is reallocated only if the needed size increases (if new _radius is inferior to previous, it doesn't change)
 
     };
+
 }
 }
 

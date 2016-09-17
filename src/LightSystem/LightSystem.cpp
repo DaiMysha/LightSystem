@@ -28,20 +28,24 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/staticData/staticData.hpp>
 #include <LightSystem/ShadowSystem.hpp>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
 
     const sf::RenderStates LightSystem::_multiplyState(sf::BlendMultiply);
     const sf::RenderStates LightSystem::_addState(sf::BlendAdd);
     const sf::RenderStates LightSystem::_subtractState(sf::BlendMode(sf::BlendMode::One, sf::BlendMode::One, sf::BlendMode::ReverseSubtract));
 
-    LightSystem::LightSystem() : _ambiant(sf::Color::Black), _isometric(false), _autoDelete(true), _updateLightMapImage(true) {
+    LightSystem::LightSystem() : _ambiant(sf::Color::Black), _isometric(false), _autoDelete(true), _updateLightMapImage(true)
+    {
 
         /*if(!_lightAttenuationShader.loadFromFile("shaders/lightAttenuation.frag",sf::Shader::Fragment)) {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }*/
 
-        if(!_lightAttenuationShader.loadFromMemory(dm::ls::StaticData::LIGHT_ATTENUATION_SHADER,sf::Shader::Fragment)) {
+        if(!_lightAttenuationShader.loadFromMemory(dm::ls::staticdata::LIGHT_ATTENUATION_SHADER,sf::Shader::Fragment))
+        {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }
 
@@ -49,12 +53,14 @@ namespace ls {
 
     }
 
-    LightSystem::~LightSystem() {
+    LightSystem::~LightSystem()
+    {
         reset();
         delete _shadowSystem;
     }
 
-    void LightSystem::addLight(Light* l) {
+    void LightSystem::addLight(Light* l)
+    {
         if(l==nullptr) return;
 
         l->setIsometric(_isometric);//ignore what user set before
@@ -69,7 +75,8 @@ namespace ls {
         _updateLightMapImage = true;
     }
 
-    void LightSystem::removeLight(Light* l) {
+    void LightSystem::removeLight(Light* l)
+    {
         if(l==nullptr) return;
 
         if(l->isEmissive()) _emissiveLights.remove(l);
@@ -77,17 +84,21 @@ namespace ls {
         else _lights.remove(l);
     }
 
-    void LightSystem::reset() {
+    void LightSystem::reset()
+    {
 
-        for(Light* l : _lights) {
+        for(Light* l : _lights)
+        {
             l->setSystem(nullptr);
             if(_autoDelete) delete l;
         }
-        for(Light* l : _negativeLights) {
+        for(Light* l : _negativeLights)
+        {
             l->setSystem(nullptr);
             if(_autoDelete) delete l;
         }
-        for(Light* l : _emissiveLights) {
+        for(Light* l : _emissiveLights)
+        {
             l->setSystem(nullptr);
             if(_autoDelete) delete l;
         }
@@ -99,15 +110,18 @@ namespace ls {
         if(_shadowSystem) _shadowSystem->clear();
     }
 
-    void LightSystem::addWall(const sf::ConvexShape& s) {
+    void LightSystem::addWall(const sf::ConvexShape& s)
+    {
         if(_shadowSystem) _shadowSystem->addWall(s);
     }
 
-    void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target) {
+    void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target)
+    {
         debugRender(screenView,target,LightSystem::DebugFlags::DEFAULT);
     }
 
-    void LightSystem::debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags) {
+    void LightSystem::debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags)
+    {
         sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
 
         _sprite.setPosition(screen.left,screen.top);
@@ -125,10 +139,13 @@ namespace ls {
 
         sf::FloatRect screenRect(screen);
 
-        for(Light* l : _lights) {
-            if(l->getAABB().intersects(screen)) {
+        for(Light* l : _lights)
+        {
+            if(l->getAABB().intersects(screen))
+            {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
-                else {
+                else
+                {
                     _buffer.clear(sf::Color::Black);
                     //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
                     l->calcShadow(_shadowSystem->getWalls());
@@ -139,10 +156,13 @@ namespace ls {
                 }
             }
         }
-        for(Light* l : _negativeLights) {
-            if(l->getAABB().intersects(screen)) {
+        for(Light* l : _negativeLights)
+        {
+            if(l->getAABB().intersects(screen))
+            {
                 if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stRm);
-                else {
+                else
+                {
                     _buffer.clear(sf::Color::Black);
                     //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
                     l->calcShadow(_shadowSystem->getWalls());
@@ -160,77 +180,96 @@ namespace ls {
         if(flags & DebugFlags::LIGHTMAP_ONLY) target.clear(sf::Color::White);
     }
 
-    void LightSystem::draw(const sf::View& screenView, sf::RenderTarget& target) {
+    void LightSystem::draw(const sf::View& screenView, sf::RenderTarget& target)
+    {
         sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
         target.draw(_sprite,_multiplyState);
-        for(Light* l : _emissiveLights) {
-            if(l->getAABB().intersects(screen)) {
+        for(Light* l : _emissiveLights)
+        {
+            if(l->getAABB().intersects(screen))
+            {
                 l->render(screen,target,nullptr);
             }
         }
     }
 
-    void LightSystem::drawAABB(const sf::View& screen, sf::RenderTarget& target) {
+    void LightSystem::drawAABB(const sf::View& screen, sf::RenderTarget& target)
+    {
         drawAABB(DMUtils::sfml::getViewInWorldAABB(screen),target);
     }
 
-    void LightSystem::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target) {
-        for(Light* l : _lights) {
+    void LightSystem::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target)
+    {
+        for(Light* l : _lights)
+        {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
-        for(Light* l : _negativeLights) {
+        for(Light* l : _negativeLights)
+        {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
-        for(Light* l : _emissiveLights) {
+        for(Light* l : _emissiveLights)
+        {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
         }
     }
 
-    void LightSystem::drawWalls(const sf::View& screenView, sf::RenderTarget& target) {
+    void LightSystem::drawWalls(const sf::View& screenView, sf::RenderTarget& target)
+    {
         //sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
-        if(_shadowSystem) {
+        if(_shadowSystem)
+        {
             //for(Light* l : _lights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
             //for(Light* l : _negativeLights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
             _shadowSystem->draw(screenView,target);
         }
     }
 
-    void LightSystem::update() {
+    void LightSystem::update()
+    {
         for(Light* l : _lights) update(l);
         for(Light* l : _negativeLights) update(l);
         for(Light* l : _emissiveLights) update(l);
     }
 
-    void LightSystem::update(Light* l) {
+    void LightSystem::update(Light* l)
+    {
         l->preRender(&_lightAttenuationShader);
         _updateLightMapImage = true;
     }
 
-    size_t LightSystem::getLightsCount() const {
+    size_t LightSystem::getLightsCount() const
+    {
         return getNormalLightsCount() + getNegativeLightsCount() + getEmissiveLightsCount();
     }
 
-    size_t LightSystem::getNormalLightsCount() const {
+    size_t LightSystem::getNormalLightsCount() const
+    {
         return _lights.size();
     }
 
-    size_t LightSystem::getNegativeLightsCount() const {
+    size_t LightSystem::getNegativeLightsCount() const
+    {
         return _negativeLights.size();
     }
 
-    size_t LightSystem::getEmissiveLightsCount() const {
+    size_t LightSystem::getEmissiveLightsCount() const
+    {
         return _emissiveLights.size();
     }
 
-    sf::Image LightSystem::getLightMap() {
-        if(_updateLightMapImage) {
+    sf::Image LightSystem::getLightMap()
+    {
+        if(_updateLightMapImage)
+        {
             _lightMapImage = _renderTexture.getTexture().copyToImage();
             _updateLightMapImage = false;
         }
         return _lightMapImage;
     }
 
-    sf::Color LightSystem::getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y) {
+    sf::Color LightSystem::getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y)
+    {
         sf::Image lightMap = getLightMap();
         x -= view.getViewport().left;
         y -= view.getViewport().top;
@@ -238,15 +277,18 @@ namespace ls {
         else return sf::Color::Black;
     }
 
-    sf::Color LightSystem::getLightMapPixel(const sf::View& view, sf::Vector2f p) {
+    sf::Color LightSystem::getLightMapPixel(const sf::View& view, sf::Vector2f p)
+    {
         return getLightMapPixel(view,p.x,p.y);
     }
 
-    void LightSystem::setAmbiantLight(sf::Color c) {
+    void LightSystem::setAmbiantLight(sf::Color c)
+    {
         _ambiant = c;
     }
 
-    sf::Color LightSystem::getAmbiantLight() const {
+    sf::Color LightSystem::getAmbiantLight() const
+    {
         return _ambiant;
     }
 
@@ -259,11 +301,13 @@ namespace ls {
         return _isometric;
     }*/
 
-    void LightSystem::setAutoDelete(bool ad) {
+    void LightSystem::setAutoDelete(bool ad)
+    {
         _autoDelete = ad;
     }
 
-    void LightSystem::setView(const sf::View& view) {
+    void LightSystem::setView(const sf::View& view)
+    {
         _renderTexture.create(view.getSize().x,view.getSize().y);
         _buffer.create(view.getSize().x,view.getSize().y);
 

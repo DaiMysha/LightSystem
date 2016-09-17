@@ -25,13 +25,17 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/maths.hpp>
 #include <DMUtils/sfml.hpp>
 
-namespace dm {
-namespace ls {
+namespace dm
+{
+namespace ls
+{
 
-    FlashLight::FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c) : FlashLight(p,r,l,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f) {
+    FlashLight::FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c) : FlashLight(p,r,l,c,0.0f,2.0f*M_PIf,1.0f,0.0f,1.0f)
+    {
     }
 
-    FlashLight::FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c, float da, float sa, float i, float b, float lf) : SpotLight(p,r,c,da,sa,i,b,lf), _length(l) {
+    FlashLight::FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c, float da, float sa, float i, float b, float lf) : SpotLight(p,r,c,da,sa,i,b,lf), _length(l)
+    {
         computeAABB();
     }
 
@@ -51,13 +55,16 @@ namespace ls {
         if(_resizeWhenIncrease && _renderTexture->getSize().x < diam) resizeTexture = true;
         else if(_renderTexture->getSize().x != diam) resizeTexture = true;
 
-        if(resizeTexture) {
-            if(!_renderTexture->create(diam,diam)) {
+        if(resizeTexture)
+        {
+            if(!_renderTexture->create(diam,diam))
+            {
                 delete _renderTexture;
                 _renderTexture=nullptr;
                 return; //somehow texture failed, maybe too big, abort
             }
-            if(!_shadowTexture->create(diam,diam)) {
+            if(!_shadowTexture->create(diam,diam))
+            {
                 delete _shadowTexture;
                 _shadowTexture=nullptr;
                 return; //somehow texture failed, maybe too big, abort
@@ -88,7 +95,8 @@ namespace ls {
 
     }
 
-    void FlashLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
+    void FlashLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states)
+    {
         SpotLight::debugRender(target, states);
         if(getIntensity() == 0.0f) return;
         if(!isActive()) return;
@@ -100,44 +108,24 @@ namespace ls {
         target.draw(shape,states);
     }
 
-    void FlashLight::setLength(float l) {
+    void FlashLight::setLength(float l)
+    {
         _length = l;
     }
 
-    float FlashLight::getLength() const {
+    float FlashLight::getLength() const
+    {
         return _length;
     }
 
-     /*** PROTECTED ***/
+    /*** PROTECTED ***/
 
     //This can be optimised with a cached shape that's updated when the flaslight parameters change
-    sf::ConvexShape FlashLight::_makeShape() {
+    sf::ConvexShape FlashLight::_makeShape()
+    {
         sf::ConvexShape shape;
 
         return SpotLight::_makeShape();
-
-        /*
-        shape.setPointCount(4);
-        shape.setPoint(0,sf::Vector2f(-_width/2.0f,0.0f));
-        shape.setPoint(1,sf::Vector2f(_width/2.0f,0.0f));
-
-        shape.setPoint(2,DMUtils::sfml::rotate(sf::Vector2f(_width/2.0f,getRadius()),-_spreadAngle,shape.getPoint(1)));
-        shape.setPoint(3,DMUtils::sfml::rotate(sf::Vector2f(-_width/2.0f,getRadius()),_spreadAngle,shape.getPoint(0)));
-
-        shape.setPointCount(_precision+2);
-        shape.setPoint(_precision+1,sf::Vector2f(-_width/2.0f,0.0f));
-        shape.setPoint(0,sf::Vector2f(_width/2.0f,0.0f));
-
-        float deltaAngle = _spreadAngle / (float)(_precision-1);
-
-        for(int i=0;i<_precision;++i) {
-            float angle = - _spreadAngle/2.0f + (float)i*deltaAngle;
-            sf::Vector2f base(-_width/2.0f+(i+1)*_width/(float)(getPrecision()),0.0f);
-
-            shape.setPoint(i+1,DMUtils::sfml::rotate(sf::Vector2f(0.0f,_radius*1.1)+base,angle,base));
-        }
-        */
-        return shape;
     }
 
 }
