@@ -103,6 +103,7 @@ namespace ls
     void Light::setColor(const sf::Color& c)
     {
         _color = c;
+        _sprite.setColor(_color);
     }
 
     sf::Color Light::getColor() const

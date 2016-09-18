@@ -83,6 +83,12 @@ namespace ls
         _aabb.height = maxy - miny;
     }
 
+    void LocalAmbiantLight::setColor(const sf::Color& c)
+    {
+        _color = c;
+        _shape.setFillColor(_color);
+    }
+
     void LocalAmbiantLight::setShape(const sf::ConvexShape& s)
     {
         _shape = s;

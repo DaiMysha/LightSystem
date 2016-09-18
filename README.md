@@ -26,6 +26,8 @@ Every light has the following attributes :
 * position : the position of the light on the whole world.
 * color : the color of the light.
 
+You can modify a light's position and color without having to update it in the LightSystem
+
 The system allows you to use the following lights :
 
 * SpotLight :

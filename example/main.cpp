@@ -148,7 +148,7 @@ int main(int argc, char** argv)
 
     //Let's create a bunch of lights now
     //the lights HAVE to be dynamically allocated. The LightSystem destroys them for you when it's destroyed
-    //you can change that using LightSystem::setAutoDelete
+    //you can change that using LightSystem::setAutoDelete (in which case you don't need to have them manually allocated if you're careful about scopes)
     //if you do that you have to take care of the deletion yourself so be careful
     //do NOT destroy a light that hasn't been removed yet, it will cause a segfault
 
@@ -224,15 +224,15 @@ int main(int argc, char** argv)
     ls.addLight(emissive);
 
     //Modify a light
-    //if you change its direcionAngle or its position, it doesn't need to be updated
+    //if you change its direcionAngle; its position or its color, it doesn't need to be updated
     playerLight->setDirectionAngle(180.0f);
+    playerLight->setColor(sf::Color(255,175,0));
     //if you modify ANY of the parameters below, you have to update the light's texture using ls.update(Light*);
     //otherwise the update won't be taken into account and the behaviour is undefined
     //basically any parameter except for directionAngle and position
     playerLight->setLinearity(2.0f);
     playerLight->setBleed(0.0f);
     playerLight->setSpreadAngle(70.0f);
-    playerLight->setColor(sf::Color(255,175,0));
     playerLight->setIntensity(1.0f);
     playerLight->setRadius(250);
     ls.update(playerLight);

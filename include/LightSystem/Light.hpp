@@ -53,8 +53,8 @@ namespace ls
             sf::Vector2f getPosition() const;
             void move(const sf::Vector2f& delta);
 
-            void setColor(const sf::Color& c);
-            sf::Color getColor() const;
+            virtual void setColor(const sf::Color& c);
+            virtual sf::Color getColor() const;
 
             bool isIsometric() const;
             void setIsometric(bool i);

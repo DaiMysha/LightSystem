@@ -98,6 +98,7 @@ namespace ls
         _sprite.setPosition(_position);
         _sprite.setTexture(_renderTexture->getTexture(),true);
         _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
+        _sprite.setColor(_color);
 
         computeAABB();
     }
@@ -346,17 +347,13 @@ namespace ls
 
     void SpotLight::_render(sf::RenderTarget& target, const sf::RenderStates& states, sf::Shader* shader, sf::Vector2f center, sf::Vector2f shapePosition, sf::Vector2f shapeOrigin, float shapeRotation)
     {
-        float r = _color.r * DMUtils::maths::abs(_intensity);
-        float g = _color.g * DMUtils::maths::abs(_intensity);
-        float b = _color.b * DMUtils::maths::abs(_intensity);
-        sf::Color c(r,g,b,255);
 
         sf::RenderStates st(states);
         st.shader = shader;
 
         shader->setParameter(dm::ls::Light::LAS_PARAM_CENTER,center);
         shader->setParameter(dm::ls::Light::LAS_PARAM_RADIUS,_radius);
-        shader->setParameter(dm::ls::Light::LAS_PARAM_COLOR,c);
+        shader->setParameter(dm::ls::Light::LAS_PARAM_COLOR,sf::Color::White);
         shader->setParameter(dm::ls::Light::LAS_PARAM_BLEED,_bleed);
         shader->setParameter(dm::ls::Light::LAS_PARAM_LINEARITY,_linearity);
 
