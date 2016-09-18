@@ -25,8 +25,10 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/Light.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm
+{
+namespace ls
+{
 
     /**
     * Would have preferred to do that with something like
@@ -34,7 +36,8 @@ namespace LS {
     * to have simply PointLight define as typedef SpotLight<M_PIf*2.0f> PointLight
     * but ah well :<
     **/
-    class SpotLight : public Light {
+    class SpotLight : public Light
+    {
         public:
             SpotLight(const sf::Vector2f& p, float r, const sf::Color& c);
             SpotLight(const sf::Vector2f& p, float r, const sf::Color& c, float da, float sa, float i, float b, float lf);
@@ -44,13 +47,17 @@ namespace LS {
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
+            virtual void calcShadow(const std::list<sf::ConvexShape>& walls) override;
+
             virtual void computeAABB() override;
+
+            virtual sf::FloatRect getBoundaries() override;
 
             void setRadius(float r);
             float getRadius() const;
 
             void setDirectionAngle(float da);
-            float getDirectionAngle() const;
+            float getDirectionAngle() const; //returns the angle IN DEGREES
             void rotate(float delta);
 
             void setSpreadAngle(float sa);
@@ -87,6 +94,7 @@ namespace LS {
             bool _resizeWhenIncrease;//if set to true, the texture is reallocated only if the needed size increases (if new _radius is inferior to previous, it doesn't change)
 
     };
+
 }
 }
 

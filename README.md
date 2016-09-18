@@ -16,7 +16,7 @@ REQUIREMENTS
 * C++11 compiler (prefer mingw)
 * Depends on DMUtils : https://github.com/DaiMysha/DMUtils
 * SFML : https://github.com/SFML/SFML
-	*NOTE : One of the requiirements for the negative light is still being discussed. For now the LightSystem uses an approximation.
+	*NOTE : One of the requirements for the negative lights is a very recent commit. Make sure your sources are from 13th August or more to include the last change ( commit : https://github.com/SFML/SFML/commit/7ff9478061e369d31228c2f98f8ec91f02de49d5 )
 
 USAGE INFORMATIONS
 ------------------
@@ -45,7 +45,7 @@ The system allows you to use the following lights :
 * FlashLight :
 	A FlashLight is a SpotLight with a linear base. It exposes the same parameters as the SpotLight.
 	It also exposes the following parameter :
-	* width : how wide the base line is. Expressed in pixels.
+	* length : how many pixels between the flashlight's position and the start of the light.
 	
 	Modifying a FlashLight's width requires an update of the light.
 

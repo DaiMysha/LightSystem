@@ -18,37 +18,38 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 */
 
-#ifndef HEADER_DMGDVT_FlashLight
-#define HEADER_DMGDVT_FlashLight
+#ifndef HEADER_DMGDVT_FLASHLIGHT
+#define HEADER_DMGDVT_FLASHLIGHT
 
 #include <SFML/Graphics.hpp>
 
 #include <LightSystem/Light.hpp>
 #include <LightSystem/SpotLight.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm
+{
+namespace ls
+{
 
-    class FlashLight : public SpotLight {
+    class FlashLight : public SpotLight
+    {
         public:
-            FlashLight(const sf::Vector2f& p, float r, float w, const sf::Color& c);
-            FlashLight(const sf::Vector2f& p, float r, float w, const sf::Color& c, float da, float sa, float i, float b, float lf);
+            FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c);
+            FlashLight(const sf::Vector2f& p, float r, float l, const sf::Color& c, float da, float sa, float i, float b, float lf);
 
             virtual void preRender(sf::Shader* shader) override;
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
-            virtual void computeAABB() override;
-
-            void setWidth(float w);
-            float getWidth() const;
+            void setLength(float l);
+            float getLength() const;
 
         protected:
-            virtual sf::ConvexShape _makeShape();
+            sf::ConvexShape _makeShape() override;
 
-            float _width;//width of the base line
+            float _length; //length from origin to start of light
 
     };
 }
 }
 
-#endif //HEADER_DMGDVT_FlashLight
+#endif //HEADER_DMGDVT_FLASHLIGHT

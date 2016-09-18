@@ -19,6 +19,7 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 */
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 
 #include <SFML/Graphics.hpp>
@@ -33,10 +34,14 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <LightSystem/SpriteLight.hpp>
 
 #define WIDTH   640
-#define HEIGHT  480
+#define HEIGHT  600
+
+//moved to bottom of file for easy reading of the main light handling code
+void addWalls(dm::ls::LightSystem& ls);
 
 //font taken from http://www.fontspace.com/melifonts/sweet-cheeks
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
 
     /** SFML STUFF **/
 
@@ -46,12 +51,21 @@ int main(int argc, char** argv) {
     bool aabb = false;
     bool debugUseShader = true;
     bool debugDrawLights = true;
+    bool debugDrawWalls = true;
     //bg
     sf::Texture bg;
-    if(!bg.loadFromFile("data/map.png")) exit(-1);
+    if(!bg.loadFromFile("data/map.png"))
+    {
+        std::cerr << "Missing 'data/map.png'" << std::endl;
+        exit(-1);
+    }
 
     sf::Texture emissiveSpriteTexture;
-    if(!emissiveSpriteTexture.loadFromFile("data/emissive.png")) exit(-2);
+    if(!emissiveSpriteTexture.loadFromFile("data/emissive.png"))
+    {
+        std::cerr << "Missing 'data/emissive.png'" << std::endl;
+        exit(-2);
+    }
 
     sf::Sprite bgSpr(bg,sf::IntRect(0,0,WIDTH,HEIGHT));
     bgSpr.setOrigin(sf::Vector2f(WIDTH/2,HEIGHT/2));
@@ -64,18 +78,23 @@ int main(int argc, char** argv) {
 
     sf::Font font;
 
-    if(!font.loadFromFile("data/Sweet Cheeks.ttf")) exit(-1); //because yes
+    if(!font.loadFromFile("data/Sweet Cheeks.ttf"))
+    {
+        std::cerr << "Missing 'data/Sweet Cheeks.ttf'" << std::endl;
+        exit(-1); //because yes
+    }
 
     sf::Text text;
     text.setFont(font);
     text.setCharacterSize(18);
-    text.setPosition(580,10);
+    text.setPosition(560,10);
     text.setString("0");
     text.setColor(sf::Color::White);
 
     sf::View view;
     view.setSize(sf::Vector2f(WIDTH,HEIGHT));
 
+    //Small rectangle representing player position
     sf::RectangleShape p(sf::Vector2f(10,10));
     p.setFillColor(sf::Color::Blue);
     p.setPosition(sf::Vector2f(1680,2090));
@@ -88,8 +107,7 @@ int main(int argc, char** argv) {
 
     sf::ConvexShape ambiantShape;
     ambiantShape.setPointCount(12);
-    //position : 1440,1408
-    //480,350
+
     ambiantShape.setPoint(0,sf::Vector2f(0.0f,0.0f));
     ambiantShape.setPoint(1,sf::Vector2f(289.0f,0.0f));
     ambiantShape.setPoint(2,sf::Vector2f(289.0f,63.0f));
@@ -114,11 +132,19 @@ int main(int argc, char** argv) {
 
     //create your LightSystem
     //one per game is usually enough
-    DMGDVT::LS::LightSystem ls;
+    //you can create more than one if needed
+    //for example you have several layers appearing (first floor and second floor for example)
+    dm::ls::LightSystem ls;
     //change ambiant light
+    //the ambiant light is the default light that will appear when no other light is added to the light system
+    //an ambiant light set to White will show everything normally and an ambiant light set to black will hide everything
+    //here we're trying to replicate night ambiant color
     ls.setAmbiantLight(sf::Color(15,0,60));
     //the lightSystem needs to be aware of the view you're using to properly draw the lights
     ls.setView(view);
+
+    //Create walls that block the light
+    addWalls(ls);
 
     //Let's create a bunch of lights now
     //the lights HAVE to be dynamically allocated. The LightSystem destroys them for you when it's destroyed
@@ -126,46 +152,49 @@ int main(int argc, char** argv) {
     //if you do that you have to take care of the deletion yourself so be careful
     //do NOT destroy a light that hasn't been removed yet, it will cause a segfault
 
+    //here we use the constructor with all the parameters but it's probably easier to read if you use the setters
+    //the result is the same as long as you set all parameters before adding the light to your LightSystem
+
     //to ensure R + G + B = W
-    DMGDVT::LS::SpotLight* spotRed =  new DMGDVT::LS::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red, 0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spotBlue = new DMGDVT::LS::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,0.0f       ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* spotGreen = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green,0.0f      ,180.0f*2.0f,1.0f,0.5f,1.0f);
-    DMGDVT::LS::SpotLight* negativeColors = new DMGDVT::LS::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,0.0f      ,180.0f*2.0f,-1.0f,5.0f,5.0f);
+    dm::ls::SpotLight* spotRed =        new dm::ls::SpotLight(sf::Vector2f(1072,1678),200,sf::Color::Red,   0.0f, 180.0f*2.0f,  1.0f, 0.5f, 1.0f);
+    dm::ls::SpotLight* spotBlue =       new dm::ls::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,  0.0f, 180.0f*2.0f,  1.0f, 0.5f, 1.0f);
+    dm::ls::SpotLight* spotGreen =      new dm::ls::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green, 0.0f, 180.0f*2.0f,  1.0f, 0.5f, 1.0f);
+    dm::ls::SpotLight* negativeColors = new dm::ls::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,   0.0f, 180.0f*2.0f, -1.0f, 5.0f, 5.0f);
 
     //looks at the player, shows that you don't need to update a light if you're just rotating it around
-    DMGDVT::LS::SpotLight* eyeSpotLeft = new DMGDVT::LS::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
-    DMGDVT::LS::SpotLight* eyeSpotRight = new DMGDVT::LS::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
+    dm::ls::SpotLight* eyeSpotLeft = new dm::ls::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
+    dm::ls::SpotLight* eyeSpotRight = new dm::ls::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
 
-    DMGDVT::LS::SpotLight* sunRise = new DMGDVT::LS::SpotLight(sf::Vector2f(1679,2200),500,sf::Color(245,125,20),180.0f ,180.0f/3.0f,1.0f,0.0f,2.0f);
+    dm::ls::SpotLight* sunRise = new dm::ls::SpotLight(sf::Vector2f(1679,2200),500,sf::Color(245,125,20),180.0f ,180.0f/3.0f,1.0f,0.0f,2.0f);
 
     //flickering light. Something for dynamic lights is planned for later, but for now the code later shows how to do it
-    DMGDVT::LS::SpotLight* firePit1 = new DMGDVT::LS::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
-    DMGDVT::LS::SpotLight* firePit2 = new DMGDVT::LS::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
+    dm::ls::SpotLight* firePit1 = new dm::ls::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
+    dm::ls::SpotLight* firePit2 = new dm::ls::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
 
     //a flashlight is a spotlight with a line base instead of a point
-    DMGDVT::LS::SpotLight* flashLight = new DMGDVT::LS::FlashLight(sf::Vector2f(2845,1245),800,30,sf::Color::White,180.0f/2.0f,180.0f/10.0f,1.0f,0.0f,2.0f);
+    dm::ls::SpotLight* flashLight = new dm::ls::FlashLight(sf::Vector2f(2845,1245),800,50,sf::Color::White,180.0f/2.0f,180.0f/10.0f,1.0f,0.0f,2.0f);
 
     //just some more lights to test a few things
-    DMGDVT::LS::SpotLight* lamp = new DMGDVT::LS::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,180.0f*2.0f,1.0f,0.0f,0.50f);
+    dm::ls::SpotLight* lamp = new dm::ls::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,180.0f*2.0f,1.0f,0.0f,0.50f);
 
     //one negative spot in the room with the ceiling white light
-    DMGDVT::LS::SpotLight* negativeSpot = new DMGDVT::LS::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),180.0f/4.0f ,180.0f/4.0f,-1.0f,0.0f,2.0f);
+    dm::ls::SpotLight* negativeSpot = new dm::ls::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),180.0f/4.0f ,180.0f/4.0f,-1.0f,0.0f,2.0f);
 
     //template add example
     //also follows the player around, showing you don't need to update a light if you're just moving it around
-    DMGDVT::LS::SpotLight* playerLight = ls.addLight<DMGDVT::LS::FlashLight>(p.getPosition(),200,10,sf::Color::Yellow);
+    dm::ls::SpotLight* playerLight = ls.addLight<dm::ls::SpotLight>(p.getPosition(),200,sf::Color::Yellow);
 
     //local ambiant lights are useful for example to make a difference between day and night
-    DMGDVT::LS::LocalAmbiantLight* localAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(1535,1439),ambiantShape,sf::Color::Red);
+    dm::ls::LocalAmbiantLight* localAmbiant = new dm::ls::LocalAmbiantLight(sf::Vector2f(1535,1439),ambiantShape,sf::Color::Red);
     //they can also be negative
-    DMGDVT::LS::LocalAmbiantLight* negativeAmbiant = new DMGDVT::LS::LocalAmbiantLight(sf::Vector2f(991,1087),negativeShape,sf::Color::Green,true);
+    dm::ls::LocalAmbiantLight* negativeAmbiant = new dm::ls::LocalAmbiantLight(sf::Vector2f(991,1087),negativeShape,sf::Color::Green,true);
 
     //Example of emissive lights. Emissive lights are just a white sprite on a transparent background that are drawn with a different color above everything else
     //the sprite is copied and stored locally
-    //emissive lights CANNOT be negative
+    //emissive lights CANNOT be negative (this will need to change)
     //but they can be updated at any moment on any parameter without any cost
     //still need to call the LightSystem::update(Light*) on it
-    DMGDVT::LS::SpriteLight* emissive = new DMGDVT::LS::SpriteLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),180.0f/2.0f,emissiveSprite);
+    dm::ls::SpriteLight* emissive = new dm::ls::SpriteLight(sf::Vector2f(2368,1592),sf::Color(100,255,255),180.0f/2.0f,emissiveSprite);
     emissive->setEmissive(true);
 
     //this parameter allows you to change the way textures are resized when a call to LightSystem::update(Light*) is done
@@ -177,11 +206,11 @@ int main(int argc, char** argv) {
     firePit1->setResizeWhenIncrease(true);
 
     //add them all to the LightSystem
-    //except the playerLight, since it's been added by the template function
+    //except the playerLight, since it's already been added by the template function
     ls.addLight(spotRed);
     ls.addLight(spotBlue);
     ls.addLight(spotGreen);
-    ls.addLight(negativeColors);//you can add them anywhere, not just at the end
+    ls.addLight(negativeColors);//you can add them anywhere, not just at the end. They are stored in a different list
     ls.addLight(eyeSpotLeft);
     ls.addLight(eyeSpotRight);
     ls.addLight(sunRise);
@@ -198,82 +227,108 @@ int main(int argc, char** argv) {
     //if you change its direcionAngle or its position, it doesn't need to be updated
     playerLight->setDirectionAngle(180.0f);
     //if you modify ANY of the parameters below, you have to update the light's texture using ls.update(Light*);
-    //otherwise the update won't be taken into account
+    //otherwise the update won't be taken into account and the behaviour is undefined
     //basically any parameter except for directionAngle and position
     playerLight->setLinearity(2.0f);
     playerLight->setBleed(0.0f);
-    playerLight->setSpreadAngle(180.0f/3.0f);
-    playerLight->setColor(sf::Color::White);
+    playerLight->setSpreadAngle(70.0f);
+    playerLight->setColor(sf::Color(255,175,0));
     playerLight->setIntensity(1.0f);
-    playerLight->setRadius(200);
+    playerLight->setRadius(250);
     ls.update(playerLight);
 
+    clock_t oneRender, totalTime = 0;
+
     //the loop
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event))
+        {
             if (event.type == sf::Event::Closed)
                 window.close();
-            else if(event.type == sf::Event::KeyPressed){
-                switch(event.key.code) {
+            else if(event.type == sf::Event::KeyPressed)
+            {
+                switch(event.key.code)
+                {
                     case sf::Keyboard::Escape:
-                    {
-                        window.close();
-                    } break;
-                    case sf::Keyboard::Up :
-                    {
-                        p.move(0,-speed);
-                    } break;
-                    case sf::Keyboard::Down :
-                    {
-                        p.move(0,speed);
-                    } break;
-                    case sf::Keyboard::Left :
-                    {
-                        p.move(-speed,0);
-                    } break;
-                    case sf::Keyboard::Right :
-                    {
-                        p.move(speed,0);
-                    } break;
-                    case sf::Keyboard::F1 :
-                    {
-                        aabb = !aabb;
-                    } break;
-                    case sf::Keyboard::F2 :
-                    {
-                        debugLightMapOnly = !debugLightMapOnly;
-                    } break;
-                    case sf::Keyboard::F3 :
-                    {
-                        debugUseShader = !debugUseShader;
-                    } break;
-                    case sf::Keyboard::F4 :
-                    {
-                        debugDrawLights = !debugDrawLights;
-                    } break;
-                    case sf::Keyboard::F:
-                    {
-                        //see above, this parameter requires an update of the light's internal texture
-                        //shows you how to turn a light ON and OFF easily
-                        //in this particular case, you wouldn't need to update the texture
-                        //since the lights aren't drawn if their intensity is 0
-                        playerLight->setIntensity(1.0f - playerLight->getIntensity());
-                        ls.update(playerLight);
-                    } break;
-                    case sf::Keyboard::S:
-                    {
-                        //this parameter requires an update
-                        if(playerLight->getSpreadAngle()==2.0f*180.0f) {
-                            playerLight->setSpreadAngle(180.0f/3.0f);
-                            playerLight->setRadius(200);
-                        } else {
-                            playerLight->setSpreadAngle(2.0*180.0f);
-                            playerLight->setRadius(100);
+                        {
+                            window.close();
                         }
-                        ls.update(playerLight);
-                    } break;
-                    default: break;
+                        break;
+                    case sf::Keyboard::Up :
+                        {
+                            p.move(0,-speed);
+                        }
+                        break;
+                    case sf::Keyboard::Down :
+                        {
+                            p.move(0,speed);
+                        }
+                        break;
+                    case sf::Keyboard::Left :
+                        {
+                            p.move(-speed,0);
+                        }
+                        break;
+                    case sf::Keyboard::Right :
+                        {
+                            p.move(speed,0);
+                        }
+                        break;
+                    case sf::Keyboard::F1 :
+                        {
+                            aabb = !aabb;
+                        }
+                        break;
+                    case sf::Keyboard::F2 :
+                        {
+                            debugLightMapOnly = !debugLightMapOnly;
+                        }
+                        break;
+                    case sf::Keyboard::F3 :
+                        {
+                            debugUseShader = !debugUseShader;
+                        }
+                        break;
+                    case sf::Keyboard::F4 :
+                        {
+                            debugDrawLights = !debugDrawLights;
+                        }
+                        break;
+                    case sf::Keyboard::F5 :
+                        {
+                            debugDrawWalls = !debugDrawWalls;
+                        }
+                        break;
+                    case sf::Keyboard::F:
+                        {
+                            //see above, this parameter requires an update of the light's internal texture
+                            //shows you how to turn a light ON and OFF easily
+                            //in this particular case, you wouldn't need to update the texture
+                            //since the lights aren't drawn if their intensity is 0
+                            playerLight->setIntensity(1.0f - playerLight->getIntensity());
+                            ls.update(playerLight);
+                        }
+                        break;
+                    case sf::Keyboard::S:
+                        {
+                            //this parameter requires an update
+                            if(playerLight->getSpreadAngle()==2.0f*180.0f)
+                            {
+                                playerLight->setSpreadAngle(180.0f/3.0f);
+                                playerLight->setRadius(200);
+                            }
+                            else
+                            {
+                                playerLight->setSpreadAngle(2.0*180.0f);
+                                playerLight->setRadius(100);
+                            }
+                            ls.update(playerLight);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -305,37 +360,41 @@ int main(int argc, char** argv) {
         view.setCenter(p.getPosition());
 
         //it is EXTREMELY IMPORTANT that you use the LightSystem::draw INSIDE your view
+        oneRender = ::clock();
         window.setView(view);
-            window.draw(bgSpr);
-            window.draw(p);
+        window.draw(bgSpr);
+        window.draw(p);
 
-            int flags = 0;
-            if(debugLightMapOnly) flags |= DMGDVT::LS::LightSystem::DebugFlags::LIGHTMAP_ONLY;
-            if(!debugUseShader) flags |= DMGDVT::LS::LightSystem::DebugFlags::SHADER_OFF;
+        int flags = 0;
+        if(debugLightMapOnly) flags |= dm::ls::LightSystem::DebugFlags::LIGHTMAP_ONLY;
+        if(!debugUseShader) flags |= dm::ls::LightSystem::DebugFlags::SHADER_OFF;
 
-            //use LightSystem::render if not using debug
-            //if using debugRender, the flags allow you to modify the way the lights are drawn
-            ls.debugRender(view,window,flags);
-            if(debugDrawLights) ls.draw(view,window);
-            //draws the light's AABB
-            if(aabb) ls.drawAABB(view,window);
+        //use LightSystem::render if not using debug
+        //if using debugRender, the flags allow you to modify the way the lights are drawn
+        ls.debugRender(view,window,flags);
+        if(debugDrawLights) ls.draw(view,window);
+        //draws the light's AABB
+        if(aabb) ls.drawAABB(view,window);
+        if(debugDrawWalls) ls.drawWalls(view,window);
 
         window.setView(baseView);
 
         window.draw(text);
         window.display();
+        totalTime += ::clock() - oneRender;
 
         //sf::sleep(sf::milliseconds(16));
         ++elapsedFrames;
-        if(clock.getElapsedTime().asMilliseconds() > 500) {
+        if(clock.getElapsedTime().asMilliseconds() > 500)
+        {
             fps = elapsedFrames;
             elapsedFrames = 0;
             clock.restart();
             //for some reason my compiler doesn't find to_string so..
             std::ostringstream str;
-            str << (fps*2);
+            str << (fps*2) << "\n" << std::setprecision(3) << (float)totalTime/(float)fps << " ms";
             text.setString(str.str());
-
+            totalTime = 0;
 
             //also use this timer to alternate the negative light to a positive light
             //you can change the positivity of a light just by changing its intensity
@@ -345,7 +404,6 @@ int main(int argc, char** argv) {
             if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
             else negativeSpot->setIntensity(-1.0f);
             ls.addLight(negativeSpot);
-
 
             //you can easily switch a light on and off with this function
             //and it doesn't require an update of the light
@@ -362,12 +420,16 @@ int main(int argc, char** argv) {
             c = negativeColors->getColor();
         }
         //this is an example of how to make a light flicker
-        if(flickerClock.getElapsedTime().asMilliseconds() > 100) {
+        if(flickerClock.getElapsedTime().asMilliseconds() > 100)
+        {
             flickerClock.restart();
-            if(firePit1->getRadius() == 200) {
+            if(firePit1->getRadius() == 200)
+            {
                 firePit1->setRadius(180);
                 firePit2->setRadius(180);
-            } else {
+            }
+            else
+            {
                 firePit1->setRadius(200);
                 firePit2->setRadius(200);
             }
@@ -378,4 +440,64 @@ int main(int argc, char** argv) {
 
 
     return 0;
+}
+
+void addWalls(dm::ls::LightSystem& ls)
+{
+    //first is screen
+    sf::ConvexShape wallShape;
+    wallShape.setPointCount(4);
+    wallShape.setPoint(0,sf::Vector2f(0,0));
+    wallShape.setPoint(1,sf::Vector2f(WIDTH,0));
+    wallShape.setPoint(2,sf::Vector2f(WIDTH,HEIGHT));
+    wallShape.setPoint(3,sf::Vector2f(0,HEIGHT));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1470,1728));
+    wallShape.setPoint(1,sf::Vector2f(1664,1728));
+    wallShape.setPoint(2,sf::Vector2f(1664,1791));
+    wallShape.setPoint(3,sf::Vector2f(1470,1791));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1696,1728));
+    wallShape.setPoint(1,sf::Vector2f(1888,1728));
+    wallShape.setPoint(2,sf::Vector2f(1888,1791));
+    wallShape.setPoint(3,sf::Vector2f(1696,1791));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1632,2064));
+    wallShape.setPoint(1,sf::Vector2f(1663,2064));
+    wallShape.setPoint(2,sf::Vector2f(1663,2114));
+    wallShape.setPoint(3,sf::Vector2f(1632,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1696,2064));
+    wallShape.setPoint(1,sf::Vector2f(1727,2064));
+    wallShape.setPoint(2,sf::Vector2f(1727,2114));
+    wallShape.setPoint(3,sf::Vector2f(1696,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1470,2080));
+    wallShape.setPoint(1,sf::Vector2f(1632,2080));
+    wallShape.setPoint(2,sf::Vector2f(1632,2114));
+    wallShape.setPoint(3,sf::Vector2f(1470,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1727,2080));
+    wallShape.setPoint(1,sf::Vector2f(1888,2080));
+    wallShape.setPoint(2,sf::Vector2f(1888,2114));
+    wallShape.setPoint(3,sf::Vector2f(1727,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1437,1728));
+    wallShape.setPoint(1,sf::Vector2f(1470,1728));
+    wallShape.setPoint(2,sf::Vector2f(1470,2114));
+    wallShape.setPoint(3,sf::Vector2f(1437,2114));
+    ls.addWall(wallShape);
+
+    wallShape.setPoint(0,sf::Vector2f(1888,1728));
+    wallShape.setPoint(1,sf::Vector2f(1922,1728));
+    wallShape.setPoint(2,sf::Vector2f(1922,2114));
+    wallShape.setPoint(3,sf::Vector2f(1888,2114));
+    ls.addWall(wallShape);
 }

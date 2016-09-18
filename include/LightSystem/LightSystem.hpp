@@ -29,12 +29,18 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/Light.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm
+{
+namespace ls
+{
     ///this class is not meant to be inherited
-    class LightSystem {
+    class ShadowSystem;
+
+    class LightSystem
+    {
         public:
-            enum DebugFlags {
+            enum DebugFlags
+            {
                 DEFAULT = 0,
                 SHADER_OFF = 1,
                 LIGHTMAP_ONLY = 2,
@@ -50,7 +56,8 @@ namespace LS {
 
             void addLight(Light* l);
             template <typename T, typename ... Args>
-            T* addLight(Args&& ... args) {
+            T* addLight(Args&& ... args)
+            {
                 T *l = new T(std::forward<Args>(args)...);
                 addLight(l);
                 return l;
@@ -59,6 +66,8 @@ namespace LS {
 
             void reset();//empties the lights
 
+            void addWall(const sf::ConvexShape& s);
+
             //call this function to prepare the render
             void render(const sf::View& screenView, sf::RenderTarget& target);
             void debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags = DebugFlags::DEFAULT);
@@ -66,6 +75,7 @@ namespace LS {
             void draw(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::View& screenView, sf::RenderTarget& target);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
+            void drawWalls(const sf::View& screenView, sf::RenderTarget& target);
 
             void update();
             void update(Light* l);
@@ -101,13 +111,17 @@ namespace LS {
             sf::Color _ambiant;
             sf::Shader _lightAttenuationShader;
             sf::RenderTexture _renderTexture;
+            sf::RenderTexture _buffer;
             sf::Sprite _sprite;
+            sf::Sprite _bufferSprite;
 
             bool _isometric;
             bool _autoDelete;
 
             bool _updateLightMapImage;
             sf::Image _lightMapImage;
+
+            ShadowSystem* _shadowSystem;
 
     };
 }

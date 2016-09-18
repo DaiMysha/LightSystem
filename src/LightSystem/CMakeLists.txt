@@ -8,6 +8,7 @@ set(FILES_HEADER
 	${INCROOT}/FlashLight.hpp
 	${INCROOT}/LocalAmbiantLight.hpp
 	${INCROOT}/SpriteLight.hpp
+	${INCROOT}/ShadowSystem.hpp
 )
 
 set(FILES_SRC
@@ -17,6 +18,7 @@ set(FILES_SRC
 	${SRCROOT}/FlashLight.cpp
 	${SRCROOT}/LocalAmbiantLight.cpp
 	${SRCROOT}/SpriteLight.cpp
+	${SRCROOT}/ShadowSystem.cpp
 )
 	
 build_library(${PROJECT_NAME}

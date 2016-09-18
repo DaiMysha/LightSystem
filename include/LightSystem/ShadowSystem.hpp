@@ -18,39 +18,43 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 */
 
-#ifndef HEADER_DMGDVT_LOCALAMBIANTLIGHT
-#define HEADER_DMGDVT_LOCALAMBIANTLIGHT
+#ifndef HEADER_DMGDVT_SHADOWSYSTEM
+#define HEADER_DMGDVT_SHADOWSYSTEM
+
+#include <list>
 
 #include <SFML/Graphics.hpp>
-
-#include <LightSystem/Light.hpp>
 
 namespace dm
 {
 namespace ls
 {
 
-    class LocalAmbiantLight : public Light
+    class Light;
+
+    class ShadowSystem
     {
         public:
-            LocalAmbiantLight(const sf::Vector2f& p, const sf::ConvexShape& s, const sf::Color& c, bool negative = false);
-            virtual ~LocalAmbiantLight();
+            void addWall(const sf::ConvexShape& shape);
+            const std::list<sf::ConvexShape> getWalls() const;
 
-            virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
-            virtual void preRender(sf::Shader* shader) override;
-            virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
+            void clear();
 
-            virtual void computeAABB() override;
+            void draw(const sf::View& screenView, sf::RenderTarget& target);
 
-            void setShape(const sf::ConvexShape& s);
-            sf::ConvexShape getShape() const;
+            static void castShadowsFromPoint(const sf::Vector2f& origin, const std::list<sf::ConvexShape>& walls, const sf::FloatRect& screenRect, std::list<sf::ConvexShape>& result);
 
-        protected:
-            sf::ConvexShape _shape;
+        private:
+            static float dist(const sf::Vector2f& a, const sf::Vector2f& b);
+            static bool isVisibleFrom(const sf::Vector2f& origin, const sf::Vector2f& target, const sf::Vector2f& s1, const sf::Vector2f& s2, sf::Vector2f& tmp);
+            static float intersect(const sf::Vector2f& c, const sf::Vector2f& u, const sf::Vector2f& a, const sf::Vector2f& b, sf::Vector2f& result);
+
+            std::list<sf::ConvexShape> _walls;
     };
+
 }
 }
 
-#endif // HEADER_DMGDVT_LOCALAMBIANTLIGHT
+#endif // HEADER_DMGDVT_SHADOWSYSTEM
 
 

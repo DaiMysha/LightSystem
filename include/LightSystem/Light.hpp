@@ -22,13 +22,17 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #define HEADER_DMGDVT_LIGHT
 
 #include <SFML/Graphics.hpp>
+#include <list>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm
+{
+namespace ls
+{
 
     class LightSystem;
 
-    class Light {
+    class Light
+    {
         public:
             Light(const sf::Vector2f& p, const sf::Color& c);
             virtual ~Light();
@@ -38,9 +42,12 @@ namespace LS {
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
+            virtual void calcShadow(const std::list<sf::ConvexShape>& walls);
+
             virtual void computeAABB() = 0;
 
             sf::IntRect getAABB();//returns the AABB according to the whole map
+            virtual sf::FloatRect getBoundaries();
 
             void setPosition(const sf::Vector2f& c);
             sf::Vector2f getPosition() const;
@@ -72,10 +79,9 @@ namespace LS {
             static const char LAS_PARAM_COLOR[];
             static const char LAS_PARAM_BLEED[];
             static const char LAS_PARAM_LINEARITY[];
-            static const char LAS_PARAM_OUTLINE[];//used mainly for debug, don't mind it
-            static const char LAS_PARAM_ISOMETRIC[];
 
-            enum Attributes {
+            enum Attributes
+            {
                 ACTIVE      = 1,
                 NEGATIVE    = 1 << 1,
                 EMISSIVE    = 1 << 2,
@@ -94,6 +100,7 @@ namespace LS {
             sf::Color _color;
 
             sf::RenderTexture* _renderTexture;
+            sf::RenderTexture* _shadowTexture;
             sf::Sprite _sprite;
 
         private:

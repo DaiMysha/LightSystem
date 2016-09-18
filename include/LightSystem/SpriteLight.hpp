@@ -25,10 +25,13 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <SFML/Graphics.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm
+{
+namespace ls
+{
 
-    class SpriteLight : public Light {
+    class SpriteLight : public Light
+    {
         public:
             SpriteLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr);
             virtual ~SpriteLight();
@@ -47,6 +50,7 @@ namespace LS {
         protected:
             float _angle;
     };
+
 }
 }
 

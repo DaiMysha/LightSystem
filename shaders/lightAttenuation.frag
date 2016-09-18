@@ -7,7 +7,7 @@ uniform bool iso;
 
 void main() {
 	vec2 pixel = gl_FragCoord.xy;
-	if(iso) pixel.y = center.y + 2*(pixel.y - center.y);
+	
 	float dist = length(center - pixel);
 	
 	float distFromFalloff = radius - dist;

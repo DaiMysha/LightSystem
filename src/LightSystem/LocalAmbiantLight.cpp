@@ -26,38 +26,50 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/maths.hpp>
 #include <DMUtils/sfml.hpp>
 
-namespace DMGDVT {
-namespace LS {
+namespace dm
+{
+namespace ls
+{
 
-    LocalAmbiantLight::~LocalAmbiantLight() {
+    LocalAmbiantLight::~LocalAmbiantLight()
+    {
     }
 
-    LocalAmbiantLight::LocalAmbiantLight(const sf::Vector2f& p, const sf::ConvexShape& s, const sf::Color& c, bool negative) : Light(p,c), _shape(s) {
+    LocalAmbiantLight::LocalAmbiantLight(const sf::Vector2f& p, const sf::ConvexShape& s, const sf::Color& c, bool negative) : Light(p,c), _shape(s)
+    {
         setNegative(negative);
         computeAABB();
     }
 
-    void LocalAmbiantLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states) {
+    void LocalAmbiantLight::render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states)
+    {
         if(!isActive()) return;
 
-        target.draw(_shape,states);
+        sf::RenderStates st(states);
+        st.blendMode = sf::BlendAdd;
+
+        target.draw(_shape,st);
     }
 
-    void LocalAmbiantLight::preRender(sf::Shader* shader) {
+    void LocalAmbiantLight::preRender(sf::Shader* shader)
+    {
         _shape.setFillColor(_color);
         _shape.setPosition(_position);
 
         computeAABB();
     }
 
-    void LocalAmbiantLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states) {
+    void LocalAmbiantLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states)
+    {
         render(target.getViewport(target.getView()),target,nullptr,states);
     }
 
-    void LocalAmbiantLight::computeAABB() {
+    void LocalAmbiantLight::computeAABB()
+    {
         float minx = _shape.getPoint(0).x, maxx = minx;
         float miny = _shape.getPoint(0).y, maxy = miny;
-        for(size_t i=0;i<_shape.getPointCount();++i) {
+        for(size_t i=0; i<_shape.getPointCount(); ++i)
+        {
             minx = DMUtils::maths::min(minx,_shape.getPoint(i).x);
             maxx = DMUtils::maths::max(maxx,_shape.getPoint(i).x);
 
@@ -71,11 +83,13 @@ namespace LS {
         _aabb.height = maxy - miny;
     }
 
-    void LocalAmbiantLight::setShape(const sf::ConvexShape& s) {
+    void LocalAmbiantLight::setShape(const sf::ConvexShape& s)
+    {
         _shape = s;
     }
 
-    sf::ConvexShape LocalAmbiantLight::getShape() const {
+    sf::ConvexShape LocalAmbiantLight::getShape() const
+    {
         return _shape;
     }
 }
