@@ -23,6 +23,10 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <sstream>
 
 #include <SFML/Graphics.hpp>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
 
 #include <DMUtils/maths.hpp>

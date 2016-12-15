@@ -8,12 +8,10 @@ project (${PROJECT_NAME})
 
 # setup version numbers
 set(VERSION_MAJOR 0)
-set(VERSION_MINOR 1)
+set(VERSION_MINOR 5)
 set(VERSION_PATCH 0)
 
 include(cmake/macro.cmake)
-
-
 
 # add the  header path
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -24,11 +22,13 @@ set_option(LIGHTSYSTEM_BUILD_EXAMPLES TRUE BOOL "TRUE to build the examples, FAL
 # add an option for building the API documentation
 # set_option(LIGHTSYSTEM_BUILD_DOC TRUE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 
+# force cpp11
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
 set(LIBS "")
 
 set(DEFINES "")
-set(WARNING "-Wall")
-set(FLAGS "-g -std=c++11")
 set(CMAKE_CXX_FLAGS "${DEFINES} ${WARNING} ${FLAGS}")
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
@@ -37,16 +37,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(LIB_INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set(CMAKE_SHARED_LIBRARY_PREFIX )
-
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules;${CMAKE_SOURCE_DIR}")
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	set_option(SFML_ROOT ${CMAKE_INSTALL_PREFIX}/../SFML PATH "The SFML root installation")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	set_option(SFML_ROOT ${CMAKE_INSTALL_PREFIX}/SFML PATH "The SFML root installation")
-else()
-	set_option(SFML_ROOT ${CMAKE_INSTALL_PREFIX}/SFML PATH "The SFML root installation")
-endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules;${CMAKE_SOURCE_DIR}")
 
