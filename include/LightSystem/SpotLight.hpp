@@ -51,6 +51,8 @@ namespace ls
 
             virtual void computeAABB() override;
 
+            virtual sf::Color getLightColor(unsigned int x, unsigned int y) override;
+
             virtual sf::FloatRect getBoundaries() override;
 
             void setRadius(float r);

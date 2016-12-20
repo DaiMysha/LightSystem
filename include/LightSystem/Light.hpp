@@ -49,6 +49,8 @@ namespace ls
             sf::IntRect getAABB();//returns the AABB according to the whole map
             virtual sf::FloatRect getBoundaries();
 
+            virtual sf::Color getLightColor(unsigned int x, unsigned int y);
+
             void setPosition(const sf::Vector2f& c);
             sf::Vector2f getPosition() const;
             void move(const sf::Vector2f& delta);

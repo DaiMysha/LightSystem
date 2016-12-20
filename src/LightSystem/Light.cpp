@@ -84,6 +84,11 @@ namespace ls
         return sf::FloatRect(rect.left,rect.top,rect.width,rect.height);
     }
 
+    sf::Color Light::getLightColor(unsigned int x, unsigned int y)
+    {
+        return sf::Color::Black;
+    }
+
     void Light::setPosition(const sf::Vector2f& c)
     {
         _position = c;

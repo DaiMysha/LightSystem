@@ -85,6 +85,11 @@ namespace ls
             size_t getNegativeLightsCount() const;
             size_t getEmissiveLightsCount() const;
 
+            //this functions does the same as getLightMapPixel, except it calculates it from the lights directly
+            //emissive lights ?
+            sf::Color getLightColor(unsigned int x, unsigned int y);
+            sf::Color getLightColor(const sf::Vector2f& p);
+
             sf::Image getLightMap();//this function is expensive so don't call it too often
 
             sf::Color getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y);

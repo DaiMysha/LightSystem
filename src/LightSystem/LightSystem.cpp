@@ -258,6 +258,32 @@ namespace ls
         return _emissiveLights.size();
     }
 
+    sf::Color LightSystem::getLightColor(unsigned int x, unsigned int y)
+    {
+        sf::Color colorPos;
+        sf::Color colorNeg;
+        for(Light* l : _lights)
+        {
+            if(l->isActive() && l->getAABB().contains(x,y))
+            {
+                colorPos += l->getLightColor(x, y);
+            }
+        }
+        for(Light* l : _negativeLights)
+        {
+            if(l->isActive() && l->getAABB().contains(x,y))
+            {
+                colorNeg += l->getLightColor(x, y);
+            }
+        }
+        return colorPos - colorNeg;
+    }
+
+    sf::Color LightSystem::getLightColor(const sf::Vector2f& p)
+    {
+        return getLightColor(p.x, p.y);
+    }
+
     sf::Image LightSystem::getLightMap()
     {
         if(_updateLightMapImage)

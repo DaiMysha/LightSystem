@@ -394,9 +394,13 @@ int main(int argc, char** argv)
             fps = elapsedFrames;
             elapsedFrames = 0;
             clock.restart();
+            mouse = window.mapPixelToCoords(mouseInt, view);
+            sf::Color lightColor = ls.getLightColor(mouse.x, mouse.y);
             //for some reason my compiler doesn't find to_string so..
             std::ostringstream str;
-            str << (fps*2) << "\n" << std::setprecision(3) << (float)totalTime/(float)fps << " ms";
+            str << (fps*2) << "\n" << std::setprecision(3) << (float)totalTime/(float)fps << " ms"
+            << "\n" << (int)lightColor.r << ", " << (int)lightColor.g << ", " << (int)lightColor.b
+            << "\n" << (int)mouse.x << ", " << (int)mouse.y;
             text.setString(str.str());
             totalTime = 0;
 

@@ -239,6 +239,38 @@ namespace ls
         }
     }
 
+    sf::Color SpotLight::getLightColor(unsigned int x, unsigned int y)
+    {
+        sf::Color c;
+        bool in = false;
+        sf::Vector2f dist = sf::Vector2f(x,y) - _position;
+
+        if(_spreadAngle == M_PIf*2.0f)
+        {
+            in = (DMUtils::sfml::norm2(dist) <= _radius*_radius);
+        }
+        else
+        {
+            in = true;
+        }
+
+        if(in)
+        {
+            float distance = DMUtils::sfml::norm(dist);
+            float tmp = _radius - distance;
+            float att =  tmp * (_bleed / (distance*distance) + _linearity / _radius);
+
+            att = DMUtils::maths::clamp(att, 0.0f, 1.0f);
+            std::cout << "att : " << att << " ; " << (att*(float)c.r) << std::endl;
+            c = sf::Color(att, att, att, 1.0f) * _color;
+        }
+
+        std::cout << "c : " << (int)c.r << "," << (int)c.g << "," << (int)c.b << std::endl;
+        std::cout << "> Color : " << (int)_color.r << "," << (int)_color.g << "," << (int)_color.b << std::endl;
+
+        return c;
+    }
+
     sf::FloatRect SpotLight::getBoundaries()
     {
         if(_spreadAngle == M_PIf*2.0f)
