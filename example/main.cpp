@@ -381,10 +381,7 @@ int main(int argc, char** argv)
         if(debugDrawWalls) ls.drawWalls(view,window);
 
         {
-            sf::ConvexShape shape = playerLight->_makeShape();
-            shape.setPosition(playerLight->getPosition());
-            shape.setRotation(playerLight->getDirectionAngle());
-            shape.setOrigin(sf::Vector2f(1,1)*playerLight->getRadius());
+            sf::ConvexShape shape = playerLight->getShape();
             sf::Transform t = shape.getTransform();
 
             sf::Vertex* vertexes = new sf::Vertex[shape.getPointCount()+1];

@@ -160,6 +160,11 @@ namespace ls
         return _attributes & EMISSIVE;
     }
 
+    sf::ConvexShape Light::getShape() const
+    {
+        return sf::ConvexShape();
+    }
+
     void Light::removeFromSystem()
     {
         if(_system) _system->removeLight(this);

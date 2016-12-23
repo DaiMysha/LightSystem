@@ -46,7 +46,7 @@ namespace ls
             float getLength() const;
 
         protected:
-            sf::ConvexShape _makeShape() override;
+            sf::ConvexShape _makeShape() const override;
 
             float _length; //length from origin to start of light
 

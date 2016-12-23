@@ -80,14 +80,11 @@ namespace ls
             bool getResizeWhenIncrease() const;
             void setResizeWhenIncrease(bool r);
 
-            virtual std::list<sf::ConvexShape> getShadows() const
-            {
-                return _shadows;
-            }
+            virtual sf::ConvexShape getShape() const override;
 
-        //protected:
+        protected:
             void _render(sf::RenderTarget& target, const sf::RenderStates& states, sf::Shader* shader, sf::Vector2f center, sf::Vector2f shapePosition = sf::Vector2f(0.0f,0.0f), sf::Vector2f shapeOrigin = sf::Vector2f(0.0f,0.0f), float shapeRotation = 0.0f);
-            virtual sf::ConvexShape _makeShape();
+            virtual sf::ConvexShape _makeShape() const;
 
             float _radius;
             float _directionAngle; //angle light is pointing, rad

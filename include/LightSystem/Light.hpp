@@ -70,15 +70,11 @@ namespace ls
             void setEmissive(bool e);
             bool isEmissive() const;
 
+            virtual sf::ConvexShape getShape() const;
+
             void removeFromSystem();
             void setSystem(LightSystem* ls);
             LightSystem* getSystem() const;
-
-            //tmp
-            virtual std::list<sf::ConvexShape> getShadows() const
-            {
-            }
-
 
         protected:
             static const char LAS_PARAM_CENTER[];

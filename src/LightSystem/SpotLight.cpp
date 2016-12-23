@@ -140,13 +140,6 @@ namespace ls
         if(_intensity == 0.0f) return;
         if(!isActive()) return;
 
-        sf::ConvexShape shape = _makeShape();
-        shape.setPosition(_position);
-        shape.setFillColor(_color);
-        target.draw(shape, states);
-
-        return;
-
         if(_spreadAngle == M_PIf*2.0f)
         {
             sf::CircleShape shape(_radius);
@@ -158,28 +151,16 @@ namespace ls
         }
         else
         {
-            sf::ConvexShape shape;
-            shape.setPointCount(4);
-            shape.setFillColor(sf::Color(_color.r,_color.g,_color.b,125));
-            sf::Vector2f v(0,_radius);
-            //*
-            shape.setPosition(_position);
-            shape.setPointCount(_precision+1);
-            shape.setPoint(0,sf::Vector2f(0,0));
-
-            float deltaAngle = _spreadAngle / (float)(_precision-1);
-            for(int i=0; i<_precision; ++i)
+            sf::ConvexShape shape = getShape();
+            sf::ConvexShape shape2;
+            shape2.setPointCount(shape.getPointCount());
+            sf::Transform t = shape.getTransform();
+            for(int i = 0; i < shape.getPointCount(); ++i)
             {
-                float angle = _directionAngle - _spreadAngle/2.0f + (float)i*deltaAngle;
-                sf::Vector2f p(DMUtils::sfml::rotate(shape.getPoint(0)+sf::Vector2f(0.0f,_radius),angle,shape.getPoint(0)));
-                if(isIsometric())
-                {
-                    p.y /= 2.0f;
-                }
-                shape.setPoint(i+1,p);
+                shape2.setPoint(i, t.transformPoint(shape.getPoint(i)));
             }
 
-            target.draw(shape,states);
+            target.draw(shape2, states);
         }
     }
 
@@ -404,6 +385,16 @@ namespace ls
         _resizeWhenIncrease = r;
     }
 
+    sf::ConvexShape SpotLight::getShape() const
+    {
+        sf::ConvexShape shape(_makeShape());
+        shape.setRotation(getDirectionAngle());
+        shape.setPosition(_position);
+        shape.setOrigin(sf::Vector2f(_radius, _radius));
+
+        return shape;
+    }
+
     /*** PROTECTED ***/
 
     void SpotLight::_render(sf::RenderTarget& target, const sf::RenderStates& states, sf::Shader* shader, sf::Vector2f center, sf::Vector2f shapePosition, sf::Vector2f shapeOrigin, float shapeRotation)
@@ -428,7 +419,7 @@ namespace ls
         target.draw(shape,st);
     }
 
-    sf::ConvexShape SpotLight::_makeShape()
+    sf::ConvexShape SpotLight::_makeShape() const
     {
         sf::ConvexShape shape;
         if(_spreadAngle==M_PIf*2.0f)

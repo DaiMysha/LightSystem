@@ -92,18 +92,14 @@ namespace ls
         _sprite.setPosition(_position);
         _sprite.setTexture(_renderTexture->getTexture(),true);
         _sprite.setRotation(DMUtils::maths::radToDeg(_directionAngle));
-
     }
 
     void FlashLight::debugRender(sf::RenderTarget& target, const sf::RenderStates &states)
     {
-        SpotLight::debugRender(target, states);
         if(getIntensity() == 0.0f) return;
         if(!isActive()) return;
 
-        sf::ConvexShape shape = _makeShape();
-        shape.setPosition(getPosition());
-        shape.setRotation(getDirectionAngle());
+        sf::ConvexShape shape = getShape();
 
         target.draw(shape,states);
     }
@@ -130,7 +126,7 @@ namespace ls
     /*** PROTECTED ***/
 
     //This can be optimised with a cached shape that's updated when the flaslight parameters change
-    sf::ConvexShape FlashLight::_makeShape()
+    sf::ConvexShape FlashLight::_makeShape() const
     {
         sf::ConvexShape shape;
 
