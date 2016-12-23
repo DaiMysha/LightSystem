@@ -380,24 +380,6 @@ int main(int argc, char** argv)
         if(aabb) ls.drawAABB(view,window);
         if(debugDrawWalls) ls.drawWalls(view,window);
 
-        {
-            sf::ConvexShape shape = playerLight->getShape();
-            sf::Transform t = shape.getTransform();
-
-            sf::Vertex* vertexes = new sf::Vertex[shape.getPointCount()+1];
-            for(size_t i = 0; i < shape.getPointCount(); ++i)
-            {
-                vertexes[i].position = t.transformPoint(shape.getPoint(i));
-                vertexes[i].color = sf::Color::Green;
-            }
-            vertexes[shape.getPointCount()] = vertexes[0];
-
-            window.draw(vertexes, shape.getPointCount()+1, sf::LineStrip);
-
-            delete[] vertexes;
-        }
-
-
         window.setView(baseView);
 
         window.draw(text);

@@ -255,16 +255,7 @@ namespace ls
         }
         else
         {
-            sf::ConvexShape shape = _makeShape();
-            shape.setRotation(getDirectionAngle());
-            shape.setOrigin(sf::Vector2f(1,1)*getRadius());
-            sf::Transform t = shape.getTransform();
-            for(int i = 0; i < shape.getPointCount(); ++i)
-            {
-                shape.setPoint(i, t.transformPoint(shape.getPoint(i)));
-            }
-            shape.setPosition(getPosition());
-            in = DMUtils::sfml::contains(_makeShape(), point);
+            in = DMUtils::sfml::contains(getShape(), point);
         }
 
         if(in)
