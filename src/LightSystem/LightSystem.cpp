@@ -276,7 +276,7 @@ namespace ls
                 colorNeg += l->getLightColor(x, y);
             }
         }
-        return colorPos - colorNeg;
+        return _ambiant + colorPos - colorNeg;
     }
 
     sf::Color LightSystem::getLightColor(const sf::Vector2f& p)

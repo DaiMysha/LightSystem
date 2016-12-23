@@ -83,6 +83,15 @@ namespace ls
         _aabb.height = maxy - miny;
     }
 
+    sf::Color LocalAmbiantLight::getLightColor(unsigned int x, unsigned int y)
+    {
+        if(DMUtils::sfml::contains(_shape, sf::Vector2f(x, y)))
+        {
+            return _color;
+        }
+        return sf::Color::Black;
+    }
+
     void LocalAmbiantLight::setColor(const sf::Color& c)
     {
         _color = c;

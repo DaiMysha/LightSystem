@@ -40,6 +40,8 @@ namespace ls
             virtual void preRender(sf::Shader* shader) override;
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states) override;
 
+            virtual sf::Color getLightColor(unsigned int x, unsigned int y) override;
+
             void setLength(float l);
             float getLength() const;
 

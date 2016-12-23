@@ -46,7 +46,6 @@ void addWalls(dm::ls::LightSystem& ls);
 //font taken from http://www.fontspace.com/melifonts/sweet-cheeks
 int main(int argc, char** argv)
 {
-
     /** SFML STUFF **/
 
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "LightSystem test");
@@ -380,6 +379,27 @@ int main(int argc, char** argv)
         //draws the light's AABB
         if(aabb) ls.drawAABB(view,window);
         if(debugDrawWalls) ls.drawWalls(view,window);
+
+        {
+            sf::ConvexShape shape = playerLight->_makeShape();
+            shape.setPosition(playerLight->getPosition());
+            shape.setRotation(playerLight->getDirectionAngle());
+            shape.setOrigin(sf::Vector2f(1,1)*playerLight->getRadius());
+            sf::Transform t = shape.getTransform();
+
+            sf::Vertex* vertexes = new sf::Vertex[shape.getPointCount()+1];
+            for(size_t i = 0; i < shape.getPointCount(); ++i)
+            {
+                vertexes[i].position = t.transformPoint(shape.getPoint(i));
+                vertexes[i].color = sf::Color::Green;
+            }
+            vertexes[shape.getPointCount()] = vertexes[0];
+
+            window.draw(vertexes, shape.getPointCount()+1, sf::LineStrip);
+
+            delete[] vertexes;
+        }
+
 
         window.setView(baseView);
 

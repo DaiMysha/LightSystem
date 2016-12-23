@@ -80,7 +80,12 @@ namespace ls
             bool getResizeWhenIncrease() const;
             void setResizeWhenIncrease(bool r);
 
-        protected:
+            virtual std::list<sf::ConvexShape> getShadows() const
+            {
+                return _shadows;
+            }
+
+        //protected:
             void _render(sf::RenderTarget& target, const sf::RenderStates& states, sf::Shader* shader, sf::Vector2f center, sf::Vector2f shapePosition = sf::Vector2f(0.0f,0.0f), sf::Vector2f shapeOrigin = sf::Vector2f(0.0f,0.0f), float shapeRotation = 0.0f);
             virtual sf::ConvexShape _makeShape();
 
@@ -94,6 +99,8 @@ namespace ls
             int _precision;//number of arcs in the circle
 
             bool _resizeWhenIncrease;//if set to true, the texture is reallocated only if the needed size increases (if new _radius is inferior to previous, it doesn't change)
+
+            std::list<sf::ConvexShape> _shadows;
 
     };
 

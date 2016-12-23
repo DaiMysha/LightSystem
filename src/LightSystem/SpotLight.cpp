@@ -140,6 +140,13 @@ namespace ls
         if(_intensity == 0.0f) return;
         if(!isActive()) return;
 
+        sf::ConvexShape shape = _makeShape();
+        shape.setPosition(_position);
+        shape.setFillColor(_color);
+        target.draw(shape, states);
+
+        return;
+
         if(_spreadAngle == M_PIf*2.0f)
         {
             sf::CircleShape shape(_radius);
@@ -197,17 +204,18 @@ namespace ls
         //this is good if spreadAngle = 360 && boundaries is light->getAABB()
         sf::Vector2f screenDelta(-bounds.left,-bounds.top);
 
-        std::list<sf::ConvexShape> shapeResult;
+        _shadows.clear();
 
-        ShadowSystem::castShadowsFromPoint(origin,walls,bounds,shapeResult);
+        ShadowSystem::castShadowsFromPoint(origin,walls,bounds,_shadows);
 
         sf::Vector2f tmp;
 
-        for(sf::ConvexShape& s : shapeResult)
+        for(sf::ConvexShape& s : _shadows)
         {
             s.setFillColor(sf::Color::Black);
             s.setPosition(screenDelta);
             _shadowTexture->draw(s);
+            s.setPosition(sf::Vector2f(0.0f, 0.0f));
         }
         _shadowTexture->display();
     }
@@ -244,6 +252,21 @@ namespace ls
         sf::Color c;
         bool in = false;
         sf::Vector2f dist = sf::Vector2f(x,y) - _position;
+        sf::Vector2f point(x, y);
+
+//        std::cout << "shadow size : " << _shadows.size() << std::endl;
+//        std::cout << "Point : " << x << ";" << y << std::endl;
+
+        for(const sf::ConvexShape& shadow : _shadows)
+        {
+//            std::cout << shadow.getPoint(0).x << ";" << shadow.getPoint(0).y << std::endl;
+            if(DMUtils::sfml::contains(shadow, point))
+            {
+                return sf::Color::Black;
+            }
+        }
+
+//        std::cout << std::endl;
 
         if(_spreadAngle == M_PIf*2.0f)
         {
@@ -251,22 +274,28 @@ namespace ls
         }
         else
         {
-            in = true;
+            sf::ConvexShape shape = _makeShape();
+            shape.setRotation(getDirectionAngle());
+            shape.setOrigin(sf::Vector2f(1,1)*getRadius());
+            sf::Transform t = shape.getTransform();
+            for(int i = 0; i < shape.getPointCount(); ++i)
+            {
+                shape.setPoint(i, t.transformPoint(shape.getPoint(i)));
+            }
+            shape.setPosition(getPosition());
+            in = DMUtils::sfml::contains(_makeShape(), point);
         }
 
         if(in)
         {
             float distance = DMUtils::sfml::norm(dist);
-            float tmp = _radius - distance;
-            float att =  tmp * (_bleed / (distance*distance) + _linearity / _radius);
+            float distFromFalloff = _radius - distance;
+            float att =  distFromFalloff * (_bleed / (distance*distance) + _linearity / _radius);
 
             att = DMUtils::maths::clamp(att, 0.0f, 1.0f);
-            std::cout << "att : " << att << " ; " << (att*(float)c.r) << std::endl;
-            c = sf::Color(att, att, att, 1.0f) * _color;
-        }
 
-        std::cout << "c : " << (int)c.r << "," << (int)c.g << "," << (int)c.b << std::endl;
-        std::cout << "> Color : " << (int)_color.r << "," << (int)_color.g << "," << (int)_color.b << std::endl;
+            c = sf::Color(att*_color.r*_intensity, att*_color.g*_intensity, att*_color.b*_intensity, 1.0f);
+        }
 
         return c;
     }
@@ -416,7 +445,6 @@ namespace ls
         }
         else
         {
-
             float deltaAngle = _spreadAngle / (float)(_precision-1);
 
             shape.setPointCount(_precision+1);

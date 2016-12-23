@@ -108,6 +108,15 @@ namespace ls
         target.draw(shape,states);
     }
 
+    sf::Color FlashLight::getLightColor(unsigned int x, unsigned int y)
+    {
+        if(DMUtils::sfml::contains(_makeShape(), sf::Vector2f(x, y)))
+        {
+            return SpotLight::getLightColor(x, y);
+        }
+        return sf::Color::Black;
+    }
+
     void FlashLight::setLength(float l)
     {
         _length = l;

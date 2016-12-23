@@ -74,6 +74,11 @@ namespace ls
             void setSystem(LightSystem* ls);
             LightSystem* getSystem() const;
 
+            //tmp
+            virtual std::list<sf::ConvexShape> getShadows() const
+            {
+            }
+
 
         protected:
             static const char LAS_PARAM_CENTER[];

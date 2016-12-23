@@ -42,6 +42,8 @@ namespace ls
 
             virtual void computeAABB() override;
 
+            virtual sf::Color getLightColor(unsigned int x, unsigned int y) override;
+
             virtual void setColor(const sf::Color& c) override;
 
             void setShape(const sf::ConvexShape& s);
