@@ -78,13 +78,13 @@ namespace ls
 
         computeAABB();
 
-        sf::RectangleShape hideRegion;
-        hideRegion.setSize(sf::Vector2f(_radius, _length));
-        hideRegion.setFillColor(sf::Color::Black);
-        hideRegion.setOrigin(sf::Vector2f(_radius/2.0f, 0.0f));
-        hideRegion.setPosition(center);
+        _hideRegion.setSize(sf::Vector2f(_radius, _length));
+        _hideRegion.setFillColor(sf::Color::Black);
+        _hideRegion.setOrigin(sf::Vector2f(_radius/2.0f, 0.0f));
+        _hideRegion.setPosition(center);
+        _hideRegion.setRotation(0.0f);
 
-        _renderTexture->draw(hideRegion);
+        _renderTexture->draw(_hideRegion);
 
         _renderTexture->display();
 
@@ -106,7 +106,16 @@ namespace ls
 
     sf::Color FlashLight::getLightColor(unsigned int x, unsigned int y)
     {
-        if(DMUtils::sfml::contains(_makeShape(), sf::Vector2f(x, y)))
+        sf::ConvexShape shape;
+        shape.setPointCount(4);
+        for(size_t i = 0; i < 4; ++i)
+        {
+            shape.setPoint(i, _hideRegion.getPoint(i));
+        }
+        shape.setPosition(_position);
+        shape.setRotation(getDirectionAngle());
+        shape.setOrigin(sf::Vector2f(_radius/2.0f, 0.0f));
+        if(!DMUtils::sfml::contains(shape, sf::Vector2f(x, y)))
         {
             return SpotLight::getLightColor(x, y);
         }

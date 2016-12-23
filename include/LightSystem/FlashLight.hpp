@@ -49,6 +49,7 @@ namespace ls
             sf::ConvexShape _makeShape() const override;
 
             float _length; //length from origin to start of light
+            sf::RectangleShape _hideRegion;
 
     };
 }
