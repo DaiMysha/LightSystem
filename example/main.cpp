@@ -330,6 +330,11 @@ int main(int argc, char** argv)
                             ls.update(playerLight);
                         }
                         break;
+                    case sf::Keyboard::N:
+                        ls.removeLight(playerLight);
+                        playerLight->setNegative(!playerLight->isNegative());
+                        ls.addLight(playerLight);
+                        break;
                     default:
                         break;
                 }
