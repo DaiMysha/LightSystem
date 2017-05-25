@@ -408,8 +408,9 @@ int main(int argc, char** argv)
             //this however requires you to remove the light and to add it again
             //the addLight takes care of updating the light, no need to readd it
             ls.removeLight(negativeSpot);
-            if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
-            else negativeSpot->setIntensity(-1.0f);
+            /*if(negativeSpot->isNegative()) negativeSpot->setIntensity(1.0f);
+            else negativeSpot->setIntensity(-1.0f);*/
+            negativeSpot->setNegative(!negativeSpot->isNegative());
             ls.addLight(negativeSpot);
 
             //you can easily switch a light on and off with this function

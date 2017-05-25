@@ -58,7 +58,7 @@ namespace ls
 
     void SpotLight::preRender(sf::Shader* shader)
     {
-        setNegative(_intensity<0.0f);
+        setIntensity((isNegative()?-1:1) * std::abs(getIntensity()));
 
         if(shader==nullptr) return; //oopsie, can't work without the shader
 
@@ -329,6 +329,7 @@ namespace ls
     void SpotLight::setIntensity(float i)
     {
         _intensity = DMUtils::maths::clamp(i,-1.0f,1.0f);;
+        setNegative(_intensity < 0.0f);
     }
 
     float SpotLight::getIntensity() const
