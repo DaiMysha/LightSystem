@@ -155,7 +155,7 @@ namespace ls
             sf::ConvexShape shape2;
             shape2.setPointCount(shape.getPointCount());
             sf::Transform t = shape.getTransform();
-            for(int i = 0; i < shape.getPointCount(); ++i)
+            for(size_t i = 0; i < shape.getPointCount(); ++i)
             {
                 shape2.setPoint(i, t.transformPoint(shape.getPoint(i)));
             }
