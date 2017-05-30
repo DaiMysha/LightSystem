@@ -3,7 +3,7 @@ uniform float radius;
 uniform vec4 color;
 uniform float bleed;
 uniform float linearFactor;
-uniform bool iso;
+uniform float intensity;
 
 void main() {
 	vec2 pixel = gl_FragCoord.xy;
@@ -17,7 +17,7 @@ void main() {
 			
 	attenuation = clamp(attenuation, 0.0, 1.0);
 	
-	vec4 color = vec4(1, 1, 1, attenuation);
+	vec4 color = vec4(1, 1, 1, attenuation * intensity);
 
 	gl_FragColor = color;
 }

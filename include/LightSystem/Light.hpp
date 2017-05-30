@@ -81,6 +81,7 @@ namespace ls
             static const char LAS_PARAM_RADIUS[];
             static const char LAS_PARAM_BLEED[];
             static const char LAS_PARAM_LINEARITY[];
+            static const char LAS_PARAM_INTENSITY[];
 
             enum Attributes
             {

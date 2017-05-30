@@ -399,6 +399,7 @@ namespace ls
         shader->setParameter(dm::ls::Light::LAS_PARAM_RADIUS,_radius);
         shader->setParameter(dm::ls::Light::LAS_PARAM_BLEED,_bleed);
         shader->setParameter(dm::ls::Light::LAS_PARAM_LINEARITY,_linearity);
+        shader->setParameter(dm::ls::Light::LAS_PARAM_INTENSITY,_intensity);
 
         sf::ConvexShape shape = _makeShape();
 

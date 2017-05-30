@@ -32,6 +32,7 @@ namespace ls
     const char Light::LAS_PARAM_RADIUS[] = "radius";
     const char Light::LAS_PARAM_BLEED[] = "bleed";
     const char Light::LAS_PARAM_LINEARITY[] = "linearFactor";
+    const char Light::LAS_PARAM_INTENSITY[] = "intensity";
 
     Light::Light(const sf::Vector2f& p, const sf::Color& c) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _shadowTexture(nullptr), _attributes(Light::ACTIVE), _system(nullptr)
     {
