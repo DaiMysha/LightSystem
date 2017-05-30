@@ -30,7 +30,6 @@ namespace ls
 
     const char Light::LAS_PARAM_CENTER[] = "center";
     const char Light::LAS_PARAM_RADIUS[] = "radius";
-    const char Light::LAS_PARAM_COLOR[] = "color";
     const char Light::LAS_PARAM_BLEED[] = "bleed";
     const char Light::LAS_PARAM_LINEARITY[] = "linearFactor";
 

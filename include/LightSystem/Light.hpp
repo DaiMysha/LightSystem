@@ -79,7 +79,6 @@ namespace ls
         protected:
             static const char LAS_PARAM_CENTER[];
             static const char LAS_PARAM_RADIUS[];
-            static const char LAS_PARAM_COLOR[];
             static const char LAS_PARAM_BLEED[];
             static const char LAS_PARAM_LINEARITY[];
 
