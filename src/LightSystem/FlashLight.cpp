@@ -73,13 +73,13 @@ namespace ls
 
         sf::Vector2f center(_renderTexture->getSize().x/2.0f,_renderTexture->getSize().y/2.0f);
 
-        _renderTexture->clear();
+        _renderTexture->clear(sf::Color(255,255,255,0));
         _render(*_renderTexture,sf::RenderStates::Default,shader,center);
 
         computeAABB();
 
         _hideRegion.setSize(sf::Vector2f(_radius, _length));
-        _hideRegion.setFillColor(sf::Color::Black);
+        _hideRegion.setFillColor(sf::Color(255,255,255,0));
         _hideRegion.setOrigin(sf::Vector2f(_radius/2.0f, 0.0f));
         _hideRegion.setPosition(center);
         _hideRegion.setRotation(0.0f);

@@ -17,7 +17,7 @@ void main() {
 			
 	attenuation = clamp(attenuation, 0.0, 1.0);
 	
-	vec4 color = vec4(attenuation, attenuation, attenuation, 1.0) * vec4(color.r, color.g, color.b, color.a);
+	vec4 color = vec4(1, 1, 1, attenuation);
 
 	gl_FragColor = color;
 }

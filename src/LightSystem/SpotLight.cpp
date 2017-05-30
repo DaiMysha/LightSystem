@@ -90,7 +90,7 @@ namespace ls
 
         sf::Vector2f center(_renderTexture->getSize().x/2.0f,_renderTexture->getSize().y/2.0f);
 
-        _renderTexture->clear();
+        _renderTexture->clear(sf::Color(255,255,255,0));
         _render(*_renderTexture,sf::RenderStates::Default,shader,center);
         _renderTexture->display();
 
