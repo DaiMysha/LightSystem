@@ -397,7 +397,6 @@ namespace ls
 
         shader->setParameter(dm::ls::Light::LAS_PARAM_CENTER,center);
         shader->setParameter(dm::ls::Light::LAS_PARAM_RADIUS,_radius);
-        shader->setParameter(dm::ls::Light::LAS_PARAM_COLOR,sf::Color::White);
         shader->setParameter(dm::ls::Light::LAS_PARAM_BLEED,_bleed);
         shader->setParameter(dm::ls::Light::LAS_PARAM_LINEARITY,_linearity);
 
