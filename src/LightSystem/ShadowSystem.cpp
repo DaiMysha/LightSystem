@@ -64,15 +64,6 @@ namespace ls
 
     void ShadowSystem::castShadowsFromPoint(const sf::Vector2f& origin, const std::list<sf::ConvexShape>& walls, const sf::FloatRect& screenRect, std::list<sf::ConvexShape>& result)
     {
-        sf::ConvexShape screen;
-
-        screen.setPointCount(5);
-        screen.setPoint(0,sf::Vector2f(screenRect.left,screenRect.top));
-        screen.setPoint(1,sf::Vector2f(screenRect.left + screenRect.width,screenRect.top));
-        screen.setPoint(2,sf::Vector2f(screenRect.left + screenRect.width,screenRect.top+screenRect.height));
-        screen.setPoint(3,sf::Vector2f(screenRect.left,screenRect.top+screenRect.height));
-        screen.setPoint(4,screen.getPoint(0));
-
         sf::Vector2f tmp;
 
         for(const sf::ConvexShape& s : walls)
@@ -127,16 +118,14 @@ namespace ls
                 shapeSize = DMUtils::maths::abs(size - secondBoundaryIndex + firstBoundaryIndex) + 1;
             }
 
-            if(shapeSize)
-            {
+            if(shapeSize) {
                 sf::ConvexShape resultShape;
                 resultShape.setFillColor(sf::Color::Black);
-                resultShape.setPointCount(shapeSize+2);
+                resultShape.setPointCount(shapeSize);
 
-                int id = 1;
+                int id = 0;
                 int i = firstBoundaryIndex;
-                while(i != secondBoundaryIndex)
-                {
+                while(i != secondBoundaryIndex) {
                     resultShape.setPoint(id++,s.getPoint(i));
                     --i;
                     if(i<0) i+=size;
@@ -144,45 +133,33 @@ namespace ls
                 }
                 resultShape.setPoint(id++,s.getPoint(secondBoundaryIndex));
 
-                int closestToLeft=0;
-
-                for(int i=0; i<5; ++i)
+                i = secondBoundaryIndex;
+                while(i != firstBoundaryIndex)
                 {
-                    if(intersect(origin,s.getPoint(firstBoundaryIndex)-origin,screen.getPoint(i),screen.getPoint(i+1),tmp))
-                    {
-                        resultShape.setPoint(0,tmp);
-                        closestToLeft = i+1;
-                    }
-                    if(intersect(origin,s.getPoint(secondBoundaryIndex)-origin,screen.getPoint(i),screen.getPoint(i+1),tmp))
-                    {
-                        resultShape.setPoint(resultShape.getPointCount()-1,tmp);
-                    }
+
+                    sf::Vector2f delta = s.getPoint(i) - origin;
+                    float n = DMUtils::sfml::norm(delta);
+                    delta.x /= n;
+                    delta.y /= n;
+
+                    delta.x *= screenRect.width;
+                    delta.y *= screenRect.height;
+
+                    resultShape.setPointCount(resultShape.getPointCount()+1);
+                    resultShape.setPoint(resultShape.getPointCount()-1, s.getPoint(i) + delta);
+                    i = (i-1 + s.getPointCount())%s.getPointCount();
                 }
-
-                std::list<int> cornerList;
-
-                id = closestToLeft;
-                i = 0;
-                sf::Vector2f furtherLeft = resultShape.getPoint(0);
-                sf::Vector2f furtherRight = resultShape.getPoint(resultShape.getPointCount()-1);
-                while(i < 4)
                 {
-                    if(screen.getPoint(id) != furtherLeft && screen.getPoint(id) != furtherRight && intersect(origin,screen.getPoint(id)-origin,furtherLeft,furtherRight,tmp))
-                    {
-                        cornerList.emplace_front(id);
-                    }
-                    id = (id+1)%4;
-                    ++i;
-                }
+                    sf::Vector2f delta = s.getPoint(firstBoundaryIndex) - origin;
+                    float n = DMUtils::sfml::norm(delta);
+                    delta.x /= n;
+                    delta.y /= n;
 
-                if(cornerList.size())
-                {
-                    int ind = resultShape.getPointCount();
-                    resultShape.setPointCount(resultShape.getPointCount()+cornerList.size());
-                    for(auto i : cornerList)
-                    {
-                        resultShape.setPoint(ind++,screen.getPoint(i));
-                    }
+                    delta.x *= screenRect.width;
+                    delta.y *= screenRect.height;
+
+                    resultShape.setPointCount(resultShape.getPointCount()+1);
+                    resultShape.setPoint(resultShape.getPointCount()-1, s.getPoint(firstBoundaryIndex) + delta);
                 }
 
                 result.emplace_back(resultShape);
