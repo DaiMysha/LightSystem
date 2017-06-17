@@ -47,9 +47,10 @@ namespace ls
 
     void SpriteLight::preRender(sf::Shader* shader)
     {
+        if(_sprite.getTexture() == nullptr)
+            return;
         sf::Vector2u s = _sprite.getTexture()->getSize();
         _sprite.setColor(_color);
-        _sprite.setOrigin(sf::Vector2f(s.x/2.0f,s.y/2.0f));
         _sprite.setRotation(DMUtils::maths::radToDeg(_angle));
         _sprite.setPosition(_position);
 
@@ -80,9 +81,9 @@ namespace ls
         return DMUtils::maths::radToDeg(_angle);
     }
 
-    void SpriteLight::setSprite(const sf::Sprite& s)
+    sf::Sprite& SpriteLight::sprite()
     {
-        _sprite = s;
+        return _sprite;
     }
 
 }

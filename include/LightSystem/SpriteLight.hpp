@@ -33,7 +33,7 @@ namespace ls
     class SpriteLight : public Light
     {
         public:
-            SpriteLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr);
+            SpriteLight(const sf::Vector2f& p, const sf::Color& c, float a, const sf::Sprite& spr = sf::Sprite());
             virtual ~SpriteLight();
 
             virtual void render(const sf::IntRect& screen, sf::RenderTarget& target, sf::Shader* shader, const sf::RenderStates &states=sf::RenderStates::Default) override;
@@ -45,7 +45,7 @@ namespace ls
             void setAngle(float a);
             float getAngle() const;
 
-            void setSprite(const sf::Sprite& s);
+            sf::Sprite& sprite();
 
         protected:
             float _angle;
