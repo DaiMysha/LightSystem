@@ -45,7 +45,7 @@ namespace ls
             void setAngle(float a);
             float getAngle() const;
 
-            sf::Sprite& sprite();
+            sf::Sprite& getSprite();
 
         protected:
             float _angle;

@@ -81,7 +81,7 @@ namespace ls
         return DMUtils::maths::radToDeg(_angle);
     }
 
-    sf::Sprite& SpriteLight::sprite()
+    sf::Sprite& SpriteLight::getSprite()
     {
         return _sprite;
     }

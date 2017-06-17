@@ -74,6 +74,7 @@ int main(int argc, char** argv)
     bgSpr.setOrigin(sf::Vector2f(WIDTH/2,HEIGHT/2));
 
     sf::Sprite emissiveSprite(emissiveSpriteTexture);
+    emissiveSprite.setOrigin(sf::Vector2f(emissiveSpriteTexture.getSize().x/2.0f, emissiveSpriteTexture.getSize().y/2.0f));
 
     int fps = 0;
     int elapsedFrames = 0;
