@@ -49,7 +49,6 @@ namespace ls
     {
         if(_sprite.getTexture() == nullptr)
             return;
-        sf::Vector2u s = _sprite.getTexture()->getSize();
         _sprite.setColor(_color);
         _sprite.setRotation(DMUtils::maths::radToDeg(_angle));
         _sprite.setPosition(_position);
