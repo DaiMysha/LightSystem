@@ -44,6 +44,8 @@ namespace ls
                 DEFAULT = 0,
                 SHADER_OFF = 1,
                 LIGHTMAP_ONLY = 2,
+                NOSTATIC = 4,
+                NODYNAMIC = 8
             };
 
             LightSystem();
@@ -68,6 +70,8 @@ namespace ls
 
             void addWall(const sf::ConvexShape& s);
 
+            //this function precalculates all static lights
+            void preRender(const sf::Vector2u& wordSize);
             //call this function to prepare the render
             void render(const sf::View& screenView, sf::RenderTarget& target);
             void debugRender(const sf::View& screenView, sf::RenderTarget& target, int flags = DebugFlags::DEFAULT);
@@ -81,6 +85,9 @@ namespace ls
             void update(Light* l);
 
             size_t getLightsCount() const;
+            size_t getStaticLightsCount() const;
+            //all the functions under this comment only concern DYNAMIC lights.
+            size_t getDynamicLightsCount() const;
             size_t getNormalLightsCount() const;
             size_t getNegativeLightsCount() const;
             size_t getEmissiveLightsCount() const;
@@ -110,11 +117,16 @@ namespace ls
             static const sf::RenderStates _addState;
             static const sf::RenderStates _subtractState;
 
+            std::list<Light*> _staticLights;
             std::list<Light*> _lights;
             std::list<Light*> _negativeLights;
             std::list<Light*> _emissiveLights;
             sf::Color _ambiant;
             sf::Shader _lightAttenuationShader;
+
+            sf::RenderTexture _staticTexture;
+            sf::Sprite _staticSprite;
+
             sf::RenderTexture _renderTexture;
             sf::RenderTexture _buffer;
             sf::Sprite _sprite;

@@ -54,7 +54,9 @@ int main(int argc, char** argv)
     bool aabb = false;
     bool debugUseShader = true;
     bool debugDrawLights = true;
-    bool debugDrawWalls = true;
+    bool debugDrawWalls = false;
+    bool debugNoStatic = false;
+    bool debugNoDynamic = false;
     //bg
     sf::Texture bg;
     if(!bg.loadFromFile("data/map.png"))
@@ -164,25 +166,32 @@ int main(int argc, char** argv)
     dm::ls::SpotLight* spotBlue =       new dm::ls::SpotLight(sf::Vector2f(1272,1678),200,sf::Color::Blue,  0.0f, 180.0f*2.0f,  1.0f, 0.5f, 1.0f);
     dm::ls::SpotLight* spotGreen =      new dm::ls::SpotLight(sf::Vector2f(1172,1578),200,sf::Color::Green, 0.0f, 180.0f*2.0f,  1.0f, 0.5f, 1.0f);
     dm::ls::SpotLight* negativeColors = new dm::ls::SpotLight(sf::Vector2f(1172,1628),300,sf::Color::Red,   0.0f, 180.0f*2.0f, -1.0f, 5.0f, 5.0f);
+    negativeColors->setDynamic(true);
 
     //looks at the player, shows that you don't need to update a light if you're just rotating it around
     dm::ls::SpotLight* eyeSpotLeft = new dm::ls::SpotLight(sf::Vector2f(1520,1871),300,sf::Color::White,-180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
+    eyeSpotLeft->setDynamic(true);
     dm::ls::SpotLight* eyeSpotRight = new dm::ls::SpotLight(sf::Vector2f(1840,1871),300,sf::Color::White,180.0f/4.0f ,180.0f/5.0f,0.5f,1.0f,1.5f);
+    eyeSpotRight->setDynamic(true);
 
     dm::ls::SpotLight* sunRise = new dm::ls::SpotLight(sf::Vector2f(1679,2200),500,sf::Color(245,125,20),180.0f ,180.0f/3.0f,1.0f,0.0f,2.0f);
 
     //flickering light. Something for dynamic lights is planned for later, but for now the code later shows how to do it
     dm::ls::SpotLight* firePit1 = new dm::ls::SpotLight(sf::Vector2f(1584,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
+    firePit1->setDynamic(true);
     dm::ls::SpotLight* firePit2 = new dm::ls::SpotLight(sf::Vector2f(1775,1166),200,sf::Color(210,115,10),0.0f ,180.0f*2.0f,1.0f,0.1f,1.0f);
+    firePit2->setDynamic(true);
 
     //a flashlight is a spotlight with a line base instead of a point
     dm::ls::SpotLight* flashLight = new dm::ls::FlashLight(sf::Vector2f(2845,1245),800,50,sf::Color::White,180.0f/2.0f,180.0f/10.0f,1.0f,0.0f,2.0f);
+    flashLight->setDynamic(true);
 
     //just some more lights to test a few things
     dm::ls::SpotLight* lamp = new dm::ls::SpotLight(sf::Vector2f(2160,1583),200,sf::Color::White,0.0f ,180.0f*2.0f,1.0f,0.0f,0.50f);
 
     //one negative spot in the room with the ceiling white light
     dm::ls::SpotLight* negativeSpot = new dm::ls::SpotLight(sf::Vector2f(2366,1440),300,sf::Color(127,127,127),180.0f/4.0f ,180.0f/4.0f,-1.0f,0.0f,2.0f);
+    negativeSpot->setDynamic(true);
 
     //template add example
     //also follows the player around, showing you don't need to update a light if you're just moving it around
@@ -192,6 +201,7 @@ int main(int argc, char** argv)
     dm::ls::LocalAmbiantLight* localAmbiant = new dm::ls::LocalAmbiantLight(sf::Vector2f(1535,1439),ambiantShape,sf::Color::Red);
     //they can also be negative
     dm::ls::LocalAmbiantLight* negativeAmbiant = new dm::ls::LocalAmbiantLight(sf::Vector2f(991,1087),negativeShape,sf::Color::Green,true);
+    negativeAmbiant->setDynamic(true);
 
     //Example of emissive lights. Emissive lights are just a white sprite on a transparent background that are drawn with a different color above everything else
     //the sprite is copied and stored locally
@@ -239,8 +249,17 @@ int main(int argc, char** argv)
     playerLight->setSpreadAngle(70.0f);
     playerLight->setIntensity(1.0f);
     playerLight->setRadius(250);
-    ls.update(playerLight);
 
+    //If you want to change a light that was already added to the system to dynamic, you have to remove it first
+    //you cannot set a light to dynamic after the pre rendering has been done
+    //remove it from the system BEFORE you make any modification to its attributes
+    playerLight->removeFromSystem();
+    playerLight->setDynamic(true);
+    ls.addLight(playerLight);
+
+    {
+        ls.preRender(bg.getSize());
+    }
     clock_t oneRender, totalTime = 0;
 
     //the loop
@@ -283,26 +302,43 @@ int main(int argc, char** argv)
                     case sf::Keyboard::F1 :
                         {
                             aabb = !aabb;
+                            std::cout << "Draw aabb : " << aabb << std::endl;
                         }
                         break;
                     case sf::Keyboard::F2 :
                         {
                             debugLightMapOnly = !debugLightMapOnly;
+                            std::cout << "LightMap only : " << debugLightMapOnly << std::endl;
                         }
                         break;
                     case sf::Keyboard::F3 :
                         {
                             debugUseShader = !debugUseShader;
+                            std::cout << "Use shader: " << debugUseShader << std::endl;
                         }
                         break;
                     case sf::Keyboard::F4 :
                         {
                             debugDrawLights = !debugDrawLights;
+                            std::cout << "Draw lights : " << debugDrawLights << std::endl;
                         }
                         break;
                     case sf::Keyboard::F5 :
                         {
                             debugDrawWalls = !debugDrawWalls;
+                            std::cout << "Draw walls : " << debugDrawWalls << std::endl;
+                        }
+                        break;
+                    case sf::Keyboard::F6 :
+                        {
+                            debugNoStatic = !debugNoStatic;
+                            std::cout << "No static lights : " << debugNoStatic << std::endl;
+                        }
+                        break;
+                    case sf::Keyboard::F7 :
+                        {
+                            debugNoDynamic = !debugNoDynamic;
+                            std::cout << "No dynamic lights : " << debugNoDynamic << std::endl;
                         }
                         break;
                     case sf::Keyboard::F:
@@ -376,6 +412,8 @@ int main(int argc, char** argv)
 
         int flags = 0;
         if(debugLightMapOnly) flags |= dm::ls::LightSystem::DebugFlags::LIGHTMAP_ONLY;
+        if(debugNoStatic) flags |= dm::ls::LightSystem::DebugFlags::NOSTATIC;
+        if(debugNoDynamic) flags |= dm::ls::LightSystem::DebugFlags::NODYNAMIC;
         if(!debugUseShader) flags |= dm::ls::LightSystem::DebugFlags::SHADER_OFF;
 
         //use LightSystem::render if not using debug
@@ -481,37 +519,37 @@ void addWalls(dm::ls::LightSystem& ls)
 
     wallShape.setPoint(0,sf::Vector2f(1632,2064));
     wallShape.setPoint(1,sf::Vector2f(1663,2064));
-    wallShape.setPoint(2,sf::Vector2f(1663,2114));
-    wallShape.setPoint(3,sf::Vector2f(1632,2114));
+    wallShape.setPoint(2,sf::Vector2f(1663,2115));
+    wallShape.setPoint(3,sf::Vector2f(1632,2115));
     ls.addWall(wallShape);
 
     wallShape.setPoint(0,sf::Vector2f(1696,2064));
     wallShape.setPoint(1,sf::Vector2f(1727,2064));
-    wallShape.setPoint(2,sf::Vector2f(1727,2114));
-    wallShape.setPoint(3,sf::Vector2f(1696,2114));
+    wallShape.setPoint(2,sf::Vector2f(1727,2115));
+    wallShape.setPoint(3,sf::Vector2f(1696,2115));
     ls.addWall(wallShape);
 
     wallShape.setPoint(0,sf::Vector2f(1470,2080));
     wallShape.setPoint(1,sf::Vector2f(1632,2080));
-    wallShape.setPoint(2,sf::Vector2f(1632,2114));
-    wallShape.setPoint(3,sf::Vector2f(1470,2114));
+    wallShape.setPoint(2,sf::Vector2f(1632,2115));
+    wallShape.setPoint(3,sf::Vector2f(1470,2115));
     ls.addWall(wallShape);
 
     wallShape.setPoint(0,sf::Vector2f(1727,2080));
     wallShape.setPoint(1,sf::Vector2f(1888,2080));
-    wallShape.setPoint(2,sf::Vector2f(1888,2114));
-    wallShape.setPoint(3,sf::Vector2f(1727,2114));
+    wallShape.setPoint(2,sf::Vector2f(1888,2115));
+    wallShape.setPoint(3,sf::Vector2f(1727,2115));
     ls.addWall(wallShape);
 
     wallShape.setPoint(0,sf::Vector2f(1437,1728));
     wallShape.setPoint(1,sf::Vector2f(1470,1728));
-    wallShape.setPoint(2,sf::Vector2f(1470,2114));
-    wallShape.setPoint(3,sf::Vector2f(1437,2114));
+    wallShape.setPoint(2,sf::Vector2f(1470,2115));
+    wallShape.setPoint(3,sf::Vector2f(1437,2115));
     ls.addWall(wallShape);
 
     wallShape.setPoint(0,sf::Vector2f(1888,1728));
     wallShape.setPoint(1,sf::Vector2f(1922,1728));
-    wallShape.setPoint(2,sf::Vector2f(1922,2114));
-    wallShape.setPoint(3,sf::Vector2f(1888,2114));
+    wallShape.setPoint(2,sf::Vector2f(1922,2115));
+    wallShape.setPoint(3,sf::Vector2f(1888,2115));
     ls.addWall(wallShape);
 }

@@ -70,6 +70,9 @@ namespace ls
             void setEmissive(bool e);
             bool isEmissive() const;
 
+            void setDynamic(bool d);
+            bool isDynamic() const;
+
             virtual sf::ConvexShape getShape() const;
 
             void removeFromSystem();

@@ -67,8 +67,16 @@ namespace ls
         l->preRender(&_lightAttenuationShader);
 
         if(l->isEmissive()) _emissiveLights.emplace_back(l);
-        else if(l->isNegative()) _negativeLights.emplace_back(l);
-        else _lights.emplace_back(l);
+        else if(l->isDynamic())
+        {
+            if(l->isNegative()) _negativeLights.emplace_back(l);
+            else _lights.emplace_back(l);
+        }
+        else
+        {
+            if(l->isNegative()) _staticLights.emplace_back(l);
+            else _staticLights.emplace_front(l);
+        }
 
         l->setSystem(this);
 
@@ -79,7 +87,8 @@ namespace ls
     {
         if(l==nullptr) return;
 
-        if(l->isEmissive()) _emissiveLights.remove(l);
+        if(!l->isDynamic()) _staticLights.remove(l);
+        else if(l->isEmissive()) _emissiveLights.remove(l);
         else if(l->isNegative()) _negativeLights.remove(l);
         else _lights.remove(l);
     }
@@ -115,6 +124,33 @@ namespace ls
         if(_shadowSystem) _shadowSystem->addWall(s);
     }
 
+    //TODO see if i can merge the code of this and of DebugRender
+    void LightSystem::preRender(const sf::Vector2u& wordSize)
+    {
+        _staticTexture.create(wordSize.x,wordSize.y);
+        _staticTexture.clear(sf::Color::Black);
+
+        sf::IntRect all(0, 0, wordSize.x, wordSize.y);
+
+        sf::RenderTexture buffer;
+        buffer.create(wordSize.x, wordSize.y);
+        sf::Sprite bufferSprite(buffer.getTexture());
+
+        for(Light* l : _staticLights)
+        {
+            buffer.clear(sf::Color::Black);
+
+            l->calcShadow(_shadowSystem->getWalls());
+            l->render(all,buffer,&_lightAttenuationShader, _multiplyState);
+            //l->debugRender(_staticTexture,_addState);
+            buffer.display();
+            _staticTexture.draw(bufferSprite, _addState);
+        }
+
+        _staticTexture.display();
+        _staticSprite.setTexture(_staticTexture.getTexture());
+    }
+
     void LightSystem::render(const sf::View& screenView, sf::RenderTarget& target)
     {
         debugRender(screenView,target,LightSystem::DebugFlags::DEFAULT);
@@ -139,40 +175,48 @@ namespace ls
 
         sf::FloatRect screenRect(screen);
 
-        for(Light* l : _lights)
+        if(!(flags & NOSTATIC))
         {
-            if(l->getAABB().intersects(screen))
+            _renderTexture.draw(_staticSprite, stAdd);
+        }
+
+        if(!(flags & NODYNAMIC))
+        {
+            for(Light* l : _lights)
             {
-                if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
-                else
+                if(l->getAABB().intersects(screen))
                 {
-                    _buffer.clear(sf::Color::Black);
-                    //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
-                    l->calcShadow(_shadowSystem->getWalls());
-                    //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
-                    l->render(screen,_buffer,&_lightAttenuationShader,stMp);
-                    _buffer.display();
-                    _renderTexture.draw(_bufferSprite,_addState);
+                    if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stAdd);
+                    else
+                    {
+                        _buffer.clear(sf::Color::Black);
+                        //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
+                        l->calcShadow(_shadowSystem->getWalls());
+                        //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
+                        l->render(screen,_buffer,&_lightAttenuationShader,stMp);
+                        _buffer.display();
+                        _renderTexture.draw(_bufferSprite,_addState);
+                    }
                 }
             }
-        }
-        for(Light* l : _negativeLights)
-        {
-            if(l->getAABB().intersects(screen))
+            for(Light* l : _negativeLights)
             {
-                if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stRm);
-                else
+                if(l->getAABB().intersects(screen))
                 {
-                    _buffer.clear(sf::Color::Black);
-                    //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
-                    l->calcShadow(_shadowSystem->getWalls());
-                    //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
-                    l->render(screen,_buffer,&_lightAttenuationShader,stMp);
-                    _buffer.display();
-                    _renderTexture.draw(_bufferSprite,_subtractState);
+                    if(flags & DebugFlags::SHADER_OFF) l->debugRender(_renderTexture,stRm);
+                    else
+                    {
+                        _buffer.clear(sf::Color::Black);
+                        //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
+                        l->calcShadow(_shadowSystem->getWalls());
+                        //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
+                        l->render(screen,_buffer,&_lightAttenuationShader,stMp);
+                        _buffer.display();
+                        _renderTexture.draw(_bufferSprite,_subtractState);
+                    }
                 }
             }
-        }
+       }
 
         _renderTexture.display();
 
@@ -200,6 +244,10 @@ namespace ls
 
     void LightSystem::drawAABB(const sf::IntRect& screen, sf::RenderTarget& target)
     {
+        for(Light* l : _staticLights)
+        {
+            if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
+        }
         for(Light* l : _lights)
         {
             if(l->getAABB().intersects(screen)) l->drawAABB(screen,target);
@@ -240,6 +288,16 @@ namespace ls
 
     size_t LightSystem::getLightsCount() const
     {
+        return getStaticLightsCount() + getDynamicLightsCount();
+    }
+
+    size_t LightSystem::getStaticLightsCount() const
+    {
+        return _staticLights.size();
+    }
+
+    size_t LightSystem::getDynamicLightsCount() const
+    {
         return getNormalLightsCount() + getNegativeLightsCount() + getEmissiveLightsCount();
     }
 
@@ -262,6 +320,20 @@ namespace ls
     {
         sf::Color colorPos;
         sf::Color colorNeg;
+        for(Light* l : _staticLights)
+        {
+            if(l->isActive() && l->getAABB().contains(x,y))
+            {
+                if(l->isNegative())
+                {
+                    colorNeg += l->getLightColor(x, y);
+                }
+                else
+                {
+                    colorPos += l->getLightColor(x, y);
+                }
+            }
+        }
         for(Light* l : _lights)
         {
             if(l->isActive() && l->getAABB().contains(x,y))

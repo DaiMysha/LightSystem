@@ -160,6 +160,17 @@ namespace ls
         return _attributes & EMISSIVE;
     }
 
+    void Light::setDynamic(bool d)
+    {
+        if(d) _setAttribute(DYNAMIC);
+        else _unsetAttribute(DYNAMIC);
+    }
+
+    bool Light::isDynamic() const
+    {
+        return _attributes & DYNAMIC;
+    }
+
     sf::ConvexShape Light::getShape() const
     {
         return sf::ConvexShape();
