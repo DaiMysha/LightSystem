@@ -76,8 +76,6 @@ The lights can have the following properties :
 * EMISSIVE :
 	An emissive light is draw above everything else. It does not blend with what's under it and does not generate shadows.
 	
-* ISOMETRIC :
-	To be implemented later. This is for when the LightSystem has to work on an isometric map.
 	
 * POLYMORPH :
 	A polymorph light is a light whose parameters can change (see the definition of each light to knows which parameters are influenced). This concerns every parameter that implies that the light has to be recalulcated. Used for optimisations (tbi).
@@ -86,7 +84,11 @@ The lights can have the following properties :
 	A movable light is a light whose position and direction can change. This does not require a recalculation of the light. Used for optimisations (tbi).
 	
 * DYNAMIC :
-	A dynamic light is a light that is both movable and polymorph.
+	A dynamic light is a light that is both movable and polymorph. As implemented currently, it's a light that can be modified. Use light->setDynamic(true).
+	
+In order for static lights to be calculated properly, a call to preRender needs to be made as the last thing. If you add walls after the call to preRender, they will not be considered for the static lights.
+Currently, there is no way to implement a moving wall.
 	
 	
 Modifying a parameter that requires an update and failing to update the light results in undefined behaviour.
+Modifying a parameter on a static light will result in an uncorrect calculation of the light's color with no change to the drawing.
