@@ -87,10 +87,10 @@ namespace ls
     {
         if(l==nullptr) return;
 
-        if(!l->isDynamic()) _staticLights.remove(l);
-        else if(l->isEmissive()) _emissiveLights.remove(l);
-        else if(l->isNegative()) _negativeLights.remove(l);
-        else _lights.remove(l);
+        _negativeLights.remove(l);
+        _staticLights.remove(l);
+        _emissiveLights.remove(l);
+        _lights.remove(l);
     }
 
     void LightSystem::reset()
