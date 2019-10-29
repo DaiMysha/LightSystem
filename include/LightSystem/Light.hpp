@@ -34,6 +34,20 @@ namespace ls
     class Light
     {
         public:
+
+            struct Filter
+            {
+                Filter(const sf::Vector2f& a, const sf::Vector2f& b, sf::Color c = sf::Color::Black);
+                Filter();
+
+                sf::Vector2f points[2];
+                sf::Vector2f middle;
+                sf::Color filterColor;
+
+                float length;
+
+            };
+
             Light(const sf::Vector2f& p, const sf::Color& c);
             virtual ~Light();
 
@@ -42,7 +56,7 @@ namespace ls
             virtual void debugRender(sf::RenderTarget& target, const sf::RenderStates &states);
             void drawAABB(const sf::IntRect& screen, sf::RenderTarget& target);
 
-            virtual void calcShadow(const std::list<sf::ConvexShape>& walls);
+            virtual void calcShadow(const std::list<Filter>& filters);
 
             virtual void computeAABB() = 0;
 

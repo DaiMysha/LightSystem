@@ -27,7 +27,6 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <DMUtils/sfml.hpp>
 
 #include <LightSystem/SpotLight.hpp>
-#include <LightSystem/ShadowSystem.hpp>
 
 namespace dm
 {
@@ -165,30 +164,55 @@ namespace ls
         target.draw(line,2,sf::Lines);
     }
 
-    void SpotLight::calcShadow(const std::list<sf::ConvexShape>& walls)
+    sf::Vector2f exportPoint(const sf::Vector2f& origin, const sf::Vector2f& point, float distance)
+    {
+        sf::Vector2f ans = point - origin;
+        float norm = DMUtils::sfml::norm(ans);
+        ans.x = ans.x / norm * distance + origin.x;
+        ans.y = ans.y / norm * distance + origin.y;
+
+        return ans;
+    }
+
+    void SpotLight::calcShadow(const std::list<Filter>& filters)
     {
         if(!_renderTexture || !_shadowTexture) return;
         //if(getSpreadAngle()!=360.0f) return;
         _shadowTexture->clear(sf::Color::White);
 
         const sf::Vector2f origin(getPosition());
+
+        _shadows.clear();
+
         sf::FloatRect bounds = getBoundaries();
         //this is good if spreadAngle = 360 && boundaries is light->getAABB()
         sf::Vector2f screenDelta(-bounds.left,-bounds.top);
 
-        _shadows.clear();
+        float shadowLength = getRadius() * getRadius();
+        sf::ConvexShape shp;
+        shp.setPointCount(5);
 
-        ShadowSystem::castShadowsFromPoint(origin,walls,bounds,_shadows);
+        float radDiff;
+        float radSum;
+        float dist;
 
-        sf::Vector2f tmp;
-
-        for(sf::ConvexShape& s : _shadows)
+        for(const Light::Filter& f : filters)
         {
-            s.setFillColor(sf::Color::Black);
-            s.setPosition(screenDelta);
-            _shadowTexture->draw(s);
-            s.setPosition(sf::Vector2f(0.0f, 0.0f));
+            {
+                shp.setFillColor(f.filterColor);
+
+                shp.setPoint(0, f.points[0]);
+                shp.setPoint(1, exportPoint(origin, f.points[0], shadowLength));
+                shp.setPoint(2, exportPoint(origin, f.middle, shadowLength));
+                shp.setPoint(3, exportPoint(origin, f.points[1], shadowLength));
+                shp.setPoint(4, f.points[1]);
+
+                _shadows.emplace_back(shp);
+                shp.setPosition(screenDelta);
+                _shadowTexture->draw(shp);
+            }
         }
+
         _shadowTexture->display();
     }
 
@@ -246,6 +270,7 @@ namespace ls
         }
         else
         {
+            //this can be optimized
             in = DMUtils::sfml::contains(getShape(), point);
         }
 

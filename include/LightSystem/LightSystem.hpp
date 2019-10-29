@@ -68,7 +68,8 @@ namespace ls
 
             void reset();//empties the lights
 
-            void addWall(const sf::ConvexShape& s);
+            void addWall(const sf::ConvexShape& shp);
+            void addFilter(const Light::Filter& s);
 
             //this function precalculates all static lights
             void preRender(const sf::Vector2u& wordSize);
@@ -138,7 +139,7 @@ namespace ls
             bool _updateLightMapImage;
             sf::Image _lightMapImage;
 
-            ShadowSystem* _shadowSystem;
+            std::list<Light::Filter> _filters;
 
     };
 }

@@ -20,7 +20,6 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 #include <iostream>
 
 #include <LightSystem/FlashLight.hpp>
-#include <LightSystem/ShadowSystem.hpp>
 
 #include <DMUtils/maths.hpp>
 #include <DMUtils/sfml.hpp>

@@ -26,7 +26,6 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/LightSystem.hpp>
 #include <LightSystem/staticData/staticData.hpp>
-#include <LightSystem/ShadowSystem.hpp>
 
 namespace dm
 {
@@ -48,15 +47,11 @@ namespace ls
         {
             std::cerr << "Missing light attenuation Shader. System won't work" << std::endl;
         }
-
-        _shadowSystem = new ShadowSystem();
-
     }
 
     LightSystem::~LightSystem()
     {
         reset();
-        delete _shadowSystem;
     }
 
     void LightSystem::addLight(Light* l)
@@ -116,12 +111,24 @@ namespace ls
         _negativeLights.empty();
         _emissiveLights.empty();
 
-        if(_shadowSystem) _shadowSystem->clear();
+        _filters.clear();
     }
 
-    void LightSystem::addWall(const sf::ConvexShape& s)
+    void LightSystem::addWall(const sf::ConvexShape& shp)
     {
-        if(_shadowSystem) _shadowSystem->addWall(s);
+        if(shp.getPointCount() < 2) return;
+
+        for(size_t i = 0; i < shp.getPointCount() - 1; ++i)
+        {
+            addFilter(Light::Filter(shp.getPoint(i), shp.getPoint(i + 1)));
+        }
+
+        addFilter(Light::Filter(shp.getPoint(shp.getPointCount() - 1), shp.getPoint(0)));
+    }
+
+    void LightSystem::addFilter(const Light::Filter& f)
+    {
+        _filters.emplace_back(f);
     }
 
     //TODO see if i can merge the code of this and of DebugRender
@@ -140,7 +147,7 @@ namespace ls
         {
             buffer.clear(sf::Color::Black);
 
-            l->calcShadow(_shadowSystem->getWalls());
+            l->calcShadow(_filters);
             l->render(all,buffer,&_lightAttenuationShader, _multiplyState);
             //l->debugRender(_staticTexture,_addState);
             buffer.display();
@@ -191,7 +198,7 @@ namespace ls
                     {
                         _buffer.clear(sf::Color::Black);
                         //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
-                        l->calcShadow(_shadowSystem->getWalls());
+                        l->calcShadow(_filters);
                         //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
                         l->render(screen,_buffer,&_lightAttenuationShader,stMp);
                         _buffer.display();
@@ -208,7 +215,7 @@ namespace ls
                     {
                         _buffer.clear(sf::Color::Black);
                         //sf::FloatRect rect(l->getAABB().left,l->getAABB().top,l->getAABB().width,l->getAABB().height);
-                        l->calcShadow(_shadowSystem->getWalls());
+                        l->calcShadow(_filters);
                         //l->render(screen,_renderTexture,&_lightAttenuationShader,stAdd);
                         l->render(screen,_buffer,&_lightAttenuationShader,stMp);
                         _buffer.display();
@@ -264,12 +271,14 @@ namespace ls
 
     void LightSystem::drawWalls(const sf::View& screenView, sf::RenderTarget& target)
     {
-        //sf::IntRect screen = DMUtils::sfml::getViewInWorldAABB(screenView);
-        if(_shadowSystem)
+        sf::Vertex points[2];
+        points[0].color = sf::Color(180,180,180);
+        points[1].color = points[0].color;
+        for(const Light::Filter& f : _filters)
         {
-            //for(Light* l : _lights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
-            //for(Light* l : _negativeLights) if(l->getAABB().intersects(screen)) _shadowSystem->debugDraw(l,screenView,target);
-            _shadowSystem->draw(screenView,target);
+            points[0].position = f.points[0];
+            points[1].position = f.points[1];
+            target.draw(points,2,sf::Lines);
         }
     }
 

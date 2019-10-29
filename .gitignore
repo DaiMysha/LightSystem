@@ -83,3 +83,4 @@ $RECYCLE.BIN/
 *.dll
 build/
 lib/
+*.bmarks

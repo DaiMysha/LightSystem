@@ -19,9 +19,9 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 */
 
 #include <LightSystem/Light.hpp>
+#include <DMUtils/sfml.hpp>
 
 #include <LightSystem/LightSystem.hpp>
-#include <LightSystem/ShadowSystem.hpp>
 
 namespace dm
 {
@@ -33,6 +33,16 @@ namespace ls
     const char Light::LAS_PARAM_BLEED[] = "bleed";
     const char Light::LAS_PARAM_LINEARITY[] = "linearFactor";
     const char Light::LAS_PARAM_INTENSITY[] = "intensity";
+
+    Light::Filter::Filter(const sf::Vector2f& a, const sf::Vector2f& b, sf::Color c)
+    {
+        points[0] = a;
+        points[1] = b;
+        filterColor = c;
+
+        middle = a + (b - a) / 2.0f;
+        length = DMUtils::sfml::norm(a - b);
+    }
 
     Light::Light(const sf::Vector2f& p, const sf::Color& c) : _aabb(), _position(p), _color(c), _renderTexture(nullptr), _shadowTexture(nullptr), _attributes(Light::ACTIVE), _system(nullptr)
     {
@@ -64,7 +74,7 @@ namespace ls
         target.draw(lines,5,sf::LinesStrip);
     }
 
-    void Light::calcShadow(const std::list<sf::ConvexShape>& walls)
+    void Light::calcShadow(const std::list<Filter>& filters)
     {
     }
 
