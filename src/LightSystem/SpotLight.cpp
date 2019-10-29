@@ -192,12 +192,12 @@ namespace ls
         sf::ConvexShape shp;
         shp.setPointCount(5);
 
-        float radDiff;
-        float radSum;
-        float dist;
+        const sf::IntRect bbi = getAABB();
+        sf::FloatRect bb(bbi.left, bbi.top, bbi.width, bbi.height);
 
         for(const Light::Filter& f : filters)
         {
+            if(f.aabb.intersects(bb))
             {
                 shp.setFillColor(f.filterColor);
 

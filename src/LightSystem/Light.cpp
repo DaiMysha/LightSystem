@@ -40,6 +40,19 @@ namespace ls
         points[1] = b;
         filterColor = c;
 
+        float minx = DMUtils::maths::min(a.x, b.x);
+        float maxx = DMUtils::maths::max(a.x, b.x);
+        float miny = DMUtils::maths::min(a.y, b.y);
+        float maxy = DMUtils::maths::max(a.y, b.y);
+
+        aabb.left = minx;
+        aabb.top = miny;
+        aabb.width = maxx - minx;
+        aabb.height = maxy - miny;
+
+        if(aabb.width == 0.0f) aabb.width = 1.0f;
+        if(aabb.height == 0.0f) aabb.height = 1.0f;
+
         middle = a + (b - a) / 2.0f;
         length = DMUtils::sfml::norm(a - b);
     }

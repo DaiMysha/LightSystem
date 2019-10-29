@@ -274,10 +274,13 @@ namespace ls
         sf::Vertex points[2];
         points[0].color = sf::Color(180,180,180);
         points[1].color = points[0].color;
+
         for(const Light::Filter& f : _filters)
         {
             points[0].position = f.points[0];
             points[1].position = f.points[1];
+
+            points[1].color = points[0].color;
             target.draw(points,2,sf::Lines);
         }
     }

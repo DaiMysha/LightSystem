@@ -499,11 +499,6 @@ void addWalls(dm::ls::LightSystem& ls)
     //first is screen
     sf::ConvexShape wallShape;
     wallShape.setPointCount(4);
-    wallShape.setPoint(0,sf::Vector2f(0,0));
-    wallShape.setPoint(1,sf::Vector2f(WIDTH,0));
-    wallShape.setPoint(2,sf::Vector2f(WIDTH,HEIGHT));
-    wallShape.setPoint(3,sf::Vector2f(0,HEIGHT));
-    ls.addWall(wallShape);
 
     wallShape.setPoint(0,sf::Vector2f(1470,1728));
     wallShape.setPoint(1,sf::Vector2f(1664,1728));

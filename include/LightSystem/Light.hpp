@@ -43,9 +43,9 @@ namespace ls
                 sf::Vector2f points[2];
                 sf::Vector2f middle;
                 sf::Color filterColor;
+                sf::FloatRect aabb;
 
                 float length;
-
             };
 
             Light(const sf::Vector2f& p, const sf::Color& c);
