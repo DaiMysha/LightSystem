@@ -28,6 +28,37 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 #include <LightSystem/SpotLight.hpp>
 
+
+    sf::Vector2f exportPoint(const sf::Vector2f& origin, const sf::Vector2f& point, float distance)
+    {
+        sf::Vector2f ans = point - origin;
+        float norm = DMUtils::sfml::norm(ans);
+        ans.x = ans.x / norm * distance + origin.x;
+        ans.y = ans.y / norm * distance + origin.y;
+
+        return ans;
+    }
+
+    //TODO: this function is bugged, move to dmUtils::sfml and correct function there
+    float findIntersect(const sf::Vector2f& r_p, const sf::Vector2f& r_d, const sf::Vector2f& s_p, const sf::Vector2f& s_d)
+    {
+        if(r_d == s_d)
+        {
+            return 0.0f;
+        }
+
+        float t1, t2;
+        t2 = (r_d.x*(s_p.y-r_p.y) + r_d.y*(r_p.x-s_p.x))/(s_d.x*r_d.y - s_d.y*r_d.x);
+        t1 = (s_p.x+s_d.x*t2-r_p.x)/r_d.x;
+
+        if(t1<=0 || t2<0 || t2>1)
+        {
+            return 0.0f;
+        }
+
+        return t1;
+    }
+
 namespace dm
 {
 namespace ls
@@ -164,16 +195,6 @@ namespace ls
         target.draw(line,2,sf::Lines);
     }
 
-    sf::Vector2f exportPoint(const sf::Vector2f& origin, const sf::Vector2f& point, float distance)
-    {
-        sf::Vector2f ans = point - origin;
-        float norm = DMUtils::sfml::norm(ans);
-        ans.x = ans.x / norm * distance + origin.x;
-        ans.y = ans.y / norm * distance + origin.y;
-
-        return ans;
-    }
-
     void SpotLight::calcShadow(const std::list<Filter>& filters)
     {
         if(!_renderTexture || !_shadowTexture) return;
@@ -246,43 +267,28 @@ namespace ls
     sf::Color SpotLight::getLightColor(unsigned int x, unsigned int y)
     {
         sf::Color c;
-        bool in = false;
-        sf::Vector2f dist = sf::Vector2f(x,y) - _position;
         sf::Vector2f point(x, y);
+        sf::Vector2f dist = point - _position;
 
-//        std::cout << "shadow size : " << _shadows.size() << std::endl;
-//        std::cout << "Point : " << x << ";" << y << std::endl;
+        //calculate without shadows
+        float distance = DMUtils::sfml::norm(dist);
+        float distFromFalloff = _radius - distance;
+        float att =  distFromFalloff * (_bleed / (distance*distance) + _linearity / _radius);
 
-        for(const sf::ConvexShape& shadow : _shadows)
+        att = DMUtils::maths::clamp(att, 0.0f, 1.0f);
+
+        c = sf::Color(att*_color.r*_intensity, att*_color.g*_intensity, att*_color.b*_intensity, 1.0f);
+
+        //take into account all the filters
+        for(sf::ConvexShape& s : _shadows)
         {
-//            std::cout << shadow.getPoint(0).x << ";" << shadow.getPoint(0).y << std::endl;
-            if(DMUtils::sfml::contains(shadow, point))
+            float d = findIntersect(_position, (point - _position) / distance, s.getPoint(0), s.getPoint(4) - s.getPoint(0));
+            if(d > 0 && d < distance)
             {
-                return sf::Color::Black;
+                c.r = c.r * s.getFillColor().r / 255.0f;
+                c.g = c.r * s.getFillColor().g / 255.0f;
+                c.b = c.r * s.getFillColor().b / 255.0f;
             }
-        }
-
-//        std::cout << std::endl;
-
-        if(_spreadAngle == M_PIf*2.0f)
-        {
-            in = (DMUtils::sfml::norm2(dist) <= _radius*_radius);
-        }
-        else
-        {
-            //this can be optimized
-            in = DMUtils::sfml::contains(getShape(), point);
-        }
-
-        if(in)
-        {
-            float distance = DMUtils::sfml::norm(dist);
-            float distFromFalloff = _radius - distance;
-            float att =  distFromFalloff * (_bleed / (distance*distance) + _linearity / _radius);
-
-            att = DMUtils::maths::clamp(att, 0.0f, 1.0f);
-
-            c = sf::Color(att*_color.r*_intensity, att*_color.g*_intensity, att*_color.b*_intensity, 1.0f);
         }
 
         return c;
