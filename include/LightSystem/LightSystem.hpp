@@ -106,7 +106,9 @@ namespace ls
             sf::Image getLightMap();//this function is expensive so don't call it too often
 
             sf::Color getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y);
-            sf::Color getLightMapPixel(const sf::View& view, sf::Vector2f p);
+            sf::Color getLightMapPixel(const sf::View& view, const sf::Vector2f& p);
+            sf::Color getLightMapPixel(unsigned int x, unsigned int y);
+            sf::Color getLightMapPixel(const sf::Vector2f& p);
 
             void setAmbiantLight(sf::Color c);
             sf::Color getAmbiantLight() const;

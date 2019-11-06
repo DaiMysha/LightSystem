@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     sf::Text text;
     text.setFont(font);
     text.setCharacterSize(18);
-    text.setPosition(560,10);
+    text.setPosition(520,10);
     text.setString("0");
     text.setColor(sf::Color::White);
 
@@ -438,11 +438,15 @@ int main(int argc, char** argv)
             elapsedFrames = 0;
             clock.restart();
             mouse = window.mapPixelToCoords(mouseInt, view);
+
             sf::Color lightColor = ls.getLightColor(mouse.x, mouse.y);
+            sf::Color lightMapColor = ls.getLightMapPixel(view, mouse);
             //for some reason my compiler doesn't find to_string so..
             std::ostringstream str;
             str << (fps*2) << "\n" << std::setprecision(3) << (float)totalTime/(float)fps << " ms"
             << "\n" << (int)lightColor.r << ", " << (int)lightColor.g << ", " << (int)lightColor.b
+            << "\n" << (int)lightMapColor.r << ", " << (int)lightMapColor.g << ", " << (int)lightMapColor.b
+            << "\nL:" << ls.getLuminosity(lightColor)
             << "\n" << (int)mouse.x << ", " << (int)mouse.y;
             text.setString(str.str());
             totalTime = 0;

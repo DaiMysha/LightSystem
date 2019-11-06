@@ -403,16 +403,29 @@ namespace ls
 
     sf::Color LightSystem::getLightMapPixel(const sf::View& view, unsigned int x, unsigned int y)
     {
+        sf::Vector2f viewCenter = view.getCenter();
+        sf::Vector2f viewSize = view.getSize();
+
+        return getLightMapPixel(x - viewCenter.x + viewSize.x / 2.0f, y - viewCenter.y + viewSize.y / 2.0f);
+    }
+
+    sf::Color LightSystem::getLightMapPixel(const sf::View& view, const sf::Vector2f& p)
+    {
+        return getLightMapPixel(view, p.x, p.y);
+    }
+
+    sf::Color LightSystem::getLightMapPixel(unsigned int x, unsigned int y)
+    {
         sf::Image lightMap = getLightMap();
-        x -= view.getViewport().left;
-        y -= view.getViewport().top;
-        if(x>=0&&y>=0&&x<lightMap.getSize().x&&y<lightMap.getSize().y) return lightMap.getPixel(x,y);
+
+        if(x >= 0 && y >= 0 && x < lightMap.getSize().x && y < lightMap.getSize().y)
+            return lightMap.getPixel(x,y);
         else return sf::Color::Black;
     }
 
-    sf::Color LightSystem::getLightMapPixel(const sf::View& view, sf::Vector2f p)
+    sf::Color LightSystem::getLightMapPixel(const sf::Vector2f& p)
     {
-        return getLightMapPixel(view,p.x,p.y);
+        return getLightMapPixel(p.x, p.y);
     }
 
     void LightSystem::setAmbiantLight(sf::Color c)
