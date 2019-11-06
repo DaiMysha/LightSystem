@@ -97,6 +97,11 @@ namespace ls
             //emissive lights ?
             sf::Color getLightColor(unsigned int x, unsigned int y);
             sf::Color getLightColor(const sf::Vector2f& p);
+            //these functions return the L value of the HSL color data, range is 0-1
+            float getLuminosity(unsigned int x, unsigned int y);
+            float getLuminosity(const sf::Vector2f& p);
+            static float getLuminosity(const sf::Color& c); //if you already have the color, this can be used
+            static float getLuminosity(unsigned char r, unsigned char g, unsigned char b);
 
             sf::Image getLightMap();//this function is expensive so don't call it too often
 

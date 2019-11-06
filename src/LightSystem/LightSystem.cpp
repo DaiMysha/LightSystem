@@ -368,6 +368,29 @@ namespace ls
         return getLightColor(p.x, p.y);
     }
 
+    float LightSystem::getLuminosity(unsigned int x, unsigned int y)
+    {
+        return getLuminosity(getLightColor(x, y));
+    }
+
+    float LightSystem::getLuminosity(const sf::Color& c)
+    {
+        return getLuminosity(c.r, c.g, c.b);
+    }
+
+    float LightSystem::getLuminosity(unsigned char r, unsigned char g, unsigned char b)
+    {
+        float cmin = static_cast<float>(DMUtils::maths::min(r, g, b)) / 255.0f;
+        float cmax = static_cast<float>(DMUtils::maths::max(r, g, b)) / 255.0f;
+
+        return (cmin + cmax) / 2.0f;
+    }
+
+    float LightSystem::getLuminosity(const sf::Vector2f& p)
+    {
+        return getLuminosity(p.x, p.y);
+    }
+
     sf::Image LightSystem::getLightMap()
     {
         if(_updateLightMapImage)
